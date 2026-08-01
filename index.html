@@ -3,395 +3,429 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Raizel — Gestão Agrícola</title>
+<title>Raizel — Demonstração (Fazenda Boa Esperança)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --green:#0C3B2A; --green-light:#145741; --gold:#E8A825; --blue:#2E86C9;
     --bg:#F3F7F3; --card:#FFFFFF; --text:#1A2E27; --text-soft:#5B6B64;
-    --border:#DCE5E0; --danger:#C0392B;
+    --border:#DCE5E0; --danger:#C0392B; --amber:#B8860B;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);}
   .hidden{display:none !important;}
-  input,select{font-family:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);}
-  input:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px;}
-  button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;border-radius:6px;}
-  .btn-primary{background:var(--green);color:#fff;padding:10px 18px;}
-  .btn-primary:hover{background:var(--green-light);}
-  .link-btn{background:none;color:var(--blue);font-weight:500;padding:4px;}
-  .link-btn.danger{color:var(--danger);}
-  .error{color:var(--danger);font-size:13px;margin-top:8px;min-height:16px;}
-  .hint{color:var(--text-soft);font-size:13px;line-height:1.5;margin:4px 0 16px;}
+  .card-shadow{box-shadow:0 1px 2px rgba(12,59,42,.06),0 6px 18px rgba(12,59,42,.05);}
   .brand{font-weight:700;font-size:20px;letter-spacing:0.5px;}
 
-  .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
-  .auth-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;width:100%;max-width:360px;}
-  .auth-card .brand{color:var(--green);margin-bottom:18px;}
-  .auth-card h1{font-size:18px;font-weight:600;margin:0 0 6px;}
-  .auth-card label{display:block;font-size:13px;font-weight:500;margin:12px 0 4px;color:var(--text-soft);}
-  .auth-card input{width:100%;}
-  .auth-card button{width:100%;margin-top:18px;padding:11px;}
-  .switch{font-size:13px;margin-top:14px;text-align:center;}
-  .switch a{color:var(--blue);text-decoration:none;}
-  .cfg-link{display:block;text-align:center;font-size:12px;color:var(--text-soft);margin-top:16px;}
-
   #view-app{display:flex;min-height:100vh;}
-  .sidebar{width:220px;flex-shrink:0;background:var(--green);color:#fff;display:flex;flex-direction:column;padding:24px 16px;}
-  .sidebar .brand{color:#fff;margin-bottom:28px;}
+  .sidebar{width:236px;flex-shrink:0;background:var(--green);color:#fff;display:flex;flex-direction:column;padding:24px 16px;}
+  .sidebar .brand{color:#fff;}
   .sidebar .brand span{color:var(--gold);}
-  nav{display:flex;flex-direction:column;gap:4px;flex:1;}
-  .nav-btn{background:none;color:#CFE3D8;text-align:left;padding:10px 12px;border-radius:6px;font-weight:500;}
+  .org-name{font-size:12px;color:#CFE3D8;opacity:.85;margin:4px 0 22px;}
+  nav{display:flex;flex-direction:column;gap:2px;flex:1;overflow-y:auto;}
+  .nav-btn{display:flex;align-items:center;gap:10px;background:none;border:none;color:#CFE3D8;text-align:left;padding:9px 10px;border-radius:6px;font-weight:500;font-size:14px;font-family:inherit;cursor:pointer;}
+  .nav-btn svg{width:16px;height:16px;flex-shrink:0;}
   .nav-btn:hover{background:rgba(255,255,255,0.08);}
   .nav-btn.active{background:var(--green-light);color:#fff;}
-  .sidebar-footer{border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;margin-top:14px;}
-  .user-email{font-size:12px;color:#CFE3D8;margin-bottom:8px;word-break:break-all;}
-  .sidebar-footer .link-btn{color:#CFE3D8;padding:0;font-size:13px;}
+  .sidebar-footer{border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;margin-top:14px;font-size:12px;color:#CFE3D8;opacity:.8;}
 
-  main{flex:1;padding:32px 40px;max-width:920px;}
-  .tab-panel h2{font-size:22px;margin:0 0 20px;}
-  .inline-form{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;background:var(--card);padding:16px;border:1px solid var(--border);border-radius:10px;}
-  .inline-form input,.inline-form select{flex:1;min-width:140px;}
+  main{flex:1;padding:28px 40px 60px;max-width:1040px;}
+  .demo-banner{background:#FCF1DA;border:1px solid #F0D9A0;color:#7A5A0B;font-size:12.5px;padding:9px 14px;border-radius:8px;margin-bottom:22px;display:flex;align-items:center;gap:8px;}
+  .page-header{margin-bottom:22px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:10px;}
+  .page-header h2{font-size:22px;margin:0 0 4px;}
+  .page-header p{margin:0;color:var(--text-soft);font-size:13px;}
+  .season-badge{background:#E4F0E8;color:var(--green);font-weight:600;font-size:12.5px;padding:6px 12px;border-radius:100px;}
+
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:26px;}
+  .kpi-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+  .kpi-icon{width:32px;height:32px;border-radius:8px;background:#EAF3EC;display:flex;align-items:center;justify-content:center;color:var(--green);margin-bottom:12px;}
+  .kpi-icon svg{width:16px;height:16px;}
+  .kpi-value{font-size:26px;font-weight:700;color:var(--green);line-height:1.1;margin-bottom:2px;}
+  .kpi-label{font-size:12px;color:var(--text-soft);}
+
+  .grid-2{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:26px;}
+  @media (max-width:900px){.grid-2{grid-template-columns:1fr;}}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;}
+  .panel h3{font-size:14px;margin:0 0 16px;}
+  .panel h3 a{float:right;font-size:12px;color:var(--blue);text-decoration:none;font-weight:500;}
+
+  .field-map{display:flex;flex-wrap:wrap;gap:6px;}
+  .field-block{border-radius:8px;padding:10px 12px;min-width:88px;flex:1 1 88px;cursor:pointer;color:#fff;position:relative;transition:transform .12s;}
+  .field-block:hover{transform:translateY(-2px);}
+  .field-block.selected{outline:2px solid var(--blue);outline-offset:2px;}
+  .field-block .fb-code{font-weight:700;font-size:13px;}
+  .field-block .fb-meta{font-size:11px;opacity:.9;margin-top:2px;}
+  .field-detail{margin-top:16px;padding:14px 16px;background:#F8FAF8;border:1px solid var(--border);border-radius:10px;font-size:13px;}
+  .field-detail dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0;}
+  .field-detail dt{color:var(--text-soft);}
+  .field-detail dd{margin:0;font-weight:500;}
+
+  .weather-today{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+  .weather-today .wicon{width:52px;height:52px;color:var(--gold);}
+  .weather-today .wtemp{font-size:32px;font-weight:700;color:var(--green);}
+  .weather-today .wcond{font-size:13px;color:var(--text-soft);}
+  .forecast-row{display:flex;justify-content:space-between;gap:6px;}
+  .forecast-item{text-align:center;font-size:11.5px;color:var(--text-soft);flex:1;}
+  .forecast-item svg{width:22px;height:22px;color:var(--blue);margin:4px 0;}
+  .forecast-item .ftemp{font-weight:600;color:var(--text);font-size:13px;}
+
+  .chart-bars{display:flex;align-items:flex-end;gap:10px;height:130px;padding-top:10px;}
+  .chart-col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;}
+  .chart-col .bar{width:70%;border-radius:4px 4px 0 0;background:var(--blue);}
+  .chart-col .bar-val{font-size:11px;color:var(--text-soft);margin-bottom:3px;}
+  .chart-col .bar-label{font-size:11px;color:var(--text-soft);margin-top:6px;}
+
+  .cost-row{margin-bottom:12px;}
+  .cost-row .cost-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;}
+  .cost-row .cost-top .cname{font-weight:500;}
+  .cost-row .cost-top .cval{color:var(--text-soft);}
+  .cost-track{background:#EEF3EF;border-radius:100px;height:8px;overflow:hidden;}
+  .cost-fill{height:100%;border-radius:100px;background:var(--green);}
+
   .data-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-  .data-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-soft);background:#F8FAF8;padding:12px 16px;border-bottom:1px solid var(--border);}
-  .data-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;}
+  .data-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-soft);background:#F8FAF8;padding:11px 16px;border-bottom:1px solid var(--border);}
+  .data-table td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:13.5px;}
   .data-table tr:last-child td{border-bottom:none;}
-  .empty{color:var(--text-soft);font-size:14px;padding:16px;text-align:center;}
+
+  .alert-list{display:flex;flex-direction:column;gap:10px;}
+  .alert-item{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;}
+  .alert-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0;}
+  .alert-dot.alta{background:var(--danger);}
+  .alert-dot.media{background:var(--gold);}
+  .alert-dot.baixa{background:var(--blue);}
+  .alert-text{font-size:13.5px;flex:1;}
+  .alert-date{font-size:11.5px;color:var(--text-soft);white-space:nowrap;}
 
   @media (max-width:640px){
     #view-app{flex-direction:column;}
     .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px 16px;}
-    .sidebar nav{flex-direction:row;flex:none;}
-    .sidebar-footer{display:none;}
-    main{padding:20px;}
+    .sidebar nav{flex-direction:row;flex:none;overflow-x:auto;}
+    .org-name,.sidebar-footer{display:none;}
+    main{padding:18px;}
   }
 </style>
 </head>
 <body>
-
-<div id="view-setup" class="center-screen">
-  <div class="auth-card">
-    <div class="brand">Raizel</div>
-    <h1>Conectar ao banco de dados</h1>
-    <p class="hint">Cole a URL e a chave "anon" (pública) do seu projeto Supabase. Isso fica salvo só neste navegador — não é enviado a lugar nenhum.</p>
-    <label for="cfg-url">URL do projeto</label>
-    <input id="cfg-url" placeholder="https://xxxxx.supabase.co">
-    <label for="cfg-key">Chave anon (public)</label>
-    <input id="cfg-key" placeholder="eyJhbGciOi...">
-    <button class="btn-primary" onclick="saveConfig()">Salvar e continuar</button>
-    <div id="cfg-error" class="error"></div>
-  </div>
-</div>
-
-<div id="view-auth" class="center-screen hidden">
-  <div class="auth-card">
-    <div class="brand">Raizel</div>
-    <h1 id="auth-title">Entrar</h1>
-    <label for="auth-email">E-mail</label>
-    <input id="auth-email" type="email" autocomplete="email">
-    <label for="auth-password">Senha</label>
-    <input id="auth-password" type="password" autocomplete="current-password">
-    <button class="btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">Entrar</button>
-    <p class="switch"><a href="#" id="auth-toggle-link" onclick="toggleAuthMode(event)">Não tenho conta — criar uma</a></p>
-    <div id="auth-error" class="error"></div>
-    <a href="#" class="cfg-link" onclick="resetConfig(event)">Trocar conexão com o banco</a>
-  </div>
-</div>
-
-<div id="view-onboarding" class="center-screen hidden">
-  <div class="auth-card">
-    <div class="brand">Raizel</div>
-    <h1>Vamos criar sua organização</h1>
-    <p class="hint">É o nome da sua empresa ou grupo de fazendas — todos os cadastros ficam dentro dela.</p>
-    <label for="org-name">Nome da organização</label>
-    <input id="org-name" placeholder="Ex: Fazenda Santa Rita">
-    <button class="btn-primary" onclick="handleCreateOrg()">Criar e começar</button>
-    <div id="org-error" class="error"></div>
-  </div>
-</div>
-
-<div id="view-app" class="hidden">
+<div id="view-app">
   <aside class="sidebar">
     <div class="brand">Raiz<span>el</span></div>
-    <nav>
-      <button class="nav-btn active" data-tab="farms" onclick="switchTab('farms')">Fazendas</button>
-      <button class="nav-btn" data-tab="fields" onclick="switchTab('fields')">Talhões</button>
-      <button class="nav-btn" data-tab="seasons" onclick="switchTab('seasons')">Safras</button>
+    <div class="org-name">Fazenda Boa Esperança</div>
+    <nav id="nav">
+      <button class="nav-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Visão geral
+      </button>
+      <button class="nav-btn" data-tab="fields" onclick="switchTab('fields')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+        Talhões
+      </button>
+      <button class="nav-btn" data-tab="applications" onclick="switchTab('applications')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3C8 7 6 10 6 13a6 6 0 0 0 12 0c0-3-2-6-6-10Z"/></svg>
+        Safras &amp; aplicações
+      </button>
+      <button class="nav-btn" data-tab="yield" onclick="switchTab('yield')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="10"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="13"/><line x1="20" y1="20" x2="4" y2="20"/></svg>
+        Produtividade
+      </button>
+      <button class="nav-btn" data-tab="costs" onclick="switchTab('costs')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="9" y1="10" x2="15" y2="10"/></svg>
+        Custos
+      </button>
+      <button class="nav-btn" data-tab="weather" onclick="switchTab('weather')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="16" r="0"/><path d="M7 18a4 4 0 1 1 1-7.9A5 5 0 0 1 18 12a3.5 3.5 0 0 1-.5 7H7Z"/></svg>
+        Clima
+      </button>
+      <button class="nav-btn" data-tab="alerts" onclick="switchTab('alerts')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3L2 21h20L12 3z"/><line x1="12" y1="10" x2="12" y2="15"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        Alertas
+      </button>
     </nav>
-    <div class="sidebar-footer">
-      <div id="user-email" class="user-email"></div>
-      <button class="link-btn" onclick="handleLogout()">Sair</button>
-    </div>
+    <div class="sidebar-footer">produtor@fazendaboaesperanca.com.br</div>
   </aside>
   <main>
-    <section id="tab-farms" class="tab-panel">
-      <h2>Fazendas</h2>
-      <form class="inline-form" onsubmit="return handleAddFarm(event)">
-        <input id="farm-name" placeholder="Nome da fazenda" required>
-        <input id="farm-municipality" placeholder="Município">
-        <input id="farm-state" placeholder="UF" maxlength="2" style="flex:0 0 60px;min-width:60px;">
-        <button class="btn-primary" type="submit">Adicionar</button>
-      </form>
-      <table class="data-table">
-        <thead><tr><th>Nome</th><th>Município</th><th>UF</th><th></th></tr></thead>
-        <tbody id="farms-tbody"></tbody>
-      </table>
-      <div id="farms-empty" class="empty hidden">Nenhuma fazenda cadastrada ainda.</div>
+    <div class="demo-banner">🔎 Ambiente de demonstração — dados fictícios da Fazenda Boa Esperança, só para visualização.</div>
+
+    <section id="tab-dashboard" class="tab-panel">
+      <div class="page-header"><div><h2>Olá! Aqui está o resumo da sua fazenda</h2><p>Fazenda Boa Esperança · Nova Olímpia, MT</p></div><span class="season-badge">Safra 2025/2026</span></div>
+      <div class="kpi-grid" id="dash-kpis"></div>
+      <div class="grid-2">
+        <div class="panel card-shadow">
+          <h3>Mapa de talhões <a href="#" onclick="switchTab('fields');return false;">ver detalhes →</a></h3>
+          <div class="field-map" id="dash-map"></div>
+        </div>
+        <div class="panel card-shadow">
+          <h3>Clima agora</h3>
+          <div id="dash-weather"></div>
+        </div>
+      </div>
+      <div class="panel card-shadow">
+        <h3>Alertas recentes <a href="#" onclick="switchTab('alerts');return false;">ver todos →</a></h3>
+        <div class="alert-list" id="dash-alerts"></div>
+      </div>
     </section>
 
     <section id="tab-fields" class="tab-panel hidden">
-      <h2>Talhões</h2>
-      <form class="inline-form" onsubmit="return handleAddField(event)">
-        <select id="field-farm" required></select>
-        <input id="field-code" placeholder="Código (ex: T-01)" required>
-        <input id="field-area" type="number" step="0.01" min="0" placeholder="Área (ha)">
-        <button class="btn-primary" type="submit">Adicionar</button>
-      </form>
-      <table class="data-table">
-        <thead><tr><th>Fazenda</th><th>Código</th><th>Área (ha)</th><th></th></tr></thead>
-        <tbody id="fields-tbody"></tbody>
-      </table>
-      <div id="fields-empty" class="empty hidden">Nenhum talhão cadastrado ainda.</div>
+      <div class="page-header"><div><h2>Talhões</h2><p>Clique em um talhão para ver os detalhes.</p></div></div>
+      <div class="panel card-shadow">
+        <div class="field-map" id="fields-map"></div>
+        <div id="field-detail" class="field-detail hidden"></div>
+      </div>
     </section>
 
-    <section id="tab-seasons" class="tab-panel hidden">
-      <h2>Safras</h2>
-      <form class="inline-form" onsubmit="return handleAddSeason(event)">
-        <input id="season-label" placeholder="Rótulo (ex: 2025/2026)" required>
-        <select id="season-status">
-          <option value="planejada">Planejada</option>
-          <option value="em_andamento">Em andamento</option>
-          <option value="encerrada">Encerrada</option>
-        </select>
-        <button class="btn-primary" type="submit">Adicionar</button>
-      </form>
-      <table class="data-table">
-        <thead><tr><th>Safra</th><th>Status</th><th></th></tr></thead>
-        <tbody id="seasons-tbody"></tbody>
-      </table>
-      <div id="seasons-empty" class="empty hidden">Nenhuma safra cadastrada ainda.</div>
+    <section id="tab-applications" class="tab-panel hidden">
+      <div class="page-header"><div><h2>Safras &amp; aplicações</h2><p>Últimas aplicações registradas e estoque de insumos.</p></div></div>
+      <div class="panel card-shadow" style="margin-bottom:18px;">
+        <h3>Aplicações recentes</h3>
+        <table class="data-table">
+          <thead><tr><th>Data</th><th>Talhão</th><th>Produto</th><th>Dose</th><th>Área</th></tr></thead>
+          <tbody id="applications-tbody"></tbody>
+        </table>
+      </div>
+      <div class="panel card-shadow">
+        <h3>Insumos com estoque baixo</h3>
+        <table class="data-table">
+          <thead><tr><th>Produto</th><th>Restante</th><th>Mínimo recomendado</th></tr></thead>
+          <tbody id="stock-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-yield" class="tab-panel hidden">
+      <div class="page-header"><div><h2>Produtividade</h2><p>Histórico de safras e ranking de cultivares.</p></div></div>
+      <div class="panel card-shadow" style="margin-bottom:18px;">
+        <h3>Produtividade média por safra (sc/ha)</h3>
+        <div class="chart-bars" id="yield-chart"></div>
+      </div>
+      <div class="panel card-shadow">
+        <h3>Ranking de cultivares</h3>
+        <table class="data-table">
+          <thead><tr><th>Cultivar</th><th>Cultura</th><th>Média</th></tr></thead>
+          <tbody id="ranking-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="tab-costs" class="tab-panel hidden">
+      <div class="page-header"><div><h2>Custos</h2><p>Composição dos custos da safra atual.</p></div></div>
+      <div class="kpi-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr));margin-bottom:20px;">
+        <div class="kpi-card card-shadow"><div class="kpi-value" id="cost-total">—</div><div class="kpi-label">Custo total da safra</div></div>
+        <div class="kpi-card card-shadow"><div class="kpi-value" id="cost-per-ha">—</div><div class="kpi-label">Custo por hectare</div></div>
+      </div>
+      <div class="panel card-shadow" id="costs-panel"></div>
+    </section>
+
+    <section id="tab-weather" class="tab-panel hidden">
+      <div class="page-header"><div><h2>Clima</h2><p>Condições atuais, previsão e balanço de chuva.</p></div></div>
+      <div class="panel card-shadow" style="margin-bottom:18px;" id="weather-detail"></div>
+      <div class="panel card-shadow">
+        <h3>Chuva acumulada por mês (mm)</h3>
+        <div class="chart-bars" id="rain-chart"></div>
+      </div>
+    </section>
+
+    <section id="tab-alerts" class="tab-panel hidden">
+      <div class="page-header"><div><h2>Central de alertas</h2><p>Tudo que precisa da sua atenção, em um só lugar.</p></div></div>
+      <div class="alert-list" id="alerts-full"></div>
     </section>
   </main>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const CONFIG_KEY = 'locks_config_v1';
-// Conexão com o projeto Supabase já configurada — não precisa preencher nada.
-const DEFAULT_SUPABASE_URL = 'https://jriedpopxhnxirngubio.supabase.co';
-const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyaWVkcG9weGhueGlybmd1YmlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzOTQ4MTQsImV4cCI6MjEwMDk3MDgxNH0.OCUCdPIzXV_sPEjKqVGNawIgCFSeI5amnUI18xom660';
-let sb = null;
-let currentUser = null;
-let cachedOrgId = null;
-let currentFarms = [];
-let authMode = 'login';
+const farm = { name:'Fazenda Boa Esperança', municipality:'Nova Olímpia', state:'MT' };
+
+const statusLabel = { plantio:'Plantio', desenvolvimento:'Desenvolvimento', floracao:'Floração', pronto_colheita:'Pronto p/ colheita' };
+
+const fields = [
+  { code:'T-01', area:120, crop:'Soja', cultivar:'TMG 7062', status:'desenvolvimento', sowing:'12/10/2025', ndvi:0.78, lastApp:'Herbicida ABC (15/07)' },
+  { code:'T-02', area:95,  crop:'Soja', cultivar:'TMG 7062', status:'desenvolvimento', sowing:'14/10/2025', ndvi:0.81, lastApp:'Herbicida ABC (15/07)' },
+  { code:'T-03', area:140, crop:'Algodão', cultivar:'FM 985', status:'floracao', sowing:'02/12/2025', ndvi:0.65, lastApp:'Fungicida XYZ (18/07)' },
+  { code:'T-04', area:110, crop:'Soja', cultivar:'M 8372', status:'pronto_colheita', sowing:'28/09/2025', ndvi:0.42, lastApp:'Inseticida DEF (02/07)' },
+  { code:'T-05', area:160, crop:'Algodão', cultivar:'FM 985', status:'floracao', sowing:'05/12/2025', ndvi:0.70, lastApp:'Inseticida DEF (10/07)' },
+  { code:'T-06', area:98,  crop:'Soja', cultivar:'TMG 7062', status:'plantio', sowing:'10/01/2026', ndvi:0.30, lastApp:'—' },
+];
+
+const applications = [
+  { date:'18/07/2026', field:'T-03', product:'Fungicida XYZ', dose:'0,6 L/ha', area:'140 ha' },
+  { date:'15/07/2026', field:'T-01', product:'Herbicida ABC', dose:'1,2 L/ha', area:'120 ha' },
+  { date:'15/07/2026', field:'T-02', product:'Herbicida ABC', dose:'1,2 L/ha', area:'95 ha' },
+  { date:'10/07/2026', field:'T-05', product:'Inseticida DEF', dose:'0,3 L/ha', area:'160 ha' },
+  { date:'02/07/2026', field:'T-04', product:'Inseticida DEF', dose:'0,3 L/ha', area:'110 ha' },
+];
+
+const lowStock = [
+  { product:'Glifosato', remaining:'12 L', min:'50 L' },
+  { product:'Fungicida XYZ', remaining:'8 L', min:'30 L' },
+];
+
+const yieldHistory = [
+  { season:'2023/24', value:58 },
+  { season:'2024/25', value:61 },
+  { season:'2025/26*', value:64 },
+];
+
+const ranking = [
+  { cultivar:'TMG 7062', crop:'Soja', avg:'63,4 sc/ha' },
+  { cultivar:'M 8372', crop:'Soja', avg:'59,8 sc/ha' },
+  { cultivar:'FM 985', crop:'Algodão', avg:'1.680 kg/ha' },
+];
+
+const costs = [
+  { category:'Insumos', value:1250000 },
+  { category:'Mão de obra', value:410000 },
+  { category:'Combustível', value:290000 },
+  { category:'Manutenção', value:150000 },
+];
+
+const weather = {
+  today:{ temp:29, cond:'Parcialmente nublado', humidity:58, icon:'parcial' },
+  forecast:[ {day:'Seg',icon:'sol',temp:30}, {day:'Ter',icon:'chuva',temp:26}, {day:'Qua',icon:'chuva',temp:24}, {day:'Qui',icon:'nuvem',temp:27}, {day:'Sex',icon:'sol',temp:31} ],
+  rainfall:[ {month:'Fev',mm:180}, {month:'Mar',mm:140}, {month:'Abr',mm:60}, {month:'Mai',mm:20}, {month:'Jun',mm:5}, {month:'Jul',mm:8} ]
+};
+
+const alerts = [
+  { level:'alta', text:'Talhão T-04 pronto para colheita — produtividade estimada 20% acima da média da fazenda.', date:'hoje' },
+  { level:'alta', text:'Estoque de Glifosato abaixo do mínimo (12 L restantes de 50 L recomendados).', date:'hoje' },
+  { level:'media', text:'Chuva forte prevista para os próximos 2 dias — reavalie aplicações em T-01 e T-05.', date:'amanhã' },
+  { level:'media', text:'Talhão T-06 sem apontamento registrado há 8 dias.', date:'2 dias atrás' },
+  { level:'baixa', text:'Cultivar FM 985 completou 180 dias de ciclo em T-03.', date:'3 dias atrás' },
+];
 
 function $(id){ return document.getElementById(id); }
-function show(id){ $(id).classList.remove('hidden'); }
-function hide(id){ $(id).classList.add('hidden'); }
-function showOnly(id){
-  ['view-setup','view-auth','view-onboarding','view-app'].forEach(v => v===id ? show(v) : hide(v));
-}
 function escapeHtml(str){
-  if(str===null || str===undefined) return '';
+  if(str===null||str===undefined) return '';
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-function loadConfig(){
-  const raw = localStorage.getItem(CONFIG_KEY);
-  if(raw) return JSON.parse(raw);
-  if(DEFAULT_SUPABASE_URL && DEFAULT_SUPABASE_ANON_KEY){
-    return { url: DEFAULT_SUPABASE_URL, key: DEFAULT_SUPABASE_ANON_KEY };
-  }
-  return null;
-}
-function saveConfig(){
-  const url = $('cfg-url').value.trim();
-  const key = $('cfg-key').value.trim();
-  if(!url || !key){ $('cfg-error').textContent = 'Preencha os dois campos.'; return; }
-  localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key}));
-  initSupabase();
-}
-function resetConfig(e){
-  e.preventDefault();
-  const cfg = loadConfig();
-  if(cfg){ $('cfg-url').value = cfg.url; $('cfg-key').value = cfg.key; }
-  showOnly('view-setup');
+function ndviColor(v){
+  const low = [245,230,168], high = [15,68,45];
+  const t = Math.max(0, Math.min(1, (v-0.25)/(0.85-0.25)));
+  const rgb = low.map((c,i)=> Math.round(c + (high[i]-c)*t));
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
 }
 
-function initSupabase(){
-  const cfg = loadConfig();
-  if(!cfg){ showOnly('view-setup'); return; }
-  const { createClient } = supabase;
-  sb = createClient(cfg.url, cfg.key);
-  sb.auth.onAuthStateChange((_event, session) => handleAuthChange(session));
-  sb.auth.getSession().then(({data}) => handleAuthChange(data.session));
+const weatherIcons = {
+  sol: '<circle cx="12" cy="12" r="4.5"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/><line x1="4.6" y1="4.6" x2="6.7" y2="6.7"/><line x1="17.3" y1="17.3" x2="19.4" y2="19.4"/><line x1="4.6" y1="19.4" x2="6.7" y2="17.3"/><line x1="17.3" y1="6.7" x2="19.4" y2="4.6"/>',
+  nuvem: '<ellipse cx="9" cy="14" rx="5.5" ry="4.5" fill="currentColor" stroke="none"/><ellipse cx="15" cy="12.5" rx="4.5" ry="4" fill="currentColor" stroke="none"/><ellipse cx="12" cy="15" rx="7" ry="3.5" fill="currentColor" stroke="none"/>',
+  chuva: '<ellipse cx="9" cy="10" rx="5.5" ry="4.5" fill="currentColor" stroke="none"/><ellipse cx="15" cy="8.5" rx="4.5" ry="4" fill="currentColor" stroke="none"/><ellipse cx="12" cy="11" rx="7" ry="3.5" fill="currentColor" stroke="none"/><line x1="8" y1="17" x2="6.5" y2="21"/><line x1="12" y1="17" x2="10.5" y2="21"/><line x1="16" y1="17" x2="14.5" y2="21"/>',
+  parcial: '<circle cx="7" cy="8" r="3.2"/><line x1="7" y1="2" x2="7" y2="3.6"/><line x1="2" y1="8" x2="3.6" y2="8"/><line x1="3.2" y1="3.2" x2="4.3" y2="4.3"/><ellipse cx="14" cy="15" rx="5.5" ry="4.2" fill="currentColor" stroke="none"/><ellipse cx="9.5" cy="16" rx="4" ry="3.5" fill="currentColor" stroke="none"/>'
+};
+function weatherIcon(name, cls){ return `<svg class="${cls||''}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${weatherIcons[name]||weatherIcons.sol}</svg>`; }
+
+function fieldBlockHtml(f, small){
+  return `<div class="field-block" style="background:${ndviColor(f.ndvi)}" onclick="selectField('${f.code}')">
+    <div class="fb-code">${f.code}</div>
+    <div class="fb-meta">${f.crop} · ${f.area} ha</div>
+    ${small ? '' : `<div class="fb-meta">${statusLabel[f.status]}</div>`}
+  </div>`;
 }
 
-async function handleAuthChange(session){
-  if(!session){ showOnly('view-auth'); currentUser = null; cachedOrgId = null; return; }
-  currentUser = session.user;
-  const { data: profile, error } = await sb.from('profiles').select('id, organization_id').eq('id', currentUser.id).maybeSingle();
-  if(error){ console.error(error); }
-  if(!profile){ showOnly('view-onboarding'); return; }
-  cachedOrgId = profile.organization_id;
-  $('user-email').textContent = currentUser.email;
-  showOnly('view-app');
-  loadAllData();
+function renderFieldMaps(){
+  $('dash-map').innerHTML = fields.map(f=>fieldBlockHtml(f,true)).join('');
+  $('fields-map').innerHTML = fields.map(f=>fieldBlockHtml(f,false)).join('');
 }
 
-function toggleAuthMode(e){
-  e.preventDefault();
-  authMode = authMode === 'login' ? 'signup' : 'login';
-  $('auth-title').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
-  $('auth-submit-btn').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
-  $('auth-toggle-link').textContent = authMode === 'login' ? 'Não tenho conta — criar uma' : 'Já tenho conta — entrar';
-  $('auth-error').textContent = '';
+function selectField(code){
+  const f = fields.find(x=>x.code===code);
+  if(!f) return;
+  document.querySelectorAll('#fields-map .field-block').forEach(el=>el.classList.remove('selected'));
+  const idx = fields.findIndex(x=>x.code===code);
+  document.querySelectorAll('#fields-map .field-block')[idx].classList.add('selected');
+  const el = $('field-detail');
+  el.classList.remove('hidden');
+  el.innerHTML = `<strong>${f.code} — ${f.crop} (${f.cultivar})</strong>
+    <dl>
+      <dt>Área</dt><dd>${f.area} ha</dd>
+      <dt>Status</dt><dd>${statusLabel[f.status]}</dd>
+      <dt>Semeadura</dt><dd>${f.sowing}</dd>
+      <dt>Última aplicação</dt><dd>${f.lastApp}</dd>
+      <dt>Índice de vigor (NDVI)</dt><dd>${f.ndvi.toFixed(2)}</dd>
+    </dl>`;
+  switchTab('fields');
 }
 
-function traduzErroAuth(msg){
-  if(/already registered/i.test(msg)) return 'Este e-mail já tem conta cadastrada — tente entrar.';
-  if(/invalid login/i.test(msg)) return 'E-mail ou senha incorretos.';
-  if(/password/i.test(msg)) return 'A senha precisa ter pelo menos 6 caracteres.';
-  if(/confirm/i.test(msg)) return 'Confirme seu e-mail antes de entrar (veja sua caixa de entrada).';
-  return msg;
+function renderDashboard(){
+  const totalArea = fields.reduce((s,f)=>s+f.area,0);
+  const activeSeasons = 1;
+  const avgYield = yieldHistory[yieldHistory.length-1].value;
+  $('dash-kpis').innerHTML = `
+    <div class="kpi-card card-shadow"><div class="kpi-value">${fields.length}</div><div class="kpi-label">Talhões</div></div>
+    <div class="kpi-card card-shadow"><div class="kpi-value">${totalArea}</div><div class="kpi-label">Área total (ha)</div></div>
+    <div class="kpi-card card-shadow"><div class="kpi-value">${activeSeasons}</div><div class="kpi-label">Safra em andamento</div></div>
+    <div class="kpi-card card-shadow"><div class="kpi-value">${avgYield}</div><div class="kpi-label">Produtividade média (sc/ha)</div></div>
+  `;
+  $('dash-weather').innerHTML = weatherTodayHtml();
+  $('dash-alerts').innerHTML = alerts.slice(0,3).map(alertItemHtml).join('');
 }
 
-async function handleAuthSubmit(){
-  const email = $('auth-email').value.trim();
-  const password = $('auth-password').value;
-  $('auth-error').textContent = '';
-  if(!email || !password){ $('auth-error').textContent = 'Preencha e-mail e senha.'; return; }
-  const action = authMode === 'login'
-    ? sb.auth.signInWithPassword({email, password})
-    : sb.auth.signUp({email, password});
-  const { error } = await action;
-  if(error){ $('auth-error').textContent = traduzErroAuth(error.message); }
+function weatherTodayHtml(){
+  const w = weather.today;
+  return `<div class="weather-today">
+    <div class="wicon">${weatherIcon(w.icon)}</div>
+    <div><div class="wtemp">${w.temp}°C</div><div class="wcond">${w.cond} · ${w.humidity}% umidade</div></div>
+  </div>
+  <div class="forecast-row">
+    ${weather.forecast.map(d=>`<div class="forecast-item">${d.day}${weatherIcon(d.icon)}<div class="ftemp">${d.temp}°</div></div>`).join('')}
+  </div>`;
 }
 
-async function handleCreateOrg(){
-  const name = $('org-name').value.trim();
-  $('org-error').textContent = '';
-  if(!name){ $('org-error').textContent = 'Digite um nome.'; return; }
-  const { error } = await sb.rpc('create_organization_and_profile', { org_name: name });
-  if(error){ $('org-error').textContent = error.message; return; }
-  const { data } = await sb.auth.getSession();
-  handleAuthChange(data.session);
+function alertItemHtml(a){
+  return `<div class="alert-item"><span class="alert-dot ${a.level}"></span><span class="alert-text">${a.text}</span><span class="alert-date">${a.date}</span></div>`;
 }
 
-async function handleLogout(){
-  await sb.auth.signOut();
+function renderApplications(){
+  $('applications-tbody').innerHTML = applications.map(a=>`<tr><td>${a.date}</td><td>${a.field}</td><td>${a.product}</td><td>${a.dose}</td><td>${a.area}</td></tr>`).join('');
+  $('stock-tbody').innerHTML = lowStock.map(s=>`<tr><td>${s.product}</td><td style="color:var(--danger);font-weight:600;">${s.remaining}</td><td>${s.min}</td></tr>`).join('');
+}
+
+function barChart(container, data, key, labelKey, colorVar){
+  const max = Math.max(...data.map(d=>d[key]));
+  container.innerHTML = data.map(d=>{
+    const h = Math.round((d[key]/max)*100);
+    return `<div class="chart-col"><div class="bar-val">${d[key]}</div><div class="bar" style="height:${h}%;background:var(${colorVar||'--blue'})"></div><div class="bar-label">${d[labelKey]}</div></div>`;
+  }).join('');
+}
+
+function renderYield(){
+  barChart($('yield-chart'), yieldHistory, 'value', 'season', '--green');
+  $('ranking-tbody').innerHTML = ranking.map(r=>`<tr><td>${r.cultivar}</td><td>${r.crop}</td><td>${r.avg}</td></tr>`).join('');
+}
+
+function renderCosts(){
+  const total = costs.reduce((s,c)=>s+c.value,0);
+  const totalArea = fields.reduce((s,f)=>s+f.area,0);
+  $('cost-total').textContent = 'R$ ' + total.toLocaleString('pt-BR');
+  $('cost-per-ha').textContent = 'R$ ' + Math.round(total/totalArea).toLocaleString('pt-BR');
+  $('costs-panel').innerHTML = costs.map(c=>{
+    const pct = Math.round((c.value/total)*100);
+    return `<div class="cost-row"><div class="cost-top"><span class="cname">${c.category}</span><span class="cval">R$ ${c.value.toLocaleString('pt-BR')} (${pct}%)</span></div><div class="cost-track"><div class="cost-fill" style="width:${pct}%"></div></div></div>`;
+  }).join('');
+}
+
+function renderWeather(){
+  $('weather-detail').innerHTML = weatherTodayHtml();
+  barChart($('rain-chart'), weather.rainfall, 'mm', 'month', '--blue');
+}
+
+function renderAlerts(){
+  $('alerts-full').innerHTML = alerts.map(alertItemHtml).join('');
 }
 
 function switchTab(tab){
-  ['farms','fields','seasons'].forEach(t=>{
+  const tabs = ['dashboard','fields','applications','yield','costs','weather','alerts'];
+  tabs.forEach(t=>{
     $('tab-'+t).classList.toggle('hidden', t!==tab);
     document.querySelector(`.nav-btn[data-tab="${t}"]`).classList.toggle('active', t===tab);
   });
 }
 
-async function loadAllData(){
-  await loadFarms();
-  await loadFields();
-  await loadSeasons();
-}
-
-async function loadFarms(){
-  const { data, error } = await sb.from('farms').select('*').order('created_at', {ascending:false});
-  if(error){ console.error(error); return; }
-  currentFarms = data || [];
-  const tbody = $('farms-tbody');
-  tbody.innerHTML = data.map(f => `<tr>
-    <td>${escapeHtml(f.name)}</td>
-    <td>${escapeHtml(f.municipality) || '—'}</td>
-    <td>${escapeHtml(f.state) || '—'}</td>
-    <td><button class="link-btn danger" onclick="deleteRow('farms','${f.id}','loadFarms')">Excluir</button></td>
-  </tr>`).join('');
-  $('farms-empty').classList.toggle('hidden', data.length>0);
-  populateFieldFarmSelect();
-}
-
-function populateFieldFarmSelect(){
-  const sel = $('field-farm');
-  const current = sel.value;
-  sel.innerHTML = '<option value="">Selecione a fazenda</option>' +
-    currentFarms.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
-  if(current) sel.value = current;
-}
-
-async function handleAddFarm(e){
-  e.preventDefault();
-  const name = $('farm-name').value.trim();
-  const municipality = $('farm-municipality').value.trim();
-  const state = $('farm-state').value.trim().toUpperCase();
-  if(!name) return false;
-  const { error } = await sb.from('farms').insert({ organization_id: cachedOrgId, name, municipality, state });
-  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
-  $('farm-name').value=''; $('farm-municipality').value=''; $('farm-state').value='';
-  loadFarms();
-  return false;
-}
-
-async function loadFields(){
-  const { data, error } = await sb.from('fields').select('*, farms(name)').order('created_at', {ascending:false});
-  if(error){ console.error(error); return; }
-  const tbody = $('fields-tbody');
-  tbody.innerHTML = data.map(f => `<tr>
-    <td>${escapeHtml(f.farms ? f.farms.name : '—')}</td>
-    <td>${escapeHtml(f.code)}</td>
-    <td>${f.area_ha ?? '—'}</td>
-    <td><button class="link-btn danger" onclick="deleteRow('fields','${f.id}','loadFields')">Excluir</button></td>
-  </tr>`).join('');
-  $('fields-empty').classList.toggle('hidden', data.length>0);
-}
-
-async function handleAddField(e){
-  e.preventDefault();
-  const farm_id = $('field-farm').value;
-  const code = $('field-code').value.trim();
-  const area = $('field-area').value;
-  if(!farm_id || !code) return false;
-  const { error } = await sb.from('fields').insert({ farm_id, code, area_ha: area ? parseFloat(area) : null });
-  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
-  $('field-code').value=''; $('field-area').value='';
-  loadFields();
-  return false;
-}
-
-async function loadSeasons(){
-  const { data, error } = await sb.from('seasons').select('*').order('created_at', {ascending:false});
-  if(error){ console.error(error); return; }
-  const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
-  const tbody = $('seasons-tbody');
-  tbody.innerHTML = data.map(s => `<tr>
-    <td>${escapeHtml(s.label)}</td>
-    <td>${statusLabel[s.status] || s.status}</td>
-    <td><button class="link-btn danger" onclick="deleteRow('seasons','${s.id}','loadSeasons')">Excluir</button></td>
-  </tr>`).join('');
-  $('seasons-empty').classList.toggle('hidden', data.length>0);
-}
-
-async function handleAddSeason(e){
-  e.preventDefault();
-  const label = $('season-label').value.trim();
-  const status = $('season-status').value;
-  if(!label) return false;
-  const { error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, label, status });
-  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
-  $('season-label').value='';
-  loadSeasons();
-  return false;
-}
-
-async function deleteRow(table, id, reloadFnName){
-  if(!confirm('Tem certeza que deseja excluir?')) return;
-  const { error } = await sb.from(table).delete().eq('id', id);
-  if(error){ alert('Erro ao excluir: ' + error.message); return; }
-  window[reloadFnName]();
-}
-
-initSupabase();
+renderFieldMaps();
+renderDashboard();
+renderApplications();
+renderYield();
+renderCosts();
+renderWeather();
+renderAlerts();
 </script>
 </body>
 </html>
