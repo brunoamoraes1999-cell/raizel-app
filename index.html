@@ -940,7 +940,7 @@ function $(id){ return document.getElementById(id); }
 function show(id){ $(id).classList.remove('hidden'); }
 function hide(id){ $(id).classList.add('hidden'); }
 function showOnly(id){
-  ['view-setup','view-auth','view-onboarding','view-hub','view-app','view-module','view-reports','view-profile'].forEach(v => v===id ? show(v) : hide(v));
+  ['view-setup','view-auth','view-onboarding','view-hub','view-farmpicker','view-app','view-module','view-reports','view-profile'].forEach(v => v===id ? show(v) : hide(v));
 }
 function escapeHtml(str){
   if(str===null || str===undefined) return '';
@@ -1012,13 +1012,11 @@ async function handleAuthChange(session){
 
 function renderFarmPicker(){
   document.querySelectorAll('.js-group-name').forEach(el => el.textContent = cachedOrgName);
-  const totalArea = cache.farms.reduce((s,f)=> s + (parseFloat(f.area_ha)||0), 0);
-  $('farmpicker-summary').textContent = `${cache.farms.length} propriedades · ${totalArea.toLocaleString('pt-BR',{maximumFractionDigits:1})} ha`;
+  $('farmpicker-summary').textContent = `${cache.farms.length} propriedades`;
   $('farmpicker-grid').innerHTML = cache.farms.map(f => `
     <div class="farm-card" onclick="selectFarm('${f.id}', ${JSON.stringify(escapeHtml(f.name))})">
       <h3>${escapeHtml(f.name)}</h3>
       <div class="f-loc">${escapeHtml(f.municipality) || '—'}${f.state ? ' - '+escapeHtml(f.state) : ''}</div>
-      <div class="f-stats"><div><b>${f.area_ha ?? '—'}</b>ha</div></div>
     </div>
   `).join('');
 }
