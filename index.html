@@ -41,7 +41,6 @@
   .auth-card button{width:100%;margin-top:18px;padding:11px;}
   .switch{font-size:13px;margin-top:14px;text-align:center;}
   .switch a{color:var(--gold);text-decoration:none;}
-  .cfg-link{display:block;text-align:center;font-size:11px;color:#5B6B64;margin-top:18px;opacity:.7;}
 
   /* ---- Tela de login (split) ---- */
   .login-screen{min-height:100vh;display:flex;background:#0E1210;padding:0;align-items:stretch;justify-content:stretch;}
@@ -347,7 +346,6 @@
       <div id="auth-error" class="error"></div>
     </div>
     <p class="login-below-card">Novo por aqui? <a href="mailto:contato@raizel.com.br">Fale com um especialista →</a></p>
-    <a href="#" class="cfg-link" onclick="resetConfig(event)">Trocar conexão com o banco</a>
   </div>
 </div>
 
@@ -695,12 +693,6 @@ function saveConfig(){
   if(!url || !key){ $('cfg-error').textContent = 'Preencha os dois campos.'; return; }
   localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key}));
   initSupabase();
-}
-function resetConfig(e){
-  e.preventDefault();
-  const cfg = loadConfig();
-  if(cfg){ $('cfg-url').value = cfg.url; $('cfg-key').value = cfg.key; }
-  showOnly('view-setup');
 }
 
 function initSupabase(){
