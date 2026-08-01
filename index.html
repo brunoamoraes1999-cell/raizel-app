@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raizel — Gestão Agrícola</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --green:#0C3B2A; --green-light:#145741; --gold:#E8A825; --blue:#2E86C9;
+    --bg:#F3F7F3; --card:#FFFFFF; --text:#1A2E27; --text-soft:#5B6B64;
+    --border:#DCE5E0; --danger:#C0392B;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);}
+  .hidden{display:none !important;}
+  input,select{font-family:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;color:var(--text);}
+  input:focus,select:focus{outline:2px solid var(--blue);outline-offset:1px;}
+  button{font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;border:none;border-radius:6px;}
+  .btn-primary{background:var(--green);color:#fff;padding:10px 18px;}
+  .btn-primary:hover{background:var(--green-light);}
+  .link-btn{background:none;color:var(--blue);font-weight:500;padding:4px;}
+  .link-btn.danger{color:var(--danger);}
+  .error{color:var(--danger);font-size:13px;margin-top:8px;min-height:16px;}
+  .hint{color:var(--text-soft);font-size:13px;line-height:1.5;margin:4px 0 16px;}
+  .brand{font-weight:700;font-size:20px;letter-spacing:0.5px;}
+
+  .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .auth-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;width:100%;max-width:360px;}
+  .auth-card .brand{color:var(--green);margin-bottom:18px;}
+  .auth-card h1{font-size:18px;font-weight:600;margin:0 0 6px;}
+  .auth-card label{display:block;font-size:13px;font-weight:500;margin:12px 0 4px;color:var(--text-soft);}
+  .auth-card input{width:100%;}
+  .auth-card button{width:100%;margin-top:18px;padding:11px;}
+  .switch{font-size:13px;margin-top:14px;text-align:center;}
+  .switch a{color:var(--blue);text-decoration:none;}
+  .cfg-link{display:block;text-align:center;font-size:12px;color:var(--text-soft);margin-top:16px;}
+
+  #view-app{display:flex;min-height:100vh;}
+  .sidebar{width:220px;flex-shrink:0;background:var(--green);color:#fff;display:flex;flex-direction:column;padding:24px 16px;}
+  .sidebar .brand{color:#fff;margin-bottom:28px;}
+  .sidebar .brand span{color:var(--gold);}
+  nav{display:flex;flex-direction:column;gap:4px;flex:1;}
+  .nav-btn{background:none;color:#CFE3D8;text-align:left;padding:10px 12px;border-radius:6px;font-weight:500;}
+  .nav-btn:hover{background:rgba(255,255,255,0.08);}
+  .nav-btn.active{background:var(--green-light);color:#fff;}
+  .sidebar-footer{border-top:1px solid rgba(255,255,255,0.15);padding-top:14px;margin-top:14px;}
+  .user-email{font-size:12px;color:#CFE3D8;margin-bottom:8px;word-break:break-all;}
+  .sidebar-footer .link-btn{color:#CFE3D8;padding:0;font-size:13px;}
+
+  main{flex:1;padding:32px 40px;max-width:920px;}
+  .tab-panel h2{font-size:22px;margin:0 0 20px;}
+  .inline-form{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:20px;background:var(--card);padding:16px;border:1px solid var(--border);border-radius:10px;}
+  .inline-form input,.inline-form select{flex:1;min-width:140px;}
+  .data-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+  .data-table th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-soft);background:#F8FAF8;padding:12px 16px;border-bottom:1px solid var(--border);}
+  .data-table td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:14px;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .empty{color:var(--text-soft);font-size:14px;padding:16px;text-align:center;}
+
+  @media (max-width:640px){
+    #view-app{flex-direction:column;}
+    .sidebar{width:100%;flex-direction:row;align-items:center;padding:12px 16px;}
+    .sidebar nav{flex-direction:row;flex:none;}
+    .sidebar-footer{display:none;}
+    main{padding:20px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="view-setup" class="center-screen">
+  <div class="auth-card">
+    <div class="brand">Raizel</div>
+    <h1>Conectar ao banco de dados</h1>
+    <p class="hint">Cole a URL e a chave "anon" (pública) do seu projeto Supabase. Isso fica salvo só neste navegador — não é enviado a lugar nenhum.</p>
+    <label for="cfg-url">URL do projeto</label>
+    <input id="cfg-url" placeholder="https://xxxxx.supabase.co">
+    <label for="cfg-key">Chave anon (public)</label>
+    <input id="cfg-key" placeholder="eyJhbGciOi...">
+    <button class="btn-primary" onclick="saveConfig()">Salvar e continuar</button>
+    <div id="cfg-error" class="error"></div>
+  </div>
+</div>
+
+<div id="view-auth" class="center-screen hidden">
+  <div class="auth-card">
+    <div class="brand">Raizel</div>
+    <h1 id="auth-title">Entrar</h1>
+    <label for="auth-email">E-mail</label>
+    <input id="auth-email" type="email" autocomplete="email">
+    <label for="auth-password">Senha</label>
+    <input id="auth-password" type="password" autocomplete="current-password">
+    <button class="btn-primary" id="auth-submit-btn" onclick="handleAuthSubmit()">Entrar</button>
+    <p class="switch"><a href="#" id="auth-toggle-link" onclick="toggleAuthMode(event)">Não tenho conta — criar uma</a></p>
+    <div id="auth-error" class="error"></div>
+    <a href="#" class="cfg-link" onclick="resetConfig(event)">Trocar conexão com o banco</a>
+  </div>
+</div>
+
+<div id="view-onboarding" class="center-screen hidden">
+  <div class="auth-card">
+    <div class="brand">Raizel</div>
+    <h1>Vamos criar sua organização</h1>
+    <p class="hint">É o nome da sua empresa ou grupo de fazendas — todos os cadastros ficam dentro dela.</p>
+    <label for="org-name">Nome da organização</label>
+    <input id="org-name" placeholder="Ex: Fazenda Santa Rita">
+    <button class="btn-primary" onclick="handleCreateOrg()">Criar e começar</button>
+    <div id="org-error" class="error"></div>
+  </div>
+</div>
+
+<div id="view-app" class="hidden">
+  <aside class="sidebar">
+    <div class="brand">Raiz<span>el</span></div>
+    <nav>
+      <button class="nav-btn active" data-tab="farms" onclick="switchTab('farms')">Fazendas</button>
+      <button class="nav-btn" data-tab="fields" onclick="switchTab('fields')">Talhões</button>
+      <button class="nav-btn" data-tab="seasons" onclick="switchTab('seasons')">Safras</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div id="user-email" class="user-email"></div>
+      <button class="link-btn" onclick="handleLogout()">Sair</button>
+    </div>
+  </aside>
+  <main>
+    <section id="tab-farms" class="tab-panel">
+      <h2>Fazendas</h2>
+      <form class="inline-form" onsubmit="return handleAddFarm(event)">
+        <input id="farm-name" placeholder="Nome da fazenda" required>
+        <input id="farm-municipality" placeholder="Município">
+        <input id="farm-state" placeholder="UF" maxlength="2" style="flex:0 0 60px;min-width:60px;">
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>Nome</th><th>Município</th><th>UF</th><th></th></tr></thead>
+        <tbody id="farms-tbody"></tbody>
+      </table>
+      <div id="farms-empty" class="empty hidden">Nenhuma fazenda cadastrada ainda.</div>
+    </section>
+
+    <section id="tab-fields" class="tab-panel hidden">
+      <h2>Talhões</h2>
+      <form class="inline-form" onsubmit="return handleAddField(event)">
+        <select id="field-farm" required></select>
+        <input id="field-code" placeholder="Código (ex: T-01)" required>
+        <input id="field-area" type="number" step="0.01" min="0" placeholder="Área (ha)">
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>Fazenda</th><th>Código</th><th>Área (ha)</th><th></th></tr></thead>
+        <tbody id="fields-tbody"></tbody>
+      </table>
+      <div id="fields-empty" class="empty hidden">Nenhum talhão cadastrado ainda.</div>
+    </section>
+
+    <section id="tab-seasons" class="tab-panel hidden">
+      <h2>Safras</h2>
+      <form class="inline-form" onsubmit="return handleAddSeason(event)">
+        <input id="season-label" placeholder="Rótulo (ex: 2025/2026)" required>
+        <select id="season-status">
+          <option value="planejada">Planejada</option>
+          <option value="em_andamento">Em andamento</option>
+          <option value="encerrada">Encerrada</option>
+        </select>
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <table class="data-table">
+        <thead><tr><th>Safra</th><th>Status</th><th></th></tr></thead>
+        <tbody id="seasons-tbody"></tbody>
+      </table>
+      <div id="seasons-empty" class="empty hidden">Nenhuma safra cadastrada ainda.</div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const CONFIG_KEY = 'locks_config_v1';
+// Conexão com o projeto Supabase já configurada — não precisa preencher nada.
+const DEFAULT_SUPABASE_URL = 'https://jriedpopxhnxirngubio.supabase.co';
+const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpyaWVkcG9weGhueGlybmd1YmlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUzOTQ4MTQsImV4cCI6MjEwMDk3MDgxNH0.OCUCdPIzXV_sPEjKqVGNawIgCFSeI5amnUI18xom660';
+let sb = null;
+let currentUser = null;
+let cachedOrgId = null;
+let currentFarms = [];
+let authMode = 'login';
+
+function $(id){ return document.getElementById(id); }
+function show(id){ $(id).classList.remove('hidden'); }
+function hide(id){ $(id).classList.add('hidden'); }
+function showOnly(id){
+  ['view-setup','view-auth','view-onboarding','view-app'].forEach(v => v===id ? show(v) : hide(v));
+}
+function escapeHtml(str){
+  if(str===null || str===undefined) return '';
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function loadConfig(){
+  const raw = localStorage.getItem(CONFIG_KEY);
+  if(raw) return JSON.parse(raw);
+  if(DEFAULT_SUPABASE_URL && DEFAULT_SUPABASE_ANON_KEY){
+    return { url: DEFAULT_SUPABASE_URL, key: DEFAULT_SUPABASE_ANON_KEY };
+  }
+  return null;
+}
+function saveConfig(){
+  const url = $('cfg-url').value.trim();
+  const key = $('cfg-key').value.trim();
+  if(!url || !key){ $('cfg-error').textContent = 'Preencha os dois campos.'; return; }
+  localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key}));
+  initSupabase();
+}
+function resetConfig(e){
+  e.preventDefault();
+  const cfg = loadConfig();
+  if(cfg){ $('cfg-url').value = cfg.url; $('cfg-key').value = cfg.key; }
+  showOnly('view-setup');
+}
+
+function initSupabase(){
+  const cfg = loadConfig();
+  if(!cfg){ showOnly('view-setup'); return; }
+  const { createClient } = supabase;
+  sb = createClient(cfg.url, cfg.key);
+  sb.auth.onAuthStateChange((_event, session) => handleAuthChange(session));
+  sb.auth.getSession().then(({data}) => handleAuthChange(data.session));
+}
+
+async function handleAuthChange(session){
+  if(!session){ showOnly('view-auth'); currentUser = null; cachedOrgId = null; return; }
+  currentUser = session.user;
+  const { data: profile, error } = await sb.from('profiles').select('id, organization_id').eq('id', currentUser.id).maybeSingle();
+  if(error){ console.error(error); }
+  if(!profile){ showOnly('view-onboarding'); return; }
+  cachedOrgId = profile.organization_id;
+  $('user-email').textContent = currentUser.email;
+  showOnly('view-app');
+  loadAllData();
+}
+
+function toggleAuthMode(e){
+  e.preventDefault();
+  authMode = authMode === 'login' ? 'signup' : 'login';
+  $('auth-title').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
+  $('auth-submit-btn').textContent = authMode === 'login' ? 'Entrar' : 'Criar conta';
+  $('auth-toggle-link').textContent = authMode === 'login' ? 'Não tenho conta — criar uma' : 'Já tenho conta — entrar';
+  $('auth-error').textContent = '';
+}
+
+function traduzErroAuth(msg){
+  if(/already registered/i.test(msg)) return 'Este e-mail já tem conta cadastrada — tente entrar.';
+  if(/invalid login/i.test(msg)) return 'E-mail ou senha incorretos.';
+  if(/password/i.test(msg)) return 'A senha precisa ter pelo menos 6 caracteres.';
+  if(/confirm/i.test(msg)) return 'Confirme seu e-mail antes de entrar (veja sua caixa de entrada).';
+  return msg;
+}
+
+async function handleAuthSubmit(){
+  const email = $('auth-email').value.trim();
+  const password = $('auth-password').value;
+  $('auth-error').textContent = '';
+  if(!email || !password){ $('auth-error').textContent = 'Preencha e-mail e senha.'; return; }
+  const action = authMode === 'login'
+    ? sb.auth.signInWithPassword({email, password})
+    : sb.auth.signUp({email, password});
+  const { error } = await action;
+  if(error){ $('auth-error').textContent = traduzErroAuth(error.message); }
+}
+
+async function handleCreateOrg(){
+  const name = $('org-name').value.trim();
+  $('org-error').textContent = '';
+  if(!name){ $('org-error').textContent = 'Digite um nome.'; return; }
+  const { error } = await sb.rpc('create_organization_and_profile', { org_name: name });
+  if(error){ $('org-error').textContent = error.message; return; }
+  const { data } = await sb.auth.getSession();
+  handleAuthChange(data.session);
+}
+
+async function handleLogout(){
+  await sb.auth.signOut();
+}
+
+function switchTab(tab){
+  ['farms','fields','seasons'].forEach(t=>{
+    $('tab-'+t).classList.toggle('hidden', t!==tab);
+    document.querySelector(`.nav-btn[data-tab="${t}"]`).classList.toggle('active', t===tab);
+  });
+}
+
+async function loadAllData(){
+  await loadFarms();
+  await loadFields();
+  await loadSeasons();
+}
+
+async function loadFarms(){
+  const { data, error } = await sb.from('farms').select('*').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  currentFarms = data || [];
+  const tbody = $('farms-tbody');
+  tbody.innerHTML = data.map(f => `<tr>
+    <td>${escapeHtml(f.name)}</td>
+    <td>${escapeHtml(f.municipality) || '—'}</td>
+    <td>${escapeHtml(f.state) || '—'}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('farms','${f.id}','loadFarms')">Excluir</button></td>
+  </tr>`).join('');
+  $('farms-empty').classList.toggle('hidden', data.length>0);
+  populateFieldFarmSelect();
+}
+
+function populateFieldFarmSelect(){
+  const sel = $('field-farm');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Selecione a fazenda</option>' +
+    currentFarms.map(f => `<option value="${f.id}">${escapeHtml(f.name)}</option>`).join('');
+  if(current) sel.value = current;
+}
+
+async function handleAddFarm(e){
+  e.preventDefault();
+  const name = $('farm-name').value.trim();
+  const municipality = $('farm-municipality').value.trim();
+  const state = $('farm-state').value.trim().toUpperCase();
+  if(!name) return false;
+  const { error } = await sb.from('farms').insert({ organization_id: cachedOrgId, name, municipality, state });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('farm-name').value=''; $('farm-municipality').value=''; $('farm-state').value='';
+  loadFarms();
+  return false;
+}
+
+async function loadFields(){
+  const { data, error } = await sb.from('fields').select('*, farms(name)').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  const tbody = $('fields-tbody');
+  tbody.innerHTML = data.map(f => `<tr>
+    <td>${escapeHtml(f.farms ? f.farms.name : '—')}</td>
+    <td>${escapeHtml(f.code)}</td>
+    <td>${f.area_ha ?? '—'}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('fields','${f.id}','loadFields')">Excluir</button></td>
+  </tr>`).join('');
+  $('fields-empty').classList.toggle('hidden', data.length>0);
+}
+
+async function handleAddField(e){
+  e.preventDefault();
+  const farm_id = $('field-farm').value;
+  const code = $('field-code').value.trim();
+  const area = $('field-area').value;
+  if(!farm_id || !code) return false;
+  const { error } = await sb.from('fields').insert({ farm_id, code, area_ha: area ? parseFloat(area) : null });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('field-code').value=''; $('field-area').value='';
+  loadFields();
+  return false;
+}
+
+async function loadSeasons(){
+  const { data, error } = await sb.from('seasons').select('*').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
+  const tbody = $('seasons-tbody');
+  tbody.innerHTML = data.map(s => `<tr>
+    <td>${escapeHtml(s.label)}</td>
+    <td>${statusLabel[s.status] || s.status}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('seasons','${s.id}','loadSeasons')">Excluir</button></td>
+  </tr>`).join('');
+  $('seasons-empty').classList.toggle('hidden', data.length>0);
+}
+
+async function handleAddSeason(e){
+  e.preventDefault();
+  const label = $('season-label').value.trim();
+  const status = $('season-status').value;
+  if(!label) return false;
+  const { error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, label, status });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('season-label').value='';
+  loadSeasons();
+  return false;
+}
+
+async function deleteRow(table, id, reloadFnName){
+  if(!confirm('Tem certeza que deseja excluir?')) return;
+  const { error } = await sb.from(table).delete().eq('id', id);
+  if(error){ alert('Erro ao excluir: ' + error.message); return; }
+  window[reloadFnName]();
+}
+
+initSupabase();
+</script>
+</body>
+</html>
