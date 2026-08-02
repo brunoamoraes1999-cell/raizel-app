@@ -828,7 +828,7 @@
     <section id="tab-dashboard" class="tab-panel">
       <div class="page-header"><h2 id="dashboard-greeting">Olá!</h2><p>A inteligência do campo, na palma da sua gestão.</p></div>
       <div class="kpi-grid">
-        <div class="kpi-card card-shadow">
+        <div class="kpi-card card-shadow" id="kpi-farms-card">
           <div class="kpi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4L21 11"/><path d="M5 10V20H19V10"/></svg></div>
           <div class="kpi-value" id="kpi-farms">0</div><div class="kpi-label">Fazendas</div>
         </div>
@@ -849,7 +849,16 @@
           <div class="kpi-value" id="kpi-records">0</div><div class="kpi-label">Apontamentos registrados</div>
         </div>
       </div>
-      <p class="section-title">Últimos apontamentos</p>
+
+      <div id="farms-overview-section" class="hidden">
+        <p class="section-title">Fazendas do grupo</p>
+        <div class="table-scroll"><table class="data-table card-shadow">
+          <thead><tr><th>Fazenda</th><th>Talhões</th><th>Área (ha)</th></tr></thead>
+          <tbody id="farms-overview-tbody"></tbody>
+        </table></div>
+      </div>
+
+      <p class="section-title" style="margin-top:24px;">Últimos apontamentos</p>
       <div class="recent-list card-shadow" id="recent-records"></div>
       <div id="recent-empty" class="empty hidden">Nenhum apontamento registrado ainda.</div>
       <p class="section-title" style="margin-top:24px;">Ações rápidas</p>
@@ -1267,7 +1276,27 @@ async function loadAllData(){
 }
 
 function renderDashboard(){
-  $('kpi-farms').textContent = cache.farms.length;
+  const isAll = currentFarmId === 'ALL';
+  $('kpi-farms-card').classList.toggle('hidden', !isAll);
+  $('farms-overview-section').classList.toggle('hidden', !isAll);
+
+  if(isAll){
+    $('kpi-farms').textContent = cache.farms.length;
+    const byFarm = {};
+    cache.farms.forEach(f => { byFarm[f.id] = { name: f.name, fields: 0, area: 0 }; });
+    cache.fields.forEach(f => {
+      if(byFarm[f.farm_id]){
+        byFarm[f.farm_id].fields += 1;
+        byFarm[f.farm_id].area += parseFloat(f.area_ha) || 0;
+      }
+    });
+    $('farms-overview-tbody').innerHTML = Object.values(byFarm).map(f => `<tr>
+      <td>${escapeHtml(f.name)}</td>
+      <td>${f.fields}</td>
+      <td>${f.area.toLocaleString('pt-BR', {maximumFractionDigits:1})}</td>
+    </tr>`).join('');
+  }
+
   $('kpi-fields').textContent = cache.fields.length;
   const totalArea = cache.fields.reduce((sum,f)=> sum + (parseFloat(f.area_ha)||0), 0);
   $('kpi-area').textContent = totalArea.toLocaleString('pt-BR', {maximumFractionDigits:1});
