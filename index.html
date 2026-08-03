@@ -806,6 +806,29 @@
       </button>
 
       <button class="nav-btn nav-group-btn" onclick="toggleNavGroup(this)">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="10" y1="10" x2="10" y2="20"/></svg>Cadastros</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div class="nav-subitems">
+        <button class="nav-btn" data-tab="seasons" onclick="switchTab('seasons')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Safras (Ano Agrícola)
+        </button>
+        <button class="nav-btn" data-tab="periodos" onclick="switchTab('periodos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Períodos de Produção
+        </button>
+        <button class="nav-btn" data-tab="tiposvariedade" onclick="switchTab('tiposvariedade')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L12 3 4 7l8 4 8-4z"/><path d="M4 7v10l8 4 8-4V7"/></svg>
+          Tipos de Variedade
+        </button>
+        <button class="nav-btn" data-tab="variedades" onclick="switchTab('variedades')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><line x1="12" y1="12" x2="12" y2="21"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+          Variedades
+        </button>
+      </div>
+
+      <button class="nav-btn nav-group-btn" onclick="toggleNavGroup(this)">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 8l8 8"/></svg>Planejamento</span>
         <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
@@ -817,10 +840,6 @@
         <button class="nav-btn" data-tab="insumos" onclick="switchTab('insumos')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L15 8V2"/><line x1="9" y1="2" x2="15" y2="2"/></svg>
           Insumos
-        </button>
-        <button class="nav-btn" data-tab="seasons" onclick="switchTab('seasons')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Safras
         </button>
         <button class="nav-btn" data-tab="planning" onclick="switchTab('planning')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 8l8 8"/></svg>
@@ -975,9 +994,10 @@
     </section>
 
     <section id="tab-seasons" class="tab-panel hidden">
-      <div class="page-header"><h2>Safras</h2><p>Temporadas de plantio da organização.</p></div>
+      <div class="page-header"><h2>Safras (Ano Agrícola)</h2><p>Anos agrícolas/safras da organização — base para os períodos de produção.</p></div>
       <form class="inline-form" onsubmit="return handleAddSeason(event)">
-        <input id="season-label" placeholder="Rótulo (ex: 2025/2026)" required>
+        <input id="season-codigo" placeholder="Código (ex: 25/26)" required style="flex:0 0 140px;">
+        <input id="season-label" placeholder="Descrição (ex: Safra 2025/2026)" required>
         <select id="season-status">
           <option value="planejada">Planejada</option>
           <option value="em_andamento">Em andamento</option>
@@ -986,10 +1006,53 @@
         <button class="btn-primary" type="submit">Adicionar</button>
       </form>
       <div class="table-scroll"><table class="data-table card-shadow">
-        <thead><tr><th>Safra</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Código</th><th>Descrição</th><th>Status</th><th></th></tr></thead>
         <tbody id="seasons-tbody"></tbody>
       </table></div>
       <div id="seasons-empty" class="empty hidden">Nenhuma safra cadastrada ainda.</div>
+    </section>
+
+    <section id="tab-periodos" class="tab-panel hidden">
+      <div class="page-header"><h2>Períodos de Produção</h2><p>Período de produção vinculado a uma safra (ex: Soja 25/26, Milho 26/27).</p></div>
+      <form class="inline-form" onsubmit="return handleAddPeriodo(event)">
+        <select id="periodo-season" required></select>
+        <input id="periodo-codigo" placeholder="Código (ex: SOJ2526)" required style="flex:0 0 160px;">
+        <input id="periodo-descricao" placeholder="Descrição (ex: Soja 25/26)" required>
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Safra</th><th>Código</th><th>Descrição</th><th></th></tr></thead>
+        <tbody id="periodos-tbody"></tbody>
+      </table></div>
+      <div id="periodos-empty" class="empty hidden">Nenhum período de produção cadastrado ainda. Cadastre uma safra primeiro.</div>
+    </section>
+
+    <section id="tab-tiposvariedade" class="tab-panel hidden">
+      <div class="page-header"><h2>Tipos de Variedade</h2><p>Tipos de cultura usados para classificar as variedades (ex: Soja, Milho, Algodão).</p></div>
+      <form class="inline-form" onsubmit="return handleAddTipoVariedade(event)">
+        <input id="tipovariedade-descricao" placeholder="Descrição (ex: Soja)" required>
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Descrição</th><th></th></tr></thead>
+        <tbody id="tiposvariedade-tbody"></tbody>
+      </table></div>
+      <div id="tiposvariedade-empty" class="empty hidden">Nenhum tipo de variedade cadastrado ainda.</div>
+    </section>
+
+    <section id="tab-variedades" class="tab-panel hidden">
+      <div class="page-header"><h2>Variedades</h2><p>Cultivares que poderão ser vinculados ao plantio de cada talhão.</p></div>
+      <form class="inline-form" onsubmit="return handleAddVariedade(event)">
+        <input id="variedade-codigo" placeholder="Código (ex: TMG7062)" required style="flex:0 0 160px;">
+        <input id="variedade-descricao" placeholder="Descrição (ex: TMG 7062 IPRO)" required>
+        <select id="variedade-tipo" required></select>
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Código</th><th>Descrição</th><th>Tipo</th><th></th></tr></thead>
+        <tbody id="variedades-tbody"></tbody>
+      </table></div>
+      <div id="variedades-empty" class="empty hidden">Nenhuma variedade cadastrada ainda. Cadastre um tipo de variedade primeiro.</div>
     </section>
 
     <section id="tab-planning" class="tab-panel hidden">
@@ -1096,7 +1159,7 @@ const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 let sb = null;
 let currentUser = null;
 let cachedOrgId = null;
-const cache = { farms:[], fields:[], crops:[], insumos:[], seasons:[], planning:[], serviceOrders:[], records:[] };
+const cache = { farms:[], fields:[], crops:[], insumos:[], seasons:[], periodos:[], tiposVariedade:[], variedades:[], planning:[], serviceOrders:[], records:[] };
 const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
 const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', outro:'Outro'};
 
@@ -1374,7 +1437,7 @@ async function handleCreateOrg(){
 async function handleLogout(){ await sb.auth.signOut(); }
 
 function switchTab(tab){
-  const tabs = ['dashboard','fields','crops','insumos','seasons','planning','serviceorders','records'];
+  const tabs = ['dashboard','fields','crops','insumos','seasons','periodos','tiposvariedade','variedades','planning','serviceorders','records'];
   tabs.forEach(t=>{
     $('tab-'+t).classList.toggle('hidden', t!==tab);
     const btn = document.querySelector(`.nav-btn[data-tab="${t}"]`);
@@ -1388,6 +1451,9 @@ async function loadAllData(){
   await loadCrops();
   await loadInsumos();
   await loadSeasons();
+  await loadPeriodosProducao();
+  await loadTiposVariedade();
+  await loadVariedades();
   await loadPlanning();
   await loadServiceOrders();
   await loadRecords();
@@ -1572,6 +1638,7 @@ async function loadSeasons(){
   if(error){ console.error(error); return; }
   cache.seasons = data || [];
   $('seasons-tbody').innerHTML = cache.seasons.map(s => `<tr>
+    <td>${escapeHtml(s.codigo) || '—'}</td>
     <td>${escapeHtml(s.label)}</td>
     <td><span class="pill ${s.status==='em_andamento'?'pill-blue':s.status==='encerrada'?'pill-green':'pill-gold'}">${statusLabel[s.status] || s.status}</span></td>
     <td><button class="link-btn danger" onclick="deleteRow('seasons','${s.id}','loadSeasons')">Excluir</button></td>
@@ -1582,16 +1649,100 @@ async function loadSeasons(){
   sel.innerHTML = '<option value="">Selecione a safra</option>' +
     cache.seasons.map(s => `<option value="${s.id}">${escapeHtml(s.label)}</option>`).join('');
   if(current) sel.value = current;
+
+  const selPeriodo = $('periodo-season');
+  const currentPeriodo = selPeriodo.value;
+  selPeriodo.innerHTML = '<option value="">Selecione a safra</option>' +
+    cache.seasons.map(s => `<option value="${s.id}">${s.codigo ? escapeHtml(s.codigo)+' · ' : ''}${escapeHtml(s.label)}</option>`).join('');
+  if(currentPeriodo) selPeriodo.value = currentPeriodo;
 }
 async function handleAddSeason(e){
   e.preventDefault();
+  const codigo = $('season-codigo').value.trim();
   const label = $('season-label').value.trim();
   const status = $('season-status').value;
-  if(!label) return false;
-  const { error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, label, status });
+  if(!codigo || !label) return false;
+  const { error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, codigo, label, status });
   if(error){ alert('Erro ao salvar: ' + error.message); return false; }
-  $('season-label').value='';
+  $('season-codigo').value=''; $('season-label').value='';
   await loadSeasons(); renderDashboard();
+  return false;
+}
+
+async function loadPeriodosProducao(){
+  const { data, error } = await sb.from('periodos_producao').select('*, seasons(label,codigo)').order('created_at', {ascending:false});
+  if(error){ console.error(error); return; }
+  cache.periodos = data || [];
+  $('periodos-tbody').innerHTML = cache.periodos.map(p => `<tr>
+    <td>${p.seasons ? (p.seasons.codigo ? escapeHtml(p.seasons.codigo)+' · ' : '')+escapeHtml(p.seasons.label) : '—'}</td>
+    <td>${escapeHtml(p.codigo)}</td>
+    <td>${escapeHtml(p.descricao)}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('periodos_producao','${p.id}','loadPeriodosProducao')">Excluir</button></td>
+  </tr>`).join('');
+  $('periodos-empty').classList.toggle('hidden', cache.periodos.length>0);
+}
+async function handleAddPeriodo(e){
+  e.preventDefault();
+  const season_id = $('periodo-season').value;
+  const codigo = $('periodo-codigo').value.trim();
+  const descricao = $('periodo-descricao').value.trim();
+  if(!season_id || !codigo || !descricao) return false;
+  const { error } = await sb.from('periodos_producao').insert({ organization_id: cachedOrgId, season_id, codigo, descricao });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('periodo-codigo').value=''; $('periodo-descricao').value='';
+  await loadPeriodosProducao();
+  return false;
+}
+
+async function loadTiposVariedade(){
+  const { data, error } = await sb.from('tipos_variedade').select('*').order('descricao');
+  if(error){ console.error(error); return; }
+  cache.tiposVariedade = data || [];
+  $('tiposvariedade-tbody').innerHTML = cache.tiposVariedade.map(t => `<tr>
+    <td>${escapeHtml(t.descricao)}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('tipos_variedade','${t.id}','loadTiposVariedade')">Excluir</button></td>
+  </tr>`).join('');
+  $('tiposvariedade-empty').classList.toggle('hidden', cache.tiposVariedade.length>0);
+
+  const sel = $('variedade-tipo');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Selecione o tipo</option>' +
+    cache.tiposVariedade.map(t => `<option value="${t.id}">${escapeHtml(t.descricao)}</option>`).join('');
+  if(current) sel.value = current;
+}
+async function handleAddTipoVariedade(e){
+  e.preventDefault();
+  const descricao = $('tipovariedade-descricao').value.trim();
+  if(!descricao) return false;
+  const { error } = await sb.from('tipos_variedade').insert({ descricao });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('tipovariedade-descricao').value='';
+  await loadTiposVariedade();
+  return false;
+}
+
+async function loadVariedades(){
+  const { data, error } = await sb.from('variedades').select('*, tipos_variedade(descricao)').order('descricao');
+  if(error){ console.error(error); return; }
+  cache.variedades = data || [];
+  $('variedades-tbody').innerHTML = cache.variedades.map(v => `<tr>
+    <td>${escapeHtml(v.codigo)}</td>
+    <td>${escapeHtml(v.descricao)}</td>
+    <td>${v.tipos_variedade ? escapeHtml(v.tipos_variedade.descricao) : '—'}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('variedades','${v.id}','loadVariedades')">Excluir</button></td>
+  </tr>`).join('');
+  $('variedades-empty').classList.toggle('hidden', cache.variedades.length>0);
+}
+async function handleAddVariedade(e){
+  e.preventDefault();
+  const codigo = $('variedade-codigo').value.trim();
+  const descricao = $('variedade-descricao').value.trim();
+  const tipo_variedade_id = $('variedade-tipo').value;
+  if(!codigo || !descricao || !tipo_variedade_id) return false;
+  const { error } = await sb.from('variedades').insert({ codigo, descricao, tipo_variedade_id });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+  $('variedade-codigo').value=''; $('variedade-descricao').value='';
+  await loadVariedades();
   return false;
 }
 
