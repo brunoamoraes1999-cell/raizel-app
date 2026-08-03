@@ -995,18 +995,15 @@
 
     <section id="tab-seasons" class="tab-panel hidden">
       <div class="page-header"><h2>Safras (Ano Agrícola)</h2><p>Anos agrícolas/safras da organização — base para os períodos de produção.</p></div>
-      <form class="inline-form" onsubmit="return handleAddSeason(event)">
+      <form class="inline-form" id="season-form" onsubmit="return handleSaveSeason(event)">
+        <input type="hidden" id="season-edit-id" value="">
         <input id="season-codigo" placeholder="Código (ex: 25/26)" required style="flex:0 0 140px;">
         <input id="season-label" placeholder="Descrição (ex: Safra 2025/2026)" required>
-        <select id="season-status">
-          <option value="planejada">Planejada</option>
-          <option value="em_andamento">Em andamento</option>
-          <option value="encerrada">Encerrada</option>
-        </select>
-        <button class="btn-primary" type="submit">Adicionar</button>
+        <button class="btn-primary" type="submit" id="season-submit-btn">Adicionar</button>
+        <button class="link-btn hidden" type="button" id="season-cancel-btn" onclick="cancelEditSeason()">Cancelar</button>
       </form>
       <div class="table-scroll"><table class="data-table card-shadow">
-        <thead><tr><th>Código</th><th>Descrição</th><th>Status</th><th></th></tr></thead>
+        <thead><tr><th>Código</th><th>Descrição</th><th></th></tr></thead>
         <tbody id="seasons-tbody"></tbody>
       </table></div>
       <div id="seasons-empty" class="empty hidden">Nenhuma safra cadastrada ainda.</div>
@@ -1640,8 +1637,10 @@ async function loadSeasons(){
   $('seasons-tbody').innerHTML = cache.seasons.map(s => `<tr>
     <td>${escapeHtml(s.codigo) || '—'}</td>
     <td>${escapeHtml(s.label)}</td>
-    <td><span class="pill ${s.status==='em_andamento'?'pill-blue':s.status==='encerrada'?'pill-green':'pill-gold'}">${statusLabel[s.status] || s.status}</span></td>
-    <td><button class="link-btn danger" onclick="deleteRow('seasons','${s.id}','loadSeasons')">Excluir</button></td>
+    <td>
+      <button class="link-btn" onclick="editSeason('${s.id}')">Editar</button>
+      <button class="link-btn danger" onclick="deleteRow('seasons','${s.id}','loadSeasons')">Excluir</button>
+    </td>
   </tr>`).join('');
   $('seasons-empty').classList.toggle('hidden', cache.seasons.length>0);
   const sel = $('plan-season');
@@ -1656,15 +1655,35 @@ async function loadSeasons(){
     cache.seasons.map(s => `<option value="${s.id}">${s.codigo ? escapeHtml(s.codigo)+' · ' : ''}${escapeHtml(s.label)}</option>`).join('');
   if(currentPeriodo) selPeriodo.value = currentPeriodo;
 }
-async function handleAddSeason(e){
+function editSeason(id){
+  const s = cache.seasons.find(x => x.id === id);
+  if(!s) return;
+  $('season-edit-id').value = s.id;
+  $('season-codigo').value = s.codigo || '';
+  $('season-label').value = s.label || '';
+  $('season-submit-btn').textContent = 'Salvar';
+  $('season-cancel-btn').classList.remove('hidden');
+}
+function cancelEditSeason(){
+  $('season-edit-id').value = '';
+  $('season-form').reset();
+  $('season-submit-btn').textContent = 'Adicionar';
+  $('season-cancel-btn').classList.add('hidden');
+}
+async function handleSaveSeason(e){
   e.preventDefault();
+  const editId = $('season-edit-id').value;
   const codigo = $('season-codigo').value.trim();
   const label = $('season-label').value.trim();
-  const status = $('season-status').value;
   if(!codigo || !label) return false;
-  const { error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, codigo, label, status });
+  let error;
+  if(editId){
+    ({ error } = await sb.from('seasons').update({ codigo, label }).eq('id', editId));
+  } else {
+    ({ error } = await sb.from('seasons').insert({ organization_id: cachedOrgId, codigo, label }));
+  }
   if(error){ alert('Erro ao salvar: ' + error.message); return false; }
-  $('season-codigo').value=''; $('season-label').value='';
+  cancelEditSeason();
   await loadSeasons(); renderDashboard();
   return false;
 }
