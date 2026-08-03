@@ -286,6 +286,10 @@
   .geral-icon svg{width:18px;height:18px;}
   .note-box{background:rgba(46,134,201,.08);border:1px solid rgba(46,134,201,.25);border-radius:10px;padding:12px 16px;font-size:12.5px;color:#9FC3E0;margin-bottom:16px;}
   .record-detail-group{margin-top:-10px;background:rgba(181,135,74,.05);border-color:rgba(181,135,74,.25);}
+  .sev-dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-left:2px;}
+  .sev-dot.sev-ok{background:#4C9A6A;}
+  .sev-dot.sev-warn{background:var(--gold);}
+  .sev-dot.sev-bad{background:var(--danger);}
   .status-select{font-size:12px;padding:5px 8px;border-radius:6px;}
   .farm-switcher{display:flex;align-items:center;gap:8px;background:rgba(181,135,74,.1);border:1px solid rgba(181,135,74,.3);color:var(--gold);padding:9px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;max-width:220px;}
   .farm-switcher-wrap{position:relative;flex-shrink:0;}
@@ -1371,7 +1375,8 @@
         <button class="btn-primary" type="submit">Adicionar</button>
       </form>
       <div class="inline-form record-detail-group hidden" id="ro-detail-monitoramento">
-        <input id="ro-praga" placeholder="Praga/doença observada">
+        <select id="ro-ocorrencia"><option value="">Ocorrência do catálogo (opcional)</option></select>
+        <input id="ro-praga" placeholder="Ou descreva (se não estiver no catálogo)">
         <input id="ro-infestacao" type="number" step="0.1" placeholder="Nível de infestação (%)">
         <input id="ro-metodo" placeholder="Método de amostragem">
       </div>
@@ -1397,6 +1402,26 @@ let cachedOrgId = null;
 const cache = { farms:[], fields:[], crops:[], insumos:[], seasons:[], periodos:[], tiposVariedade:[], variedades:[], planning:[], serviceOrders:[], records:[], categoriasOcorrencia:[], ocorrenciasCatalogo:[], metodologia:[] };
 const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
 const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', preparo_solo:'Preparo de solo', outro:'Outro'};
+
+// Calcula a severidade (Equilíbrio/Controle/Dano) de um apontamento de
+// monitoramento comparando o nível de infestação com a Metodologia
+// cadastrada para aquela ocorrência. Simplificação atual: como o
+// Planejamento de Safra ainda não liga o talhão a um Tipo de Variedade
+// (só à tabela antiga "crops"), a cultura é ignorada aqui — usamos a
+// primeira metodologia cadastrada pra essa ocorrência na organização.
+function calcularSeveridade(valor, ocorrencia_id){
+  if(valor === null || valor === undefined || !ocorrencia_id) return null;
+  const m = cache.metodologia.find(m => m.ocorrencia_id === ocorrencia_id);
+  if(!m) return null;
+  if(m.limite_dano !== null && valor >= m.limite_dano) return 'bad';
+  if(m.limite_controle !== null && valor >= m.limite_controle) return 'warn';
+  return 'ok';
+}
+function severidadeDotHtml(sev){
+  if(!sev) return '';
+  const label = sev==='bad' ? 'Dano' : sev==='warn' ? 'Controle' : 'Equilíbrio';
+  return ` <span class="sev-dot sev-${sev}" title="${label}"></span>`;
+}
 
 function $(id){ return document.getElementById(id); }
 function show(id){ $(id).classList.remove('hidden'); }
@@ -1692,10 +1717,10 @@ async function loadAllData(){
   await loadVariedades();
   await loadPlanning();
   await loadServiceOrders();
-  await loadRecords();
   await loadCategoriasOcorrencia();
   await loadOcorrenciasCatalogo();
   await loadMetodologia();
+  await loadRecords();
   renderDashboard();
 }
 
@@ -2148,7 +2173,8 @@ async function loadRecords(){
     }
     if(r.record_type === 'monitoramento' && fitoMap[r.id]){
       const d = fitoMap[r.id];
-      return `${escapeHtml(d.praga_doenca)} · infestação ${d.nivel_infestacao ?? '—'}%`;
+      const sev = calcularSeveridade(d.nivel_infestacao, d.ocorrencia_id);
+      return `${escapeHtml(d.praga_doenca)} · infestação ${d.nivel_infestacao ?? '—'}%${severidadeDotHtml(sev)}`;
     }
     return escapeHtml(r.notes) || '—';
   }
@@ -2297,10 +2323,13 @@ async function handleAddRecordOutro(e){
   if(error){ alert('Erro ao salvar: ' + error.message); return false; }
 
   if(record_type === 'monitoramento'){
-    const praga = $('ro-praga').value.trim();
-    if(praga){
+    const ocorrencia_id = $('ro-ocorrencia').value || null;
+    const pragaLivre = $('ro-praga').value.trim();
+    const ocorrenciaSelecionada = ocorrencia_id ? cache.ocorrenciasCatalogo.find(o => o.id === ocorrencia_id) : null;
+    const praga_doenca = pragaLivre || (ocorrenciaSelecionada ? ocorrenciaSelecionada.nome_popular : '');
+    if(praga_doenca){
       await sb.from('apontamento_fito_detalhe').insert({
-        field_record_id: inserted.id, praga_doenca: praga,
+        field_record_id: inserted.id, praga_doenca, ocorrencia_id,
         nivel_infestacao: $('ro-infestacao').value ? parseFloat($('ro-infestacao').value) : null,
         metodo_amostragem: $('ro-metodo').value.trim() || null,
       });
@@ -2359,6 +2388,12 @@ async function loadOcorrenciasCatalogo(){
   selMet.innerHTML = '<option value="">Selecione a ocorrência</option>' +
     cache.ocorrenciasCatalogo.map(o => `<option value="${o.id}">${escapeHtml(o.nome_popular)}</option>`).join('');
   if(currentMet) selMet.value = currentMet;
+
+  const selRo = $('ro-ocorrencia');
+  const currentRo = selRo.value;
+  selRo.innerHTML = '<option value="">Ocorrência do catálogo (opcional)</option>' +
+    cache.ocorrenciasCatalogo.map(o => `<option value="${o.id}">${escapeHtml(o.nome_popular)}</option>`).join('');
+  if(currentRo) selRo.value = currentRo;
 }
 async function handleAddOcorrenciaCatalogo(e){
   e.preventDefault();
