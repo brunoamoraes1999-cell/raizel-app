@@ -800,10 +800,28 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
         Ordens de Serviço
       </button>
-      <button class="nav-btn" data-tab="records" onclick="switchTab('records')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="16" y2="15"/></svg>
-        Apontamentos
+      <button class="nav-btn nav-group-btn" onclick="toggleNavGroup(this)">
+        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="16" y2="15"/></svg>Apontamentos</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
       </button>
+      <div class="nav-subitems">
+        <button class="nav-btn" data-tab="rec-plantio" onclick="switchTab('rec-plantio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V10"/><path d="M12 10C12 6 9 4 6 4c0 4 2 6 6 6z"/><path d="M12 14c0-4 3-6 6-6 0 4-2 6-6 6z"/></svg>
+          Plantio
+        </button>
+        <button class="nav-btn" data-tab="rec-producao" onclick="switchTab('rec-producao')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="4" y2="10"/><line x1="10" y1="20" x2="10" y2="4"/><line x1="16" y1="20" x2="16" y2="13"/><line x1="20" y1="20" x2="4" y2="20"/></svg>
+          Produção (Colheita e Preparo de Solo)
+        </button>
+        <button class="nav-btn" data-tab="rec-insumos" onclick="switchTab('rec-insumos')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L15 8V2"/><line x1="9" y1="2" x2="15" y2="2"/></svg>
+          Insumos
+        </button>
+        <button class="nav-btn" data-tab="rec-outros" onclick="switchTab('rec-outros')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Outros
+        </button>
+      </div>
 
       <button class="nav-btn nav-group-btn" onclick="toggleNavGroup(this)">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="10" y1="10" x2="10" y2="20"/></svg>Cadastros</span>
@@ -939,7 +957,7 @@
         <button onclick="showOnly('view-profile');closeAllProfileMenus()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11L12 4L21 11"/><path d="M5 10V20H19V10"/></svg>Minhas propriedades</button>
         <button onclick="switchTab('fields')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>Novo talhão</button>
         <button onclick="switchTab('planning')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8 8l8 8"/></svg>Planejar safra</button>
-        <button onclick="switchTab('records')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="16" y2="15"/></svg>Novo apontamento</button>
+        <button onclick="switchTab('rec-plantio')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2" width="6" height="4" rx="1"/><line x1="8" y1="11" x2="16" y2="11"/><line x1="8" y1="15" x2="16" y2="15"/></svg>Novo apontamento</button>
       </div>
     </section>
 
@@ -1078,6 +1096,7 @@
           <option value="aplicacao">Aplicação</option>
           <option value="monitoramento">Monitoramento</option>
           <option value="colheita">Colheita</option>
+          <option value="preparo_solo">Preparo de Solo</option>
           <option value="manutencao">Manutenção</option>
           <option value="outro">Outro</option>
         </select>
@@ -1095,53 +1114,100 @@
       <div id="serviceorders-empty" class="empty hidden">Nenhuma ordem de serviço criada ainda.</div>
     </section>
 
-    <section id="tab-records" class="tab-panel hidden">
-      <div class="page-header"><h2>Apontamentos de campo</h2><p>Registro do que foi executado, por talhão-safra.</p></div>
-      <form class="inline-form" id="record-form" onsubmit="return handleAddRecord(event)">
-        <select id="record-field-season" required></select>
-        <select id="record-type" required onchange="updateRecordDetailFields()">
-          <option value="semeadura">Semeadura</option>
-          <option value="trato_cultural">Trato cultural</option>
-          <option value="aplicacao">Aplicação</option>
-          <option value="monitoramento">Monitoramento</option>
-          <option value="colheita">Colheita</option>
-          <option value="outro">Outro</option>
-        </select>
-        <select id="record-os"><option value="">Sem ordem de serviço vinculada</option></select>
-        <input id="record-date" type="date">
-        <input id="record-notes" placeholder="Observações">
+    <section id="tab-rec-plantio" class="tab-panel hidden">
+      <div class="page-header"><h2>Apontamento de Plantio</h2><p>Registro da semeadura executada, por talhão-safra.</p></div>
+      <form class="inline-form" id="rp-form" onsubmit="return handleAddRecordPlantio(event)">
+        <select id="rp-field-season" required></select>
+        <select id="rp-os"><option value="">Sem ordem de serviço vinculada</option></select>
+        <input id="rp-date" type="date">
+        <input id="rp-notes" placeholder="Observações">
         <button class="btn-primary" type="submit">Adicionar</button>
       </form>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Data</th><th>Talhão / Safra</th><th>Observações</th><th></th></tr></thead>
+        <tbody id="rp-tbody"></tbody>
+      </table></div>
+      <div id="rp-empty" class="empty hidden">Nenhum apontamento de plantio registrado ainda. Cadastre um planejamento de safra primeiro.</div>
+    </section>
 
-      <div class="inline-form record-detail-group hidden" id="detail-aplicacao">
-        <select id="record-insumo"><option value="">Selecione o insumo</option></select>
-        <input id="record-dose" type="number" step="0.01" placeholder="Dose (por ha)">
-        <input id="record-area-aplicada" type="number" step="0.01" placeholder="Área aplicada (ha)">
-        <input id="record-temp" type="number" step="0.1" placeholder="Temperatura (°C)">
-        <input id="record-umidade-ar" type="number" step="0.1" placeholder="Umidade do ar (%)">
-        <input id="record-vento" type="number" step="0.1" placeholder="Vel. vento (km/h)">
-      </div>
-      <div class="inline-form record-detail-group hidden" id="detail-colheita">
-        <input id="record-area-colhida" type="number" step="0.01" placeholder="Área colhida (ha)">
-        <input id="record-produtividade" type="number" step="0.01" placeholder="Produtividade">
-        <select id="record-unid-prod">
+    <section id="tab-rec-producao" class="tab-panel hidden">
+      <div class="page-header"><h2>Apontamento de Produção</h2><p>Colheita e preparo de solo, por talhão-safra.</p></div>
+      <form class="inline-form" id="rpr-form" onsubmit="return handleAddRecordProducao(event)">
+        <select id="rpr-field-season" required></select>
+        <select id="rpr-tipo" required onchange="updateProducaoDetailFields()">
+          <option value="colheita">Colheita</option>
+          <option value="preparo_solo">Preparo de Solo</option>
+        </select>
+        <select id="rpr-os"><option value="">Sem ordem de serviço vinculada</option></select>
+        <input id="rpr-date" type="date">
+        <input id="rpr-notes" placeholder="Observações">
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="inline-form record-detail-group" id="rpr-detail-colheita">
+        <input id="rpr-area-colhida" type="number" step="0.01" placeholder="Área colhida (ha)">
+        <input id="rpr-produtividade" type="number" step="0.01" placeholder="Produtividade">
+        <select id="rpr-unid-prod">
           <option value="sc/ha">sc/ha</option>
           <option value="@/ha">@/ha</option>
           <option value="ton/ha">ton/ha</option>
         </select>
-        <input id="record-umidade-grao" type="number" step="0.1" placeholder="Umidade do grão (%)">
+        <input id="rpr-umidade-grao" type="number" step="0.1" placeholder="Umidade do grão (%)">
       </div>
-      <div class="inline-form record-detail-group hidden" id="detail-monitoramento">
-        <input id="record-praga" placeholder="Praga/doença observada">
-        <input id="record-infestacao" type="number" step="0.1" placeholder="Nível de infestação (%)">
-        <input id="record-metodo" placeholder="Método de amostragem">
-      </div>
-
       <div class="table-scroll"><table class="data-table card-shadow">
         <thead><tr><th>Data</th><th>Talhão / Safra</th><th>Tipo</th><th>Detalhes</th><th></th></tr></thead>
-        <tbody id="records-tbody"></tbody>
+        <tbody id="rpr-tbody"></tbody>
       </table></div>
-      <div id="records-empty" class="empty hidden">Nenhum apontamento registrado ainda. Cadastre um planejamento de safra primeiro.</div>
+      <div id="rpr-empty" class="empty hidden">Nenhum apontamento de produção registrado ainda. Cadastre um planejamento de safra primeiro.</div>
+    </section>
+
+    <section id="tab-rec-insumos" class="tab-panel hidden">
+      <div class="page-header"><h2>Apontamento de Insumos</h2><p>Aplicação de insumos, por talhão-safra.</p></div>
+      <form class="inline-form" id="ri-form" onsubmit="return handleAddRecordInsumo(event)">
+        <select id="ri-field-season" required></select>
+        <select id="ri-os"><option value="">Sem ordem de serviço vinculada</option></select>
+        <input id="ri-date" type="date">
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="inline-form record-detail-group">
+        <select id="ri-insumo"><option value="">Selecione o insumo</option></select>
+        <input id="ri-dose" type="number" step="0.01" placeholder="Dose (por ha)">
+        <input id="ri-area-aplicada" type="number" step="0.01" placeholder="Área aplicada (ha)">
+        <input id="ri-temp" type="number" step="0.1" placeholder="Temperatura (°C)">
+        <input id="ri-umidade-ar" type="number" step="0.1" placeholder="Umidade do ar (%)">
+        <input id="ri-vento" type="number" step="0.1" placeholder="Vel. vento (km/h)">
+        <input id="ri-notes" placeholder="Observações">
+      </div>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Data</th><th>Talhão / Safra</th><th>Detalhes</th><th></th></tr></thead>
+        <tbody id="ri-tbody"></tbody>
+      </table></div>
+      <div id="ri-empty" class="empty hidden">Nenhum apontamento de insumo registrado ainda. Cadastre um planejamento de safra primeiro.</div>
+    </section>
+
+    <section id="tab-rec-outros" class="tab-panel hidden">
+      <div class="page-header"><h2>Outros Apontamentos</h2><p>Trato cultural, monitoramento e demais registros, por talhão-safra.</p></div>
+      <form class="inline-form" id="ro-form" onsubmit="return handleAddRecordOutro(event)">
+        <select id="ro-field-season" required></select>
+        <select id="ro-tipo" required onchange="updateOutroDetailFields()">
+          <option value="trato_cultural">Trato cultural</option>
+          <option value="monitoramento">Monitoramento</option>
+          <option value="outro">Outro</option>
+        </select>
+        <select id="ro-os"><option value="">Sem ordem de serviço vinculada</option></select>
+        <input id="ro-date" type="date">
+        <input id="ro-notes" placeholder="Observações">
+        <button class="btn-primary" type="submit">Adicionar</button>
+      </form>
+      <div class="inline-form record-detail-group hidden" id="ro-detail-monitoramento">
+        <input id="ro-praga" placeholder="Praga/doença observada">
+        <input id="ro-infestacao" type="number" step="0.1" placeholder="Nível de infestação (%)">
+        <input id="ro-metodo" placeholder="Método de amostragem">
+      </div>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th>Data</th><th>Talhão / Safra</th><th>Tipo</th><th>Detalhes</th><th></th></tr></thead>
+        <tbody id="ro-tbody"></tbody>
+      </table></div>
+      <div id="ro-empty" class="empty hidden">Nenhum outro apontamento registrado ainda. Cadastre um planejamento de safra primeiro.</div>
     </section>
 
   </main>
@@ -1158,7 +1224,7 @@ let currentUser = null;
 let cachedOrgId = null;
 const cache = { farms:[], fields:[], crops:[], insumos:[], seasons:[], periodos:[], tiposVariedade:[], variedades:[], planning:[], serviceOrders:[], records:[] };
 const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
-const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', outro:'Outro'};
+const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', preparo_solo:'Preparo de solo', outro:'Outro'};
 
 function $(id){ return document.getElementById(id); }
 function show(id){ $(id).classList.remove('hidden'); }
@@ -1434,7 +1500,7 @@ async function handleCreateOrg(){
 async function handleLogout(){ await sb.auth.signOut(); }
 
 function switchTab(tab){
-  const tabs = ['dashboard','fields','crops','insumos','seasons','periodos','tiposvariedade','variedades','planning','serviceorders','records'];
+  const tabs = ['dashboard','fields','crops','insumos','seasons','periodos','tiposvariedade','variedades','planning','serviceorders','rec-plantio','rec-producao','rec-insumos','rec-outros'];
   tabs.forEach(t=>{
     $('tab-'+t).classList.toggle('hidden', t!==tab);
     const btn = document.querySelector(`.nav-btn[data-tab="${t}"]`);
@@ -1609,7 +1675,7 @@ async function loadInsumos(){
     <td><button class="link-btn danger" onclick="deleteRow('insumos','${i.id}','loadInsumos')">Excluir</button></td>
   </tr>`).join('');
   $('insumos-empty').classList.toggle('hidden', cache.insumos.length>0);
-  const sel = $('record-insumo');
+  const sel = $('ri-insumo');
   if(sel){
     const current = sel.value;
     sel.innerHTML = '<option value="">Selecione o insumo</option>' +
@@ -1778,11 +1844,15 @@ async function loadPlanning(){
     <td><button class="link-btn danger" onclick="deleteRow('field_seasons','${p.id}','loadPlanning')">Excluir</button></td>
   </tr>`).join('');
   $('planning-empty').classList.toggle('hidden', cache.planning.length>0);
-  const sel = $('record-field-season');
-  const current = sel.value;
-  sel.innerHTML = '<option value="">Selecione talhão / safra</option>' +
+  const fsOptions = '<option value="">Selecione talhão / safra</option>' +
     cache.planning.map(p => `<option value="${p.id}">${fieldLabel(p.fields||{})} · ${escapeHtml(p.seasons ? p.seasons.label : '')}</option>`).join('');
-  if(current) sel.value = current;
+  ['rp-field-season','rpr-field-season','ri-field-season','ro-field-season'].forEach(id => {
+    const sel = $(id);
+    if(!sel) return;
+    const current = sel.value;
+    sel.innerHTML = fsOptions;
+    if(current) sel.value = current;
+  });
 
   const selOs = $('os-field-season');
   const currentOs = selOs.value;
@@ -1809,7 +1879,7 @@ async function handleAddPlanning(e){
 }
 
 const osStatusLabel = {aberta:'Aberta', em_andamento:'Em andamento', concluida:'Concluída', cancelada:'Cancelada'};
-const osTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', manutencao:'Manutenção', outro:'Outro'};
+const osTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', preparo_solo:'Preparo de solo', manutencao:'Manutenção', outro:'Outro'};
 async function loadServiceOrders(){
   const { data, error } = await sb.from('ordens_servico').select('*, field_seasons(fields(code,farms(name)),seasons(label))').order('created_at', {ascending:false});
   if(error){ console.error(error); return; }
@@ -1830,14 +1900,16 @@ async function loadServiceOrders(){
     </tr>`;
   }).join('');
   $('serviceorders-empty').classList.toggle('hidden', cache.serviceOrders.length>0);
-  const sel = $('record-os');
-  if(sel){
+  const open = cache.serviceOrders.filter(os => os.status !== 'concluida' && os.status !== 'cancelada');
+  const osOptions = '<option value="">Sem ordem de serviço vinculada</option>' +
+    open.map(os => `<option value="${os.id}">${escapeHtml(os.titulo)}</option>`).join('');
+  ['rp-os','rpr-os','ri-os','ro-os'].forEach(id => {
+    const sel = $(id);
+    if(!sel) return;
     const current = sel.value;
-    const open = cache.serviceOrders.filter(os => os.status !== 'concluida' && os.status !== 'cancelada');
-    sel.innerHTML = '<option value="">Sem ordem de serviço vinculada</option>' +
-      open.map(os => `<option value="${os.id}">${escapeHtml(os.titulo)}</option>`).join('');
+    sel.innerHTML = osOptions;
     if(current) sel.value = current;
-  }
+  });
 }
 async function handleAddServiceOrder(e){
   e.preventDefault();
@@ -1879,43 +1951,100 @@ async function loadRecords(){
     (fito||[]).forEach(d => fitoMap[d.field_record_id] = d);
   }
 
-  $('records-tbody').innerHTML = cache.records.map(r => {
+  function fsLabel(r){
     const fs = r.field_seasons;
-    const label = fs ? `${fieldLabel(fs.fields||{})} · ${escapeHtml(fs.seasons ? fs.seasons.label : '')}` : '—';
-    let detail = escapeHtml(r.notes) || '—';
+    return fs ? `${fieldLabel(fs.fields||{})} · ${escapeHtml(fs.seasons ? fs.seasons.label : '')}` : '—';
+  }
+  function detailText(r){
     if(r.record_type === 'aplicacao' && aplicMap[r.id]){
       const d = aplicMap[r.id];
-      detail = `${d.insumos ? escapeHtml(d.insumos.nome) : 'Insumo'} · ${d.dose_ha ?? '—'}/ha · ${d.area_aplicada ?? '—'} ha`;
-    } else if(r.record_type === 'colheita' && colheitaMap[r.id]){
-      const d = colheitaMap[r.id];
-      detail = `${d.produtividade ?? '—'} ${escapeHtml(d.unidade_produtividade||'')} · ${d.area_colhida ?? '—'} ha`;
-    } else if(r.record_type === 'monitoramento' && fitoMap[r.id]){
-      const d = fitoMap[r.id];
-      detail = `${escapeHtml(d.praga_doenca)} · infestação ${d.nivel_infestacao ?? '—'}%`;
+      return `${d.insumos ? escapeHtml(d.insumos.nome) : 'Insumo'} · ${d.dose_ha ?? '—'}/ha · ${d.area_aplicada ?? '—'} ha`;
     }
-    return `<tr>
-      <td>${escapeHtml(r.record_date)}</td>
-      <td>${label}</td>
-      <td>${recordTypeLabel[r.record_type] || r.record_type}</td>
-      <td>${detail}</td>
-      <td><button class="link-btn danger" onclick="deleteRow('field_records','${r.id}','loadRecords')">Excluir</button></td>
-    </tr>`;
-  }).join('');
-  $('records-empty').classList.toggle('hidden', cache.records.length>0);
+    if(r.record_type === 'colheita' && colheitaMap[r.id]){
+      const d = colheitaMap[r.id];
+      return `${d.produtividade ?? '—'} ${escapeHtml(d.unidade_produtividade||'')} · ${d.area_colhida ?? '—'} ha`;
+    }
+    if(r.record_type === 'monitoramento' && fitoMap[r.id]){
+      const d = fitoMap[r.id];
+      return `${escapeHtml(d.praga_doenca)} · infestação ${d.nivel_infestacao ?? '—'}%`;
+    }
+    return escapeHtml(r.notes) || '—';
+  }
+
+  const plantio = cache.records.filter(r => r.record_type === 'semeadura');
+  $('rp-tbody').innerHTML = plantio.map(r => `<tr>
+    <td>${escapeHtml(r.record_date)}</td>
+    <td>${fsLabel(r)}</td>
+    <td>${escapeHtml(r.notes) || '—'}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('field_records','${r.id}','loadRecords')">Excluir</button></td>
+  </tr>`).join('');
+  $('rp-empty').classList.toggle('hidden', plantio.length>0);
+
+  const producao = cache.records.filter(r => r.record_type === 'colheita' || r.record_type === 'preparo_solo');
+  $('rpr-tbody').innerHTML = producao.map(r => `<tr>
+    <td>${escapeHtml(r.record_date)}</td>
+    <td>${fsLabel(r)}</td>
+    <td>${recordTypeLabel[r.record_type] || r.record_type}</td>
+    <td>${detailText(r)}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('field_records','${r.id}','loadRecords')">Excluir</button></td>
+  </tr>`).join('');
+  $('rpr-empty').classList.toggle('hidden', producao.length>0);
+
+  const insumos = cache.records.filter(r => r.record_type === 'aplicacao');
+  $('ri-tbody').innerHTML = insumos.map(r => `<tr>
+    <td>${escapeHtml(r.record_date)}</td>
+    <td>${fsLabel(r)}</td>
+    <td>${detailText(r)}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('field_records','${r.id}','loadRecords')">Excluir</button></td>
+  </tr>`).join('');
+  $('ri-empty').classList.toggle('hidden', insumos.length>0);
+
+  const outros = cache.records.filter(r => ['trato_cultural','monitoramento','outro'].includes(r.record_type));
+  $('ro-tbody').innerHTML = outros.map(r => `<tr>
+    <td>${escapeHtml(r.record_date)}</td>
+    <td>${fsLabel(r)}</td>
+    <td>${recordTypeLabel[r.record_type] || r.record_type}</td>
+    <td>${detailText(r)}</td>
+    <td><button class="link-btn danger" onclick="deleteRow('field_records','${r.id}','loadRecords')">Excluir</button></td>
+  </tr>`).join('');
+  $('ro-empty').classList.toggle('hidden', outros.length>0);
 }
-function updateRecordDetailFields(){
-  const type = $('record-type').value;
-  ['aplicacao','colheita','monitoramento'].forEach(t => {
-    $('detail-'+t).classList.toggle('hidden', t !== type);
-  });
+
+function updateProducaoDetailFields(){
+  const type = $('rpr-tipo').value;
+  $('rpr-detail-colheita').classList.toggle('hidden', type !== 'colheita');
 }
-async function handleAddRecord(e){
+function updateOutroDetailFields(){
+  const type = $('ro-tipo').value;
+  $('ro-detail-monitoramento').classList.toggle('hidden', type !== 'monitoramento');
+}
+
+async function handleAddRecordPlantio(e){
   e.preventDefault();
-  const field_season_id = $('record-field-season').value;
-  const record_type = $('record-type').value;
-  const record_date = $('record-date').value || new Date().toISOString().slice(0,10);
-  const notes = $('record-notes').value.trim();
-  const ordem_servico_id = $('record-os').value || null;
+  const field_season_id = $('rp-field-season').value;
+  const record_date = $('rp-date').value || new Date().toISOString().slice(0,10);
+  const notes = $('rp-notes').value.trim();
+  const ordem_servico_id = $('rp-os').value || null;
+  if(!field_season_id) return false;
+
+  const { error } = await sb.from('field_records')
+    .insert({ field_season_id, record_type: 'semeadura', record_date, notes, user_id: currentUser.id, ordem_servico_id });
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+
+  if(ordem_servico_id){ await handleChangeOsStatus(ordem_servico_id, 'concluida'); }
+
+  $('rp-form').reset();
+  await loadRecords(); renderDashboard();
+  return false;
+}
+
+async function handleAddRecordProducao(e){
+  e.preventDefault();
+  const field_season_id = $('rpr-field-season').value;
+  const record_type = $('rpr-tipo').value;
+  const record_date = $('rpr-date').value || new Date().toISOString().slice(0,10);
+  const notes = $('rpr-notes').value.trim();
+  const ordem_servico_id = $('rpr-os').value || null;
   if(!field_season_id) return false;
 
   const { data: inserted, error } = await sb.from('field_records')
@@ -1923,39 +2052,83 @@ async function handleAddRecord(e){
     .select().single();
   if(error){ alert('Erro ao salvar: ' + error.message); return false; }
 
-  if(record_type === 'aplicacao'){
-    const insumo_id = $('record-insumo').value || null;
-    await sb.from('apontamento_aplicacao_detalhe').insert({
-      field_record_id: inserted.id, insumo_id,
-      dose_ha: $('record-dose').value ? parseFloat($('record-dose').value) : null,
-      area_aplicada: $('record-area-aplicada').value ? parseFloat($('record-area-aplicada').value) : null,
-      temperatura: $('record-temp').value ? parseFloat($('record-temp').value) : null,
-      umidade: $('record-umidade-ar').value ? parseFloat($('record-umidade-ar').value) : null,
-      vel_vento: $('record-vento').value ? parseFloat($('record-vento').value) : null,
-    });
-  } else if(record_type === 'colheita'){
+  if(record_type === 'colheita'){
     await sb.from('apontamento_colheita_detalhe').insert({
       field_record_id: inserted.id,
-      area_colhida: $('record-area-colhida').value ? parseFloat($('record-area-colhida').value) : null,
-      produtividade: $('record-produtividade').value ? parseFloat($('record-produtividade').value) : null,
-      unidade_produtividade: $('record-unid-prod').value,
-      umidade_grao: $('record-umidade-grao').value ? parseFloat($('record-umidade-grao').value) : null,
+      area_colhida: $('rpr-area-colhida').value ? parseFloat($('rpr-area-colhida').value) : null,
+      produtividade: $('rpr-produtividade').value ? parseFloat($('rpr-produtividade').value) : null,
+      unidade_produtividade: $('rpr-unid-prod').value,
+      umidade_grao: $('rpr-umidade-grao').value ? parseFloat($('rpr-umidade-grao').value) : null,
     });
-  } else if(record_type === 'monitoramento'){
-    const praga = $('record-praga').value.trim();
+  }
+
+  if(ordem_servico_id){ await handleChangeOsStatus(ordem_servico_id, 'concluida'); }
+
+  $('rpr-form').reset();
+  updateProducaoDetailFields();
+  await loadRecords(); renderDashboard();
+  return false;
+}
+
+async function handleAddRecordInsumo(e){
+  e.preventDefault();
+  const field_season_id = $('ri-field-season').value;
+  const record_date = $('ri-date').value || new Date().toISOString().slice(0,10);
+  const notes = $('ri-notes').value.trim();
+  const ordem_servico_id = $('ri-os').value || null;
+  if(!field_season_id) return false;
+
+  const { data: inserted, error } = await sb.from('field_records')
+    .insert({ field_season_id, record_type: 'aplicacao', record_date, notes, user_id: currentUser.id, ordem_servico_id })
+    .select().single();
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+
+  const insumo_id = $('ri-insumo').value || null;
+  await sb.from('apontamento_aplicacao_detalhe').insert({
+    field_record_id: inserted.id, insumo_id,
+    dose_ha: $('ri-dose').value ? parseFloat($('ri-dose').value) : null,
+    area_aplicada: $('ri-area-aplicada').value ? parseFloat($('ri-area-aplicada').value) : null,
+    temperatura: $('ri-temp').value ? parseFloat($('ri-temp').value) : null,
+    umidade: $('ri-umidade-ar').value ? parseFloat($('ri-umidade-ar').value) : null,
+    vel_vento: $('ri-vento').value ? parseFloat($('ri-vento').value) : null,
+  });
+
+  if(ordem_servico_id){ await handleChangeOsStatus(ordem_servico_id, 'concluida'); }
+
+  $('ri-form').reset();
+  await loadRecords(); renderDashboard();
+  return false;
+}
+
+async function handleAddRecordOutro(e){
+  e.preventDefault();
+  const field_season_id = $('ro-field-season').value;
+  const record_type = $('ro-tipo').value;
+  const record_date = $('ro-date').value || new Date().toISOString().slice(0,10);
+  const notes = $('ro-notes').value.trim();
+  const ordem_servico_id = $('ro-os').value || null;
+  if(!field_season_id) return false;
+
+  const { data: inserted, error } = await sb.from('field_records')
+    .insert({ field_season_id, record_type, record_date, notes, user_id: currentUser.id, ordem_servico_id })
+    .select().single();
+  if(error){ alert('Erro ao salvar: ' + error.message); return false; }
+
+  if(record_type === 'monitoramento'){
+    const praga = $('ro-praga').value.trim();
     if(praga){
       await sb.from('apontamento_fito_detalhe').insert({
         field_record_id: inserted.id, praga_doenca: praga,
-        nivel_infestacao: $('record-infestacao').value ? parseFloat($('record-infestacao').value) : null,
-        metodo_amostragem: $('record-metodo').value.trim() || null,
+        nivel_infestacao: $('ro-infestacao').value ? parseFloat($('ro-infestacao').value) : null,
+        metodo_amostragem: $('ro-metodo').value.trim() || null,
       });
     }
   }
 
   if(ordem_servico_id){ await handleChangeOsStatus(ordem_servico_id, 'concluida'); }
 
-  $('record-form').reset();
-  updateRecordDetailFields();
+  $('ro-form').reset();
+  updateOutroDetailFields();
   await loadRecords(); renderDashboard();
   return false;
 }
