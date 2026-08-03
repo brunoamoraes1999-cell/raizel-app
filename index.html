@@ -421,6 +421,17 @@
   #view-mip .mip-sev-ok{ background:#4C9A6A; }
   #view-mip .mip-sev-warn{ background:var(--gold); }
   #view-mip .mip-sev-bad{ background:var(--danger); }
+  #view-mip .mip-view-toggle{ display:inline-flex; gap:2px; background:#EEF0EA; border:1px solid var(--border); border-radius:9px; padding:3px; margin-bottom:18px; }
+  #view-mip .mip-view-btn{ background:none; border:none; color:var(--text-soft); font-size:13px; font-weight:600; padding:7px 16px; border-radius:7px; cursor:pointer; }
+  #view-mip .mip-view-btn.active{ background:#FFFFFF; color:var(--text); box-shadow:0 1px 2px rgba(12,59,42,.08); }
+  #view-mip .mip-mosaic{ display:grid; grid-template-columns:repeat(auto-fill, minmax(120px,1fr)); gap:12px; margin-bottom:18px; }
+  #view-mip .mip-tile{ aspect-ratio:1; border-radius:12px; padding:10px; display:flex; flex-direction:column; justify-content:space-between; color:#fff; box-shadow:0 1px 2px rgba(12,59,42,.08); cursor:default; }
+  #view-mip .mip-tile-code{ font-size:12.5px; font-weight:700; text-shadow:0 1px 2px rgba(0,0,0,.25); }
+  #view-mip .mip-tile-days{ font-size:10.5px; font-weight:600; opacity:.92; text-shadow:0 1px 2px rgba(0,0,0,.25); }
+  #view-mip .mip-tile.sev-ok{ background:#4C9A6A; }
+  #view-mip .mip-tile.sev-warn{ background:#C79A3F; }
+  #view-mip .mip-tile.sev-bad{ background:#C05A50; }
+  #view-mip .mip-tile.sev-none{ background:#B9BEB6; }
 </style>
 </head>
 <body>
@@ -836,7 +847,14 @@
   <main>
     <section id="tab-mip-status" class="tab-panel">
       <div class="page-header"><h2>Status de Monitoramento</h2><p>Dias desde o último monitoramento e severidade mais recente, por talhão.</p></div>
-      <div class="table-scroll"><table class="data-table card-shadow">
+      <div class="mip-view-toggle">
+        <button class="mip-view-btn active" id="mip-view-btn-mosaic" onclick="switchMipStatusView('mosaic')">Mosaico</button>
+        <button class="mip-view-btn" id="mip-view-btn-table" onclick="switchMipStatusView('table')">Tabela</button>
+      </div>
+
+      <div id="mip-status-mosaic" class="mip-mosaic"></div>
+
+      <div id="mip-status-table-wrap" class="table-scroll hidden"><table class="data-table card-shadow">
         <thead><tr><th class="mip-status-farm-col hidden">Fazenda</th><th>Talhão</th><th>Safra</th><th>Última ocorrência</th><th>Dias sem monitorar</th><th>Severidade</th></tr></thead>
         <tbody id="mip-status-tbody"></tbody>
       </table></div>
@@ -845,6 +863,7 @@
         <span class="mip-sev-dot mip-sev-ok"></span> Equilíbrio
         <span class="mip-sev-dot mip-sev-warn"></span> Controle
         <span class="mip-sev-dot mip-sev-bad"></span> Dano
+        <span class="mip-sev-dot" style="background:#B9BEB6;"></span> Nunca monitorado
       </div>
     </section>
 
@@ -1264,17 +1283,17 @@
     </section>
 
     <section id="tab-planning" class="tab-panel hidden">
-      <div class="page-header"><h2>Planejamento de safra</h2><p>Vincule um talhão a uma safra e uma cultura.</p></div>
+      <div class="page-header"><h2>Planejamento de safra</h2><p>Vincule um talhão a uma safra e uma variedade.</p></div>
       <form class="inline-form" onsubmit="return handleAddPlanning(event)">
         <select id="plan-field" required></select>
         <select id="plan-season" required></select>
-        <select id="plan-crop"></select>
+        <select id="plan-variedade"></select>
         <input id="plan-sowing-date" type="date" title="Data prevista de semeadura">
         <input id="plan-population" type="number" min="0" placeholder="População alvo">
         <button class="btn-primary" type="submit">Adicionar</button>
       </form>
       <div class="table-scroll"><table class="data-table card-shadow">
-        <thead><tr><th>Talhão</th><th>Safra</th><th>Cultura</th><th>Semeadura prevista</th><th></th></tr></thead>
+        <thead><tr><th>Talhão</th><th>Safra</th><th>Variedade</th><th>Semeadura prevista</th><th></th></tr></thead>
         <tbody id="planning-tbody"></tbody>
       </table></div>
       <div id="planning-empty" class="empty hidden">Nenhum planejamento cadastrado ainda. Cadastre fazendas, talhões e safras primeiro.</div>
@@ -1426,13 +1445,27 @@ const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural',
 // Planejamento de Safra ainda não liga o talhão a um Tipo de Variedade
 // (só à tabela antiga "crops"), a cultura é ignorada aqui — usamos a
 // primeira metodologia cadastrada pra essa ocorrência na organização.
-function calcularSeveridade(valor, ocorrencia_id){
+function calcularSeveridade(valor, ocorrencia_id, tipoVariedadeId){
   if(valor === null || valor === undefined || !ocorrencia_id) return null;
-  const m = cache.metodologia.find(m => m.ocorrencia_id === ocorrencia_id);
+  let m = null;
+  if(tipoVariedadeId){
+    m = cache.metodologia.find(m => m.ocorrencia_id === ocorrencia_id && m.tipo_variedade_id === tipoVariedadeId);
+  }
+  if(!m){
+    // sem cultura identificada pro talhão (ainda sem variedade no planejamento) —
+    // usa a primeira metodologia cadastrada pra essa ocorrência na organização
+    m = cache.metodologia.find(m => m.ocorrencia_id === ocorrencia_id);
+  }
   if(!m) return null;
   if(m.limite_dano !== null && valor >= m.limite_dano) return 'bad';
   if(m.limite_controle !== null && valor >= m.limite_controle) return 'warn';
   return 'ok';
+}
+function getTipoVariedadeIdForFieldSeason(field_season_id){
+  const p = cache.planning.find(p => p.id === field_season_id);
+  if(!p || !p.variedade_id) return null;
+  const v = cache.variedades.find(v => v.id === p.variedade_id);
+  return v ? v.tipo_variedade_id : null;
 }
 function severidadeDotHtml(sev){
   if(!sev) return '';
@@ -1448,18 +1481,24 @@ function diasDesde(dataStr){
 }
 function renderMipStatus(){
   const tbody = $('mip-status-tbody');
-  if(!tbody) return;
+  const mosaic = $('mip-status-mosaic');
+  if(!tbody || !mosaic) return;
   const isAll = currentFarmId === 'ALL';
   document.querySelectorAll('.mip-status-farm-col').forEach(el => el.classList.toggle('hidden', !isAll));
 
-  tbody.innerHTML = cache.planning.map(p => {
+  const rows = cache.planning.map(p => {
     const monitoramentos = cache.records
       .filter(r => r.record_type === 'monitoramento' && r.field_season_id === p.id && r._fito)
       .sort((a,b) => (a.record_date < b.record_date ? 1 : -1));
     const ultimo = monitoramentos[0];
     const dias = ultimo ? diasDesde(ultimo.record_date) : null;
     const fito = ultimo ? ultimo._fito : null;
-    const sev = fito ? calcularSeveridade(fito.nivel_infestacao, fito.ocorrencia_id) : null;
+    const tipoVariedadeId = getTipoVariedadeIdForFieldSeason(p.id);
+    const sev = fito ? calcularSeveridade(fito.nivel_infestacao, fito.ocorrencia_id, tipoVariedadeId) : null;
+    return { p, dias, fito, sev };
+  });
+
+  tbody.innerHTML = rows.map(({p, dias, fito, sev}) => {
     const sevLabel = sev==='bad'?'Dano':sev==='warn'?'Controle':sev==='ok'?'Equilíbrio':null;
     const diasTexto = dias===null ? 'Nunca monitorado' : `${dias} dia${dias===1?'':'s'}`;
     const diasEstilo = (dias!==null && dias>14) ? ' style="color:var(--danger);font-weight:600;"' : '';
@@ -1472,7 +1511,25 @@ function renderMipStatus(){
       <td>${sevLabel ? `<span class="sev-dot sev-${sev}"></span> ${sevLabel}` : '—'}</td>
     </tr>`;
   }).join('');
+
+  mosaic.innerHTML = rows.map(({p, dias, fito, sev}) => {
+    const sevClass = sev ? `sev-${sev}` : 'sev-none';
+    const diasTexto = dias===null ? 'Nunca monitorado' : `${dias}d sem monitorar`;
+    const farmTxt = isAll && p.fields && p.fields.farms ? escapeHtml(p.fields.farms.name)+' · ' : '';
+    const title = `${farmTxt}${fieldLabel(p.fields||{})} — ${fito ? escapeHtml(fito.praga_doenca) : 'sem ocorrência'}`;
+    return `<div class="mip-tile ${sevClass}" title="${title}">
+      <div class="mip-tile-code">${escapeHtml(p.fields ? p.fields.code : '?')}</div>
+      <div class="mip-tile-days">${diasTexto}</div>
+    </div>`;
+  }).join('');
+
   $('mip-status-empty').classList.toggle('hidden', cache.planning.length>0);
+}
+function switchMipStatusView(view){
+  $('mip-status-mosaic').classList.toggle('hidden', view!=='mosaic');
+  $('mip-status-table-wrap').classList.toggle('hidden', view!=='table');
+  $('mip-view-btn-mosaic').classList.toggle('active', view==='mosaic');
+  $('mip-view-btn-table').classList.toggle('active', view==='table');
 }
 
 function $(id){ return document.getElementById(id); }
@@ -1898,11 +1955,6 @@ async function loadCrops(){
     <td><button class="link-btn danger" onclick="deleteRow('crops','${c.id}','loadCrops')">Excluir</button></td>
   </tr>`).join('');
   $('crops-empty').classList.toggle('hidden', cache.crops.length>0);
-  const sel = $('plan-crop');
-  const current = sel.value;
-  sel.innerHTML = '<option value="">Cultura (opcional)</option>' +
-    cache.crops.map(c => `<option value="${c.id}">${escapeHtml(c.name)}${c.variety ? ' · '+escapeHtml(c.variety) : ''}</option>`).join('');
-  if(current) sel.value = current;
 }
 async function handleAddCrop(e){
   e.preventDefault();
@@ -2077,6 +2129,12 @@ async function loadVariedades(){
     <td><button class="link-btn danger" onclick="deleteRow('variedades','${v.id}','loadVariedades')">Excluir</button></td>
   </tr>`).join('');
   $('variedades-empty').classList.toggle('hidden', cache.variedades.length>0);
+
+  const selPlan = $('plan-variedade');
+  const currentPlan = selPlan.value;
+  selPlan.innerHTML = '<option value="">Selecione a variedade</option>' +
+    cache.variedades.map(v => `<option value="${v.id}">${escapeHtml(v.codigo)} · ${escapeHtml(v.descricao)}</option>`).join('');
+  if(currentPlan) selPlan.value = currentPlan;
 }
 async function handleAddVariedade(e){
   e.preventDefault();
@@ -2092,17 +2150,22 @@ async function handleAddVariedade(e){
 }
 
 async function loadPlanning(){
-  const { data, error } = await sb.from('field_seasons').select('*, fields(code,farms(name)), seasons(label), crops(name,variety)').order('created_at', {ascending:false});
+  const { data, error } = await sb.from('field_seasons').select('*, fields(code,farms(name)), seasons(label), crops(name,variety), variedades(codigo,descricao,tipo_variedade_id,tipos_variedade(descricao))').order('created_at', {ascending:false});
   if(error){ console.error(error); return; }
   const fieldIds = new Set(cache.fields.map(f=>f.id));
   cache.planning = (data || []).filter(p => fieldIds.has(p.field_id));
-  $('planning-tbody').innerHTML = cache.planning.map(p => `<tr>
+  $('planning-tbody').innerHTML = cache.planning.map(p => {
+    const variedadeTxt = p.variedades
+      ? `${escapeHtml(p.variedades.codigo)} · ${escapeHtml(p.variedades.descricao)}${p.variedades.tipos_variedade ? ' ('+escapeHtml(p.variedades.tipos_variedade.descricao)+')' : ''}`
+      : (p.crops ? escapeHtml(p.crops.name) + ' <em>(cultura antiga)</em>' : '—');
+    return `<tr>
     <td>${fieldLabel(p.fields||{})}</td>
     <td>${escapeHtml(p.seasons ? p.seasons.label : '—')}</td>
-    <td>${p.crops ? escapeHtml(p.crops.name) : '—'}</td>
+    <td>${variedadeTxt}</td>
     <td>${escapeHtml(p.planned_sowing_date) || '—'}</td>
     <td><button class="link-btn danger" onclick="deleteRow('field_seasons','${p.id}','loadPlanning')">Excluir</button></td>
-  </tr>`).join('');
+  </tr>`;
+  }).join('');
   $('planning-empty').classList.toggle('hidden', cache.planning.length>0);
   const fsOptions = '<option value="">Selecione talhão / safra</option>' +
     cache.planning.map(p => `<option value="${p.id}">${fieldLabel(p.fields||{})} · ${escapeHtml(p.seasons ? p.seasons.label : '')}</option>`).join('');
@@ -2124,12 +2187,12 @@ async function handleAddPlanning(e){
   e.preventDefault();
   const field_id = $('plan-field').value;
   const season_id = $('plan-season').value;
-  const crop_id = $('plan-crop').value || null;
+  const variedade_id = $('plan-variedade').value || null;
   const planned_sowing_date = $('plan-sowing-date').value || null;
   const population = $('plan-population').value;
   if(!field_id || !season_id) return false;
   const { error } = await sb.from('field_seasons').insert({
-    field_id, season_id, crop_id, planned_sowing_date,
+    field_id, season_id, variedade_id, planned_sowing_date,
     target_population: population ? parseFloat(population) : null
   });
   if(error){ alert('Erro ao salvar: ' + error.message); return false; }
@@ -2231,7 +2294,8 @@ async function loadRecords(){
     }
     if(r.record_type === 'monitoramento' && fitoMap[r.id]){
       const d = fitoMap[r.id];
-      const sev = calcularSeveridade(d.nivel_infestacao, d.ocorrencia_id);
+      const tipoVariedadeId = getTipoVariedadeIdForFieldSeason(r.field_season_id);
+      const sev = calcularSeveridade(d.nivel_infestacao, d.ocorrencia_id, tipoVariedadeId);
       return `${escapeHtml(d.praga_doenca)} · infestação ${d.nivel_infestacao ?? '—'}%${severidadeDotHtml(sev)}`;
     }
     return escapeHtml(r.notes) || '—';
