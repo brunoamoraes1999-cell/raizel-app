@@ -768,7 +768,10 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
       <div class="mip-nav-sep"></div>
-      <button class="nav-btn active" data-tab="mip-categorias" title="Categorias de Ocorrência" onclick="switchTab('mip-categorias')">
+      <button class="nav-btn active" data-tab="mip-status" title="Status de Monitoramento" onclick="switchTab('mip-status')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 15l4-4 3 3 5-6"/></svg>
+      </button>
+      <button class="nav-btn" data-tab="mip-categorias" title="Categorias de Ocorrência" onclick="switchTab('mip-categorias')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7L12 3 4 7l8 4 8-4z"/><path d="M4 7v10l8 4 8-4V7"/></svg>
       </button>
       <button class="nav-btn" data-tab="mip-catalogo" title="Catálogo de Ocorrências" onclick="switchTab('mip-catalogo')">
@@ -831,7 +834,21 @@
     </div>
   
   <main>
-    <section id="tab-mip-categorias" class="tab-panel">
+    <section id="tab-mip-status" class="tab-panel">
+      <div class="page-header"><h2>Status de Monitoramento</h2><p>Dias desde o último monitoramento e severidade mais recente, por talhão.</p></div>
+      <div class="table-scroll"><table class="data-table card-shadow">
+        <thead><tr><th class="mip-status-farm-col hidden">Fazenda</th><th>Talhão</th><th>Safra</th><th>Última ocorrência</th><th>Dias sem monitorar</th><th>Severidade</th></tr></thead>
+        <tbody id="mip-status-tbody"></tbody>
+      </table></div>
+      <div id="mip-status-empty" class="empty hidden">Nenhum planejamento de safra cadastrado ainda para esta fazenda.</div>
+      <div class="mip-severity-legend">
+        <span class="mip-sev-dot mip-sev-ok"></span> Equilíbrio
+        <span class="mip-sev-dot mip-sev-warn"></span> Controle
+        <span class="mip-sev-dot mip-sev-bad"></span> Dano
+      </div>
+    </section>
+
+    <section id="tab-mip-categorias" class="tab-panel hidden">
       <div class="page-header"><h2>Categorias de Ocorrência</h2><p>Classificação usada no catálogo de pragas/doenças/daninhas (ex: Inseto, Doença, Daninha, Nematoide, Inimigo natural).</p></div>
       <form class="inline-form" onsubmit="return handleAddCategoriaOcorrencia(event)">
         <input id="categoriaocorrencia-descricao" placeholder="Descrição (ex: Inseto)" required>
@@ -1422,6 +1439,41 @@ function severidadeDotHtml(sev){
   const label = sev==='bad' ? 'Dano' : sev==='warn' ? 'Controle' : 'Equilíbrio';
   return ` <span class="sev-dot sev-${sev}" title="${label}"></span>`;
 }
+function diasDesde(dataStr){
+  if(!dataStr) return null;
+  const d = new Date(dataStr + 'T00:00:00');
+  const hoje = new Date();
+  hoje.setHours(0,0,0,0);
+  return Math.round((hoje - d) / 86400000);
+}
+function renderMipStatus(){
+  const tbody = $('mip-status-tbody');
+  if(!tbody) return;
+  const isAll = currentFarmId === 'ALL';
+  document.querySelectorAll('.mip-status-farm-col').forEach(el => el.classList.toggle('hidden', !isAll));
+
+  tbody.innerHTML = cache.planning.map(p => {
+    const monitoramentos = cache.records
+      .filter(r => r.record_type === 'monitoramento' && r.field_season_id === p.id && r._fito)
+      .sort((a,b) => (a.record_date < b.record_date ? 1 : -1));
+    const ultimo = monitoramentos[0];
+    const dias = ultimo ? diasDesde(ultimo.record_date) : null;
+    const fito = ultimo ? ultimo._fito : null;
+    const sev = fito ? calcularSeveridade(fito.nivel_infestacao, fito.ocorrencia_id) : null;
+    const sevLabel = sev==='bad'?'Dano':sev==='warn'?'Controle':sev==='ok'?'Equilíbrio':null;
+    const diasTexto = dias===null ? 'Nunca monitorado' : `${dias} dia${dias===1?'':'s'}`;
+    const diasEstilo = (dias!==null && dias>14) ? ' style="color:var(--danger);font-weight:600;"' : '';
+    return `<tr>
+      <td class="mip-status-farm-col${isAll?'':' hidden'}">${p.fields && p.fields.farms ? escapeHtml(p.fields.farms.name) : '—'}</td>
+      <td>${fieldLabel(p.fields||{})}</td>
+      <td>${p.seasons ? escapeHtml(p.seasons.label) : '—'}</td>
+      <td>${fito ? escapeHtml(fito.praga_doenca) : '—'}</td>
+      <td${diasEstilo}>${diasTexto}</td>
+      <td>${sevLabel ? `<span class="sev-dot sev-${sev}"></span> ${sevLabel}` : '—'}</td>
+    </tr>`;
+  }).join('');
+  $('mip-status-empty').classList.toggle('hidden', cache.planning.length>0);
+}
 
 function $(id){ return document.getElementById(id); }
 function show(id){ $(id).classList.remove('hidden'); }
@@ -1594,7 +1646,7 @@ const MODULE_INFO = {
 function enterModule(key){
   if(key === 'gestao'){ showOnly('view-app'); switchTab('dashboard'); return; }
   if(key === 'relatorios'){ showOnly('view-reports'); return; }
-  if(key === 'monitoramento'){ showOnly('view-mip'); switchTab('mip-categorias'); return; }
+  if(key === 'monitoramento'){ showOnly('view-mip'); switchTab('mip-status'); return; }
   const info = MODULE_INFO[key];
   if(!info) return;
   $('module-placeholder-title').textContent = info.title;
@@ -1698,7 +1750,7 @@ async function handleCreateOrg(){
 async function handleLogout(){ await sb.auth.signOut(); }
 
 function switchTab(tab){
-  const tabs = ['dashboard','fields','crops','insumos','seasons','periodos','tiposvariedade','variedades','planning','serviceorders','rec-plantio','rec-producao','rec-insumos','rec-outros','mip-categorias','mip-catalogo','mip-metodologia'];
+  const tabs = ['dashboard','fields','crops','insumos','seasons','periodos','tiposvariedade','variedades','planning','serviceorders','rec-plantio','rec-producao','rec-insumos','rec-outros','mip-status','mip-categorias','mip-catalogo','mip-metodologia'];
   tabs.forEach(t=>{
     $('tab-'+t).classList.toggle('hidden', t!==tab);
     const btn = document.querySelector(`.nav-btn[data-tab="${t}"]`);
@@ -1721,6 +1773,7 @@ async function loadAllData(){
   await loadOcorrenciasCatalogo();
   await loadMetodologia();
   await loadRecords();
+  renderMipStatus();
   renderDashboard();
 }
 
@@ -2157,6 +2210,11 @@ async function loadRecords(){
     (colh||[]).forEach(d => colheitaMap[d.field_record_id] = d);
     (fito||[]).forEach(d => fitoMap[d.field_record_id] = d);
   }
+  cache.records.forEach(r => {
+    r._fito = fitoMap[r.id] || null;
+    r._colheita = colheitaMap[r.id] || null;
+    r._aplic = aplicMap[r.id] || null;
+  });
 
   function fsLabel(r){
     const fs = r.field_seasons;
