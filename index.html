@@ -6,6 +6,7 @@
 <title>Raizel — Gestão Agrícola</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
   :root{
     --green:#0C3B2A; --green-light:#145741; --gold:#B5874A; --blue:#2E86C9;
@@ -23,6 +24,13 @@
   @keyframes gl-shimmer { 0%{background-position:-120% 0;} 100%{background-position:220% 0;} }
   @keyframes gl-track { 0%{opacity:0;letter-spacing:2px;} 100%{opacity:1;letter-spacing:3px;} }
   #app-loader{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:radial-gradient(120% 120% at 50% 38%, #1c1a16 0%, #0c0b09 55%, #050505 100%);}
+  .dev-notice-overlay{position:fixed;inset:0;z-index:10000;display:flex;align-items:center;justify-content:center;background:rgba(5,6,5,.72);backdrop-filter:blur(3px);padding:20px;}
+  .dev-notice-modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:36px 32px;max-width:420px;width:100%;text-align:center;}
+  .dev-notice-icon{width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:rgba(181,135,74,.14);color:var(--gold);display:flex;align-items:center;justify-content:center;}
+  .dev-notice-icon svg{width:28px;height:28px;}
+  .dev-notice-modal h2{font-size:19px;margin:0 0 12px;color:var(--text);}
+  .dev-notice-modal p{font-size:14px;line-height:1.6;color:var(--text-soft);margin:0 0 24px;}
+  .dev-notice-btn{width:100%;}
   #app-loader.hidden{display:none;}
   .gl-wrap{display:flex;flex-direction:column;align-items:center;gap:26px;}
   .gl-ring-box{position:relative;width:150px;height:150px;display:flex;align-items:center;justify-content:center;}
@@ -432,6 +440,10 @@
   #view-mip .mip-tile.sev-warn{ background:#C79A3F; }
   #view-mip .mip-tile.sev-bad{ background:#C05A50; }
   #view-mip .mip-tile.sev-none{ background:#B9BEB6; }
+  #view-mip #mip-status-map-wrap{ margin-bottom:18px; }
+  #view-mip #mip-status-map{ height:480px; border-radius:12px; border:1px solid var(--border); overflow:hidden; }
+  #view-mip .mip-leaflet-popup h4{ margin:0 0 4px; font-size:13px; }
+  #view-mip .mip-leaflet-popup p{ margin:0; font-size:12px; color:#555; }
 </style>
 </head>
 <body>
@@ -449,6 +461,17 @@
     </div>
     <div class="gl-divider"></div>
     <div class="gl-label">Carregando</div>
+  </div>
+</div>
+
+<div id="dev-notice-overlay" class="dev-notice-overlay hidden">
+  <div class="dev-notice-modal card-shadow">
+    <div class="dev-notice-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    </div>
+    <h2>Ambiente em desenvolvimento</h2>
+    <p>Este site está em desenvolvimento. Os dados exibidos são fictícios e algumas funcionalidades podem apresentar instabilidades ou estar indisponíveis, por estarem sendo construídas ou em manutenção neste momento.</p>
+    <button class="btn-primary dev-notice-btn" onclick="dismissDevNotice()">Entendi</button>
   </div>
 </div>
 
@@ -848,11 +871,17 @@
     <section id="tab-mip-status" class="tab-panel">
       <div class="page-header"><h2>Status de Monitoramento</h2><p>Dias desde o último monitoramento e severidade mais recente, por talhão.</p></div>
       <div class="mip-view-toggle">
-        <button class="mip-view-btn active" id="mip-view-btn-mosaic" onclick="switchMipStatusView('mosaic')">Mosaico</button>
+        <button class="mip-view-btn active" id="mip-view-btn-map" onclick="switchMipStatusView('map')">Mapa</button>
+        <button class="mip-view-btn" id="mip-view-btn-mosaic" onclick="switchMipStatusView('mosaic')">Mosaico</button>
         <button class="mip-view-btn" id="mip-view-btn-table" onclick="switchMipStatusView('table')">Tabela</button>
       </div>
 
-      <div id="mip-status-mosaic" class="mip-mosaic"></div>
+      <div id="mip-status-map-wrap">
+        <div id="mip-status-map"></div>
+        <div id="mip-status-map-empty" class="empty hidden">Nenhum talhão desta fazenda tem geometria (polígono) cadastrada ainda — importe um KML/GeoJSON pra ver o mapa, ou use o Mosaico/Tabela por enquanto.</div>
+      </div>
+
+      <div id="mip-status-mosaic" class="mip-mosaic hidden"></div>
 
       <div id="mip-status-table-wrap" class="table-scroll hidden"><table class="data-table card-shadow">
         <thead><tr><th class="mip-status-farm-col hidden">Fazenda</th><th>Talhão</th><th>Safra</th><th>Última ocorrência</th><th>Dias sem monitorar</th><th>Severidade</th></tr></thead>
@@ -1427,6 +1456,7 @@
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const CONFIG_KEY = 'locks_config_v1';
@@ -1524,12 +1554,78 @@ function renderMipStatus(){
   }).join('');
 
   $('mip-status-empty').classList.toggle('hidden', cache.planning.length>0);
+  renderMipMap(rows);
 }
+
+let mipLeafletMap = null;
+let mipLeafletLayer = null;
+let mipStatusRowsCache = [];
+
+function renderMipMap(rows){
+  mipStatusRowsCache = rows;
+  const container = $('mip-status-map');
+  if(!container) return;
+  // só desenha de verdade se o contêiner já estiver visível (Leaflet não
+  // inicializa direito num elemento com display:none / largura zero)
+  if(container.offsetWidth === 0) return;
+  drawMipMap(rows);
+}
+
+function drawMipMap(rows){
+  const withGeo = rows.filter(({p}) => p.fields && p.fields.geometry);
+  const empty = $('mip-status-map-empty');
+  const container = $('mip-status-map');
+  if(!empty || !container) return;
+  empty.classList.toggle('hidden', withGeo.length>0);
+  container.classList.toggle('hidden', withGeo.length===0);
+  if(withGeo.length === 0) return;
+
+  if(!mipLeafletMap){
+    mipLeafletMap = L.map('mip-status-map');
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 19,
+      attribution: 'Tiles &copy; Esri — Source: Esri, Maxar, Earthstar Geographics'
+    }).addTo(mipLeafletMap);
+  }
+  if(mipLeafletLayer){ mipLeafletMap.removeLayer(mipLeafletLayer); mipLeafletLayer = null; }
+
+  const features = withGeo.map(({p, dias, fito, sev}) => ({
+    type: 'Feature',
+    geometry: p.fields.geometry,
+    properties: { code: p.fields.code, dias, sev, praga: fito ? fito.praga_doenca : null }
+  }));
+
+  mipLeafletLayer = L.geoJSON(features, {
+    style: f => {
+      const sev = f.properties.sev;
+      const cor = sev==='bad' ? '#C05A50' : sev==='warn' ? '#C79A3F' : sev==='ok' ? '#4C9A6A' : '#B9BEB6';
+      return { color:'#fff', weight:1.5, fillColor:cor, fillOpacity:0.72 };
+    },
+    onEachFeature: (f, layer) => {
+      const dias = f.properties.dias;
+      const diasTxt = dias===null ? 'Nunca monitorado' : `${dias} dia${dias===1?'':'s'} sem monitorar`;
+      const pragaTxt = f.properties.praga ? escapeHtml(f.properties.praga) : 'Sem ocorrência recente';
+      layer.bindPopup(`<div class="mip-leaflet-popup"><h4>${escapeHtml(f.properties.code)}</h4><p>${pragaTxt}</p><p>${diasTxt}</p></div>`);
+    }
+  }).addTo(mipLeafletMap);
+
+  mipLeafletMap.fitBounds(mipLeafletLayer.getBounds(), { padding: [20,20] });
+  setTimeout(() => mipLeafletMap.invalidateSize(), 30);
+}
+
 function switchMipStatusView(view){
+  $('mip-status-map-wrap').classList.toggle('hidden', view!=='map');
   $('mip-status-mosaic').classList.toggle('hidden', view!=='mosaic');
   $('mip-status-table-wrap').classList.toggle('hidden', view!=='table');
+  $('mip-view-btn-map').classList.toggle('active', view==='map');
   $('mip-view-btn-mosaic').classList.toggle('active', view==='mosaic');
   $('mip-view-btn-table').classList.toggle('active', view==='table');
+  if(view==='map'){
+    setTimeout(() => {
+      drawMipMap(mipStatusRowsCache);
+      if(mipLeafletMap) mipLeafletMap.invalidateSize();
+    }, 50);
+  }
 }
 
 function $(id){ return document.getElementById(id); }
@@ -1541,6 +1637,8 @@ function showOnly(id){
 }
 function showLoader(){ $('app-loader').classList.remove('hidden'); }
 function hideLoader(){ $('app-loader').classList.add('hidden'); }
+function showDevNotice(){ $('dev-notice-overlay').classList.remove('hidden'); }
+function dismissDevNotice(){ $('dev-notice-overlay').classList.add('hidden'); }
 function escapeHtml(str){
   if(str===null || str===undefined) return '';
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -1608,6 +1706,7 @@ async function handleAuthChange(session){
     await loadAllData();
     showOnly('view-hub');
   }
+  showDevNotice();
 }
 
 async function selectFarm(farmId, farmName){
@@ -1703,7 +1802,7 @@ const MODULE_INFO = {
 function enterModule(key){
   if(key === 'gestao'){ showOnly('view-app'); switchTab('dashboard'); return; }
   if(key === 'relatorios'){ showOnly('view-reports'); return; }
-  if(key === 'monitoramento'){ showOnly('view-mip'); switchTab('mip-status'); return; }
+  if(key === 'monitoramento'){ showOnly('view-mip'); switchTab('mip-status'); setTimeout(() => drawMipMap(mipStatusRowsCache), 60); return; }
   const info = MODULE_INFO[key];
   if(!info) return;
   $('module-placeholder-title').textContent = info.title;
@@ -2150,7 +2249,7 @@ async function handleAddVariedade(e){
 }
 
 async function loadPlanning(){
-  const { data, error } = await sb.from('field_seasons').select('*, fields(code,farms(name)), seasons(label), crops(name,variety), variedades(codigo,descricao,tipo_variedade_id,tipos_variedade(descricao))').order('created_at', {ascending:false});
+  const { data, error } = await sb.from('field_seasons').select('*, fields(code,geometry,farms(name)), seasons(label), crops(name,variety), variedades(codigo,descricao,tipo_variedade_id,tipos_variedade(descricao))').order('created_at', {ascending:false});
   if(error){ console.error(error); return; }
   const fieldIds = new Set(cache.fields.map(f=>f.id));
   cache.planning = (data || []).filter(p => fieldIds.has(p.field_id));
