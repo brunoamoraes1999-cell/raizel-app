@@ -444,13 +444,15 @@
   #view-mip .mip-leaflet-popup p{ margin:0; font-size:12px; color:#555; }
 
   /* ===== Sistema de Gestão: réplica fiel do PIMS Lite enviado (só escopo técnico em #view-app + logo Raizel) ===== */
-  /* Blindagem: o CSS global da Raizel define input/select/textarea/button
-     sem escopo (ex: "input{background:...}"), o que vazava para dentro do
-     PIMS Lite e pintava de preto os campos que o HTML original não estilizava
-     explicitamente (ex: os filtros da grid). Isso devolve o padrão puro do
-     navegador só aqui dentro, antes das regras do PIMS Lite, sem alterar nada
-     do conteúdo enviado. */
-  #view-app input, #view-app select, #view-app textarea, #view-app button {
+  /* Blindagem: o CSS global da Raizel define várias tags sem escopo
+     (input/select/textarea/button, e também "nav{display:flex;flex:1;...}"
+     — que atingia a própria <nav class="sidebar"> do PIMS Lite e fazia ela
+     esticar até ~50% da largura da tela). Isso devolve o padrão puro do
+     navegador para TODO elemento aqui dentro, antes de qualquer regra do
+     PIMS Lite entrar em cena — as regras dele (mais específicas, por já
+     terem classe própria) continuam vencendo por cima normalmente. Nenhum
+     valor do conteúdo enviado foi alterado, isso só neutraliza CSS de fora. */
+  #view-app, #view-app * {
     all: revert;
   }
 
