@@ -531,7 +531,7 @@
   #view-app .sidebar {
     width: 260px;
     flex-shrink: 0;
-    background: white;
+    background: var(--sidebar-bg);
     border-right: 1px solid var(--border);
     overflow-y: auto;
     padding-bottom: 24px;
@@ -578,8 +578,8 @@
   #view-app .topbar{ background:#FFFFFF; }
   #view-app .sg-topbar-title{ font-weight:700; font-size:14.5px; color:var(--text); flex-shrink:0; padding-right:16px; border-right:1px solid var(--border); margin-right:2px; white-space:nowrap; }
   #view-app .sg-topbar-title span{ color:var(--gold); font-weight:700; margin-left:3px; }
-  #view-app .back-to-hub{ color:var(--text-muted); }
-  #view-app .back-to-hub:hover{ background:rgba(12,59,42,.06); color:var(--text); }
+  #view-app .back-to-hub{ color:#9AA6A0; }
+  #view-app .back-to-hub:hover{ background:rgba(255,255,255,.06); color:#fff; }
   #view-app .profile-name-block .pname{ color:var(--text); }
   #view-app .pd-name{ color:var(--text); }
   #view-app .profile-dropdown button:hover{ background:rgba(12,59,42,.05); }
@@ -601,7 +601,7 @@
     background: var(--blue-100);
   }
   #view-app .menu-group {
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(255,255,255,.08);
   }
   #view-app .menu-title {
     display: flex;
@@ -609,8 +609,8 @@
     gap: 6px;
     width: 100%;
     border: none;
-    background: var(--blue-100);
-    color: var(--blue-900);
+    background: rgba(181,135,74,.16);
+    color: #D9B27C;
     font-weight: 700;
     padding: 8px 14px;
     font-size: 12.5px;
@@ -632,7 +632,8 @@
     background: none;
     padding: 6px 14px 2px;
     font-size: 11px;
-    color: var(--text-muted);
+    color: #B5874A;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.3px;
     font-family: inherit;
@@ -648,23 +649,23 @@
   #view-app .menu-link {
     display: block;
     padding: 6px 20px;
-    color: var(--text);
+    color: #C7CDC9;
     text-decoration: none;
     font-size: 12.5px;
     border-left: 3px solid transparent;
   }
   #view-app .menu-link:hover {
-    background: var(--blue-50);
+    background: rgba(255,255,255,.05);
   }
   #view-app .menu-link.active {
-    background: var(--blue-100);
-    border-left-color: var(--blue-500);
-    color: var(--blue-900);
+    background: rgba(181,135,74,.16);
+    border-left-color: var(--gold);
+    color: #fff;
     font-weight: 600;
   }
   #view-app .menu-link-home {
     font-weight: 600;
-    color: var(--blue-900);
+    color: #D9B27C;
   }
   #view-app .content {
     flex: 1;
