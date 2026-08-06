@@ -602,6 +602,19 @@
   }
   #view-app .menu-group {
     border-bottom: 1px solid rgba(255,255,255,.08);
+    padding: 6px 0;
+  }
+  #view-app .menu-title svg,
+  #view-app .menu-subtitle svg,
+  #view-app .menu-link-home svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  #view-app .menu-link-home {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   #view-app .menu-title {
     display: flex;
@@ -4421,17 +4434,27 @@ initSupabase();
     btn.setAttribute("aria-label", label);
   };
 
+  var SIDEBAR_ICONS = {
+    "inicio": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V10"/></svg>',
+    "Locais de Produção": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/><path d="M8 2v16"/><path d="M16 6v16"/></svg>',
+    "Calendário": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>',
+    "Culturas": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>',
+    "Administrativo": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+    "Equipamentos": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    "Insumos": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7L12 12l8.7-5"/><path d="M12 22V12"/></svg>',
+    "apontamentos": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>'
+  };
   App.renderSidebar = function () {
     var sb = document.getElementById("sidebar");
     var homeActive = STATE.route === "home" ? " active" : "";
     var html = '<button class="back-to-hub" onclick="showOnly(\'view-hub\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>Central de módulos</button>';
-    html += '<div class="menu-group"><button class="menu-link menu-link-home' + homeActive + '" onclick="App.navigate(\'home\')">Início</button></div>';
+    html += '<div class="menu-group"><button class="menu-link menu-link-home' + homeActive + '" onclick="App.navigate(\'home\')">' + SIDEBAR_ICONS["inicio"] + 'Início</button></div>';
     var tabelasCollapsed = !!STATE.collapsedGroups.tabelas;
     html += '<div class="menu-group"><button class="menu-title" onclick="App.toggleGroup(\'tabelas\')">' + caret(tabelasCollapsed) + 'Tabelas</button>';
     if (!tabelasCollapsed) {
       TABELAS_MENU.forEach(function (group) {
         var subCollapsed = !!STATE.collapsedGroups[group.titulo];
-        html += '<div class="menu-subgroup"><button class="menu-subtitle" onclick="App.toggleGroup(\'' + group.titulo + '\')">' + caret(subCollapsed) + esc(group.titulo) + '</button>';
+        html += '<div class="menu-subgroup"><button class="menu-subtitle" onclick="App.toggleGroup(\'' + group.titulo + '\')">' + caret(subCollapsed) + (SIDEBAR_ICONS[group.titulo] || '') + esc(group.titulo) + '</button>';
         if (!subCollapsed) {
           group.itens.forEach(function (key) {
             var cfg = tabelaByKey(key);
@@ -4444,7 +4467,7 @@ initSupabase();
     }
     html += '</div>';
     var apontamentosCollapsed = !!STATE.collapsedGroups.apontamentos;
-    html += '<div class="menu-group"><button class="menu-title" onclick="App.toggleGroup(\'apontamentos\')">' + caret(apontamentosCollapsed) + 'Apontamentos</button>';
+    html += '<div class="menu-group"><button class="menu-title" onclick="App.toggleGroup(\'apontamentos\')">' + caret(apontamentosCollapsed) + SIDEBAR_ICONS["apontamentos"] + 'Apontamentos</button>';
     if (!apontamentosCollapsed) {
       APONTAMENTOS_MENU.forEach(function (item) {
         var active = STATE.route === "apontamento:" + item.route ? " active" : "";
