@@ -1975,6 +1975,7 @@ const DEFAULT_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 let sb = null;
 let currentUser = null;
 let cachedOrgId = null;
+let justLoggedIn = false;
 const cache = { farms:[], fields:[], crops:[], insumos:[], seasons:[], periodos:[], tiposVariedade:[], variedades:[], planning:[], serviceOrders:[], records:[], categoriasOcorrencia:[], ocorrenciasCatalogo:[], metodologia:[] };
 const statusLabel = {planejada:'Planejada', em_andamento:'Em andamento', encerrada:'Encerrada'};
 const recordTypeLabel = {semeadura:'Semeadura', trato_cultural:'Trato cultural', aplicacao:'Aplicação', monitoramento:'Monitoramento', colheita:'Colheita', preparo_solo:'Preparo de solo', outro:'Outro'};
@@ -2190,6 +2191,8 @@ let currentFarmId = null;
 let currentFarmName = '';
 
 async function handleAuthChange(session){
+  const showNoticeAfter = justLoggedIn;
+  justLoggedIn = false;
   if(!session){ showOnly('view-auth'); currentUser = null; cachedOrgId = null; return; }
   currentUser = session.user;
   const { data: profile, error } = await sb.from('profiles').select('id, organization_id, full_name, role').eq('id', currentUser.id).maybeSingle();
@@ -2216,7 +2219,7 @@ async function handleAuthChange(session){
     await loadAllData();
     showOnly('view-hub');
   }
-  showDevNotice();
+  if(showNoticeAfter){ showDevNotice(); }
 }
 
 async function selectFarm(farmId, farmName){
@@ -2386,8 +2389,9 @@ async function handleAuthSubmit(){
   $('auth-error').textContent = '';
   if(!email || !password){ $('auth-error').textContent = 'Preencha e-mail e senha.'; return; }
   showLoader();
+  justLoggedIn = true;
   const { error } = await sb.auth.signInWithPassword({email, password});
-  if(error){ hideLoader(); $('auth-error').textContent = traduzErroAuth(error.message); }
+  if(error){ hideLoader(); justLoggedIn = false; $('auth-error').textContent = traduzErroAuth(error.message); }
 }
 async function handleForgotPassword(e){
   e.preventDefault();
