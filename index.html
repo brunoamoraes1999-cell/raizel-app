@@ -445,16 +445,28 @@
   #view-mip .mip-leaflet-popup p{ margin:0; font-size:12px; color:#555; }
 
   /* ===== Sistema de Gestão: réplica fiel do PIMS Lite enviado (só escopo técnico em #view-app + logo Raizel) ===== */
-  /* Blindagem: o CSS global da Raizel define várias tags sem escopo
-     (input/select/textarea/button, e também "nav{display:flex;flex:1;...}"
-     — que atingia a própria <nav class="sidebar"> do PIMS Lite e fazia ela
-     esticar até ~50% da largura da tela). Isso devolve o padrão puro do
-     navegador para TODO elemento aqui dentro, antes de qualquer regra do
-     PIMS Lite entrar em cena — as regras dele (mais específicas, por já
-     terem classe própria) continuam vencendo por cima normalmente. Nenhum
-     valor do conteúdo enviado foi alterado, isso só neutraliza CSS de fora. */
-  #view-app, #view-app * {
-    all: revert;
+  /* Blindagem: o CSS global da Raizel define algumas tags sem escopo
+     (input/select/textarea/button, e "nav{display:flex;flex:1;...}").
+     A versão anterior disso usava "#view-app, #view-app * { all:revert }",
+     mas por ter um ID na frente, ela tinha especificidade MAIOR que classes
+     normais — e isso também estava derrubando os componentes reais da Raizel
+     (farm-switcher, search-box, profile-chip, back-to-hub) que agora moram
+     aqui dentro. A correção: usar :where(#view-app), que aplica o escopo sem
+     contar como especificidade — daí essa blindagem vence as tags soltas da
+     Raizel (mesma especificidade, mas definida depois), e perde de qualquer
+     coisa com classe própria (.farm-switcher, .search-box input, .btn, etc.),
+     que é exatamente o comportamento que queremos. */
+  :where(#view-app) input, :where(#view-app) select, :where(#view-app) textarea {
+    background: revert;
+    color: revert;
+  }
+  :where(#view-app) nav {
+    display: revert;
+    flex-grow: revert;
+    flex-shrink: revert;
+    flex-basis: revert;
+    gap: revert;
+    overflow-y: revert;
   }
   #view-app{display:flex;min-height:100vh;}
 
