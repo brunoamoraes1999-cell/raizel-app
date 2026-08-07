@@ -652,7 +652,8 @@
   }
   #view-app .mapa-leaflet {
     width: 100%;
-    height: 460px;
+    height: calc(100vh - 330px);
+    min-height: 420px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: #E9ECE6;
@@ -745,7 +746,8 @@
     color: var(--text);
   }
   #view-app .mapa-leaflet-review {
-    height: 380px;
+    height: calc(100vh - 480px);
+    min-height: 340px;
     margin-bottom: 14px;
   }
   #view-app .mapa-review-form {
