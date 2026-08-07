@@ -575,33 +575,13 @@
     font-size: 12.5px;
     margin: -4px 0 14px;
   }
-  #view-app .screen-mapa {
-    display: flex;
-    flex-direction: column;
-  }
   #view-app .mapa-layout {
     display: flex;
     gap: 16px;
-    align-items: stretch;
+    align-items: flex-start;
   }
-  #view-app .screen-mapa .mapa-layout {
-    flex: 1;
-    min-height: 0;
-  }
-  #view-app .screen-mapa .mapa-preview-col {
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-  #view-app .screen-mapa .mapa-leaflet-wrap {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-  }
-  #view-app .screen-mapa .mapa-leaflet {
-    flex: 1;
-    height: auto;
-    min-height: 300px;
+  #view-app .mapa-preview-col {
+    min-width: 0;
   }
   #view-app .mapa-list-col {
     width: 260px;
@@ -676,7 +656,8 @@
   #view-app .mapa-leaflet {
     width: 100%;
     height: calc(100vh - 330px);
-    min-height: 420px;
+    min-height: 380px;
+    max-height: 520px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: #E9ECE6;
@@ -786,7 +767,8 @@
   }
   #view-app .mapa-leaflet-review {
     height: calc(100vh - 480px);
-    min-height: 340px;
+    min-height: 300px;
+    max-height: 440px;
     margin-bottom: 14px;
   }
   #view-app .mapa-review-form {
