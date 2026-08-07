@@ -689,12 +689,28 @@
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  #view-app .mapa-info-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
   }
   #view-app .mapa-info-bar strong {
     color: var(--text);
   }
   #view-app .mapa-info-empty {
     text-align: center;
+    justify-content: center;
+  }
+  #view-app .mapa-edit-section {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
   }
   #view-app .mapa-modal-overlay {
     position: fixed;
@@ -2551,6 +2567,7 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/shpjs@4.0.4/dist/shp.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
@@ -4290,7 +4307,14 @@ initSupabase();
     mapaImportError: "",
     mapaLabelCols: [],
     mapaFarmFilterName: null,
-    mapaBaseLayer: "satelite"
+    mapaBaseLayer: "satelite",
+    mapaEditingId: null,
+    mapaEditSelected: [],
+    mapaEditAddStep: null,
+    mapaEditAddParse: null,
+    mapaEditAddParsing: false,
+    mapaEditAddForm: { coluna_nome: "", coluna_area: "" },
+    mapaEditAddError: ""
   };
 
   // ============================= grid genérico (render + filtro) =============================
@@ -4420,6 +4444,11 @@ initSupabase();
     STATE.mapaMappingForm = { periodo_id: "", coluna_nome: "", coluna_area: "" };
     STATE.mapaImportError = "";
     STATE.mapaLabelCols = [];
+    STATE.mapaEditingId = null;
+    STATE.mapaEditSelected = [];
+    STATE.mapaEditAddStep = null;
+    STATE.mapaEditAddParse = null;
+    STATE.mapaEditAddError = "";
     App.renderAll();
     document.getElementById("content").scrollTop = 0;
     if (route === "tabela:mapas") setTimeout(App.mapaDrawPreview, 60);
@@ -4453,6 +4482,31 @@ initSupabase();
       tr.style.display = visible ? "" : "none";
     });
   };
+
+  function mapaTalhaoImpact(talhaoIds) {
+    var osCount = 0;
+    DB.ordensServico.forEach(function (os) {
+      if ((os.locais || []).some(function (l) { return talhaoIds.indexOf(l.talhao_id) !== -1; })) osCount++;
+    });
+    var bmCount = DB.boletinsMecanizada.filter(function (b) {
+      return (b.detalhes || []).some(function (d) { return talhaoIds.indexOf(d.talhao_id) !== -1; });
+    }).length;
+    var bmanCount = DB.boletinsManual.filter(function (b) {
+      return (b.funcionarios || []).some(function (f) { return talhaoIds.indexOf(f.talhao_id) !== -1; });
+    }).length;
+    var bpCount = DB.boletinsProducao.filter(function (b) { return talhaoIds.indexOf(b.talhao_id) !== -1; }).length;
+    var bplCount = DB.boletinsPlantio.filter(function (b) { return talhaoIds.indexOf(b.talhao_id) !== -1; }).length;
+    return { osCount: osCount, bmCount: bmCount, bmanCount: bmanCount, bpCount: bpCount, bplCount: bplCount, total: osCount + bmCount + bmanCount + bpCount + bplCount };
+  }
+  function mapaImpactList(imp) {
+    var parts = [];
+    if (imp.osCount) parts.push(imp.osCount + " ordem(ns) de serviço");
+    if (imp.bmCount) parts.push(imp.bmCount + " boletim(ns) mecanizado(s)");
+    if (imp.bmanCount) parts.push(imp.bmanCount + " boletim(ns) manual(is)");
+    if (imp.bpCount) parts.push(imp.bpCount + " boletim(ns) de produção");
+    if (imp.bplCount) parts.push(imp.bplCount + " boletim(ns) de plantio");
+    return parts;
+  }
 
   App.select = function (id) {
     STATE.selectedId = id;
@@ -4498,6 +4552,17 @@ initSupabase();
     });
     if (STATE.form.id) {
       var row = find(cfg.collection, STATE.form.id);
+      if (cfg.key === "talhoes") {
+        var changedNameOrArea = row.codigo !== payload.codigo || row.descricao !== payload.descricao || row.area_produtiva_ha !== payload.area_produtiva_ha;
+        if (changedNameOrArea) {
+          var imp = mapaTalhaoImpact([row.id]);
+          var msg = 'Você está alterando código, descrição ou área deste talhão.';
+          if (imp.total) msg += '\n\nEle é referenciado em ' + mapaImpactList(imp).join(', ') + '. Esses registros continuam existindo, mas com o dado antigo do talhão nas telas que já foram salvas.';
+          else msg += '\n\nNenhum apontamento referencia esse talhão no momento.';
+          msg += '\n\nDeseja salvar mesmo assim?';
+          if (!confirm(msg)) return;
+        }
+      }
       Object.assign(row, payload);
     } else {
       payload.id = uid();
@@ -4510,8 +4575,16 @@ initSupabase();
   };
   App.tabelaDelete = function () {
     if (!STATE.selectedId) return;
-    if (!confirm("Excluir o registro selecionado?")) return;
     var cfg = tabelaByKey(STATE.route.split(":")[1]);
+    if (cfg.key === "talhoes") {
+      var imp = mapaTalhaoImpact([STATE.selectedId]);
+      var msg = 'Excluir este talhão?';
+      if (imp.total) msg += '\n\nEle é referenciado em ' + mapaImpactList(imp).join(', ') + ' — esses registros vão continuar existindo, mas apontando pra um talhão que não existe mais.';
+      else msg += '\n\nNenhum apontamento referencia esse talhão no momento.';
+      if (!confirm(msg)) return;
+    } else {
+      if (!confirm("Excluir o registro selecionado?")) return;
+    }
     DB[cfg.collection] = DB[cfg.collection].filter(function (r) { return r.id !== STATE.selectedId; });
     STATE.selectedId = null;
     persist();
@@ -4699,6 +4772,9 @@ initSupabase();
     if (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) {
       return '<div class="screen"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>' + renderMapaMappingReview() + '</div>';
     }
+    if (STATE.mapaEditingId) {
+      return renderMapaEditScreen(STATE.mapaEditingId);
+    }
     var html = '<div class="screen screen-mapa"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>';
     html += '<p class="mapa-lead">Importe o limite da fazenda por período de produção. Esse limite alimenta o cadastro de Talhões automaticamente.</p>';
 
@@ -4737,7 +4813,9 @@ initSupabase();
     html += '<div class="mapa-preview-col">';
     html += mapaMapWithToolbarHTML(selectedMapa ? (selectedMapa.colunas || []) : [], '');
     if (selectedMapa) {
-      html += '<div class="mapa-info-bar"><strong>' + esc(selectedMapa.nome_arquivo) + '</strong> &mdash; ' + esc(label('periodos', selectedMapa.periodo_id, 'descricao')) + ' &middot; ' + (selectedMapa.talhoes_criados || 0) + ' talhão(ões) criado(s) &middot; colunas: ' + esc((selectedMapa.colunas || []).join(', ')) + '</div>';
+      html += '<div class="mapa-info-bar"><div><strong>' + esc(selectedMapa.nome_arquivo) + '</strong> &mdash; ' + esc(label('periodos', selectedMapa.periodo_id, 'descricao')) + ' &middot; ' + (selectedMapa.talhoes_criados || 0) + ' talhão(ões) criado(s) &middot; colunas: ' + esc((selectedMapa.colunas || []).join(', ')) + '</div>';
+      html += '<div class="mapa-info-actions"><button type="button" class="btn small" onclick="App.mapaEditOpen(\'' + selectedMapa.id + '\')">Editar</button><button type="button" class="btn small danger" onclick="App.mapaDeleteMap(\'' + selectedMapa.id + '\')">Excluir</button></div>';
+      html += '</div>';
     } else {
       html += '<div class="mapa-info-bar mapa-info-empty">Importe um limite para ver a pré-visualização aqui.</div>';
     }
@@ -4748,6 +4826,245 @@ initSupabase();
     html += '</div>';
     return html;
   }
+
+  function renderMapaEditScreen(mapaId) {
+    var m = find('mapas', mapaId);
+    if (!m) { STATE.mapaEditingId = null; return renderMapaScreen(); }
+    var talhoes = DB.talhoes.filter(function (t) { return t.mapa_id === mapaId; });
+    var html = '<div class="screen screen-mapa"><div class="screen-header"><h1>Editando limite</h1><span class="screen-code">[LDPM0008]</span></div>';
+    html += '<p class="mapa-lead"><strong>' + esc(m.nome_arquivo) + '</strong> &mdash; ' + esc(label('periodos', m.periodo_id, 'descricao')) + '</p>';
+
+    html += mapaMapWithToolbarHTML(m.colunas || [], '');
+
+    html += '<div class="mapa-edit-section">';
+    html += '<div class="mapa-attr-title">Talhões deste limite (' + talhoes.length + ')</div>';
+    if (!talhoes.length) {
+      html += '<div class="mapa-list-empty">Nenhum talhão restante neste limite.</div>';
+    } else {
+      html += '<div class="grid-wrap mapa-attr-wrap"><table class="grid"><thead><tr><th style="width:34px;"></th><th>Código</th><th>Descrição</th><th>Área (ha)</th></tr></thead><tbody>';
+      talhoes.forEach(function (t) {
+        var checked = STATE.mapaEditSelected.indexOf(t.id) !== -1;
+        html += '<tr><td><input type="checkbox" onchange="App.mapaEditToggleTalhao(\'' + t.id + '\')"' + (checked ? ' checked' : '') + '></td>';
+        html += '<td>' + esc(t.codigo) + '</td><td>' + esc(t.descricao) + '</td><td>' + (t.area_produtiva_ha == null ? '' : t.area_produtiva_ha) + '</td></tr>';
+      });
+      html += '</tbody></table></div>';
+      html += '<div class="toolbar"><button class="btn danger" ' + (STATE.mapaEditSelected.length ? '' : 'disabled') + ' onclick="App.mapaEditDeleteSelected()">Excluir selecionados (' + STATE.mapaEditSelected.length + ')</button></div>';
+    }
+    html += '</div>';
+
+    html += '<div class="mapa-edit-section">';
+    html += '<div class="mapa-attr-title">Adicionar mais talhões a este limite</div>';
+    if (STATE.mapaEditAddStep === 'mapping' && STATE.mapaEditAddParse) {
+      var parse = STATE.mapaEditAddParse;
+      html += '<div class="mapa-review-head">' + esc(parse.fileName) + ' &mdash; ' + parse.geojson.features.length + ' geometria(s) encontrada(s)</div>';
+      html += '<div class="mapa-review-form" style="grid-template-columns:1fr 1fr;">';
+      html += '<label><span class="field-label required">Qual coluna representa o nome do talhão?</span>';
+      html += '<select onchange="App.mapaEditAddSetField(\'coluna_nome\', this.value)">' + mapaEditAddColumnOptionsHTML(parse.columns, STATE.mapaEditAddForm.coluna_nome) + '</select></label>';
+      html += '<label><span class="field-label">Coluna da área (ha) <span class="hint">(opcional)</span></span>';
+      html += '<select onchange="App.mapaEditAddSetField(\'coluna_area\', this.value)">' + mapaEditAddColumnOptionsHTML(parse.columns, STATE.mapaEditAddForm.coluna_area) + '</select></label>';
+      html += '</div>';
+      if (STATE.mapaEditAddError) html += '<div class="banner error">' + esc(STATE.mapaEditAddError) + '</div>';
+      html += '<div class="toolbar"><button class="btn" onclick="App.mapaEditAddCancel()">Cancelar</button><button class="btn primary" onclick="App.mapaEditAddConfirm()">Adicionar ao limite</button></div>';
+    } else {
+      html += '<label class="mapa-dropzone" id="mapa-edit-dropzone">';
+      html += '<input type="file" id="mapa-edit-file-input" accept=".zip,.kml,.kmz" style="display:none" onchange="App.mapaEditAddFileSelected(this.files)">';
+      html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+      html += '<div>Arraste o arquivo com os talhões faltantes ou <span class="mapa-dropzone-link">clique para procurar</span></div>';
+      html += '<div class="mapa-dropzone-hint">.zip (shapefile) &middot; .kml &middot; .kmz</div>';
+      html += '</label>';
+      if (STATE.mapaEditAddParsing) html += '<div class="mapa-modal-loading">Lendo arquivo&hellip;</div>';
+      if (STATE.mapaEditAddError) html += '<div class="banner error">' + esc(STATE.mapaEditAddError) + '</div>';
+    }
+    html += '</div>';
+
+    html += '<div class="toolbar"><button class="btn" onclick="App.mapaEditClose()">Voltar</button></div>';
+    html += '</div>';
+    return html;
+  }
+  function mapaEditAddColumnOptionsHTML(columns, selected) {
+    var opts = '<option value="">-</option>';
+    (columns || []).forEach(function (c) {
+      opts += '<option value="' + esc(c) + '"' + (c === selected ? ' selected' : '') + '>' + esc(c) + '</option>';
+    });
+    return opts;
+  }
+  function mapaCheckOverlap(newFeatures) {
+    if (typeof turf === 'undefined') return null;
+    var existing = DB.talhoes.filter(function (t) { return t.geometry; });
+    for (var i = 0; i < newFeatures.length; i++) {
+      var nf = { type: 'Feature', properties: {}, geometry: newFeatures[i].geometry };
+      for (var j = 0; j < existing.length; j++) {
+        var ef = { type: 'Feature', properties: {}, geometry: existing[j].geometry };
+        try {
+          if (turf.booleanIntersects(nf, ef)) return existing[j];
+        } catch (e) { /* geometria inválida para o teste, ignora o par */ }
+      }
+    }
+    return null;
+  }
+
+  App.mapaEditOpen = function (mapaId) {
+    STATE.mapaEditingId = mapaId;
+    STATE.mapaEditSelected = [];
+    STATE.mapaEditAddStep = null;
+    STATE.mapaEditAddParse = null;
+    STATE.mapaEditAddForm = { coluna_nome: "", coluna_area: "" };
+    STATE.mapaEditAddError = "";
+    STATE.mapaSelectedId = mapaId;
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+  App.mapaEditClose = function () {
+    STATE.mapaEditingId = null;
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+  App.mapaEditToggleTalhao = function (talhaoId) {
+    var idx = STATE.mapaEditSelected.indexOf(talhaoId);
+    if (idx === -1) STATE.mapaEditSelected.push(talhaoId); else STATE.mapaEditSelected.splice(idx, 1);
+    App.renderContent();
+  };
+  App.mapaEditDeleteSelected = function () {
+    var ids = STATE.mapaEditSelected;
+    if (!ids.length) return;
+    var imp = mapaTalhaoImpact(ids);
+    var msg = ids.length + ' talhão(ões) selecionado(s) será(ão) removido(s) deste limite e do cadastro de Talhões.';
+    if (imp.total) msg += '\n\nEles são referenciados em ' + mapaImpactList(imp).join(', ') + ' — esses registros vão continuar existindo, mas apontando pra talhões que não existem mais.';
+    else msg += '\n\nNenhum apontamento referencia esses talhões no momento.';
+    msg += '\n\nDeseja continuar?';
+    if (!confirm(msg)) return;
+    var m = find('mapas', STATE.mapaEditingId);
+    var removedGeomKeys = {};
+    DB.talhoes.filter(function (t) { return ids.indexOf(t.id) !== -1; }).forEach(function (t) {
+      if (t.geometry) removedGeomKeys[JSON.stringify(t.geometry)] = true;
+    });
+    DB.talhoes = DB.talhoes.filter(function (t) { return ids.indexOf(t.id) === -1; });
+    if (m) {
+      m.geojson.features = m.geojson.features.filter(function (f) {
+        return !(f.geometry && removedGeomKeys[JSON.stringify(f.geometry)]);
+      });
+      m.talhoes_criados = DB.talhoes.filter(function (t) { return t.mapa_id === m.id; }).length;
+    }
+    STATE.mapaEditSelected = [];
+    persist();
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+  App.mapaEditAddFileSelected = function (fileList) {
+    if (!fileList || !fileList.length) return;
+    var file = fileList[0];
+    STATE.mapaEditAddError = '';
+    STATE.mapaEditAddParsing = true;
+    App.renderContent();
+    setTimeout(App.mapaWireEditDropzone, 30);
+    mapaParseFile(file).then(function (result) {
+      STATE.mapaEditAddParsing = false;
+      if (!result.features.length) {
+        STATE.mapaEditAddError = 'Não encontramos nenhuma geometria nesse arquivo.';
+        App.renderContent();
+        setTimeout(App.mapaWireEditDropzone, 30);
+        return;
+      }
+      var conflict = mapaCheckOverlap(result.features);
+      if (conflict) {
+        STATE.mapaEditAddError = 'Esse limite se sobrepõe ao talhão já cadastrado "' + conflict.descricao + '" (' + conflict.codigo + '). Não é possível importar.';
+        App.renderContent();
+        setTimeout(App.mapaWireEditDropzone, 30);
+        return;
+      }
+      STATE.mapaEditAddParse = {
+        fileName: file.name,
+        geojson: { type: 'FeatureCollection', features: result.features },
+        columns: result.columns
+      };
+      STATE.mapaEditAddForm = { coluna_nome: result.columns[0] || '', coluna_area: '' };
+      STATE.mapaEditAddStep = 'mapping';
+      App.renderContent();
+      setTimeout(App.mapaDrawPreview, 30);
+    }).catch(function (err) {
+      STATE.mapaEditAddParsing = false;
+      STATE.mapaEditAddError = 'Não foi possível ler esse arquivo (' + ((err && err.message) || 'formato inválido') + ').';
+      App.renderContent();
+      setTimeout(App.mapaWireEditDropzone, 30);
+    });
+  };
+  App.mapaWireEditDropzone = function () {
+    var zone = document.getElementById('mapa-edit-dropzone');
+    if (!zone) return;
+    zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) App.mapaEditAddFileSelected(e.dataTransfer.files);
+    });
+  };
+  App.mapaEditAddSetField = function (name, value) {
+    STATE.mapaEditAddForm[name] = value;
+    App.renderContent();
+  };
+  App.mapaEditAddCancel = function () {
+    STATE.mapaEditAddStep = null;
+    STATE.mapaEditAddParse = null;
+    STATE.mapaEditAddError = '';
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+  App.mapaEditAddConfirm = function () {
+    var f = STATE.mapaEditAddForm;
+    if (!f.coluna_nome) { STATE.mapaEditAddError = 'Selecione a coluna do nome do talhão.'; App.renderContent(); return; }
+    var m = find('mapas', STATE.mapaEditingId);
+    if (!m) return;
+    var parse = STATE.mapaEditAddParse;
+    var novosTalhoes = parse.geojson.features.map(function (feat, i) {
+      var props = feat.properties || {};
+      var nome = props[f.coluna_nome];
+      if (nome === undefined || nome === null || nome === '') nome = parse.fileName + ' #' + (i + 1);
+      var areaRaw = f.coluna_area ? props[f.coluna_area] : null;
+      var area = areaRaw === null || areaRaw === undefined || areaRaw === '' ? null : Number(areaRaw);
+      return {
+        id: uid(),
+        codigo: String(nome),
+        descricao: String(nome),
+        setor_id: null,
+        cultura_id: null,
+        area_produtiva_ha: (area !== null && !isNaN(area)) ? area : null,
+        periodo_id: m.periodo_id,
+        safra_id: (find('periodos', m.periodo_id) || {}).safra_id || null,
+        geometry: feat.geometry,
+        mapa_id: m.id
+      };
+    });
+    DB.talhoes = DB.talhoes.concat(novosTalhoes);
+    m.geojson.features = m.geojson.features.concat(parse.geojson.features);
+    var novasColunas = parse.columns.filter(function (c) { return (m.colunas || []).indexOf(c) === -1; });
+    m.colunas = (m.colunas || []).concat(novasColunas);
+    m.talhoes_criados = DB.talhoes.filter(function (t) { return t.mapa_id === m.id; }).length;
+    persist();
+    STATE.mapaEditAddStep = null;
+    STATE.mapaEditAddParse = null;
+    STATE.mapaEditAddError = '';
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+  App.mapaDeleteMap = function (mapaId) {
+    var m = find('mapas', mapaId);
+    if (!m) return;
+    var talhaoIds = DB.talhoes.filter(function (t) { return t.mapa_id === mapaId; }).map(function (t) { return t.id; });
+    var imp = mapaTalhaoImpact(talhaoIds);
+    var msg = 'Excluir o limite "' + m.nome_arquivo + '"? Isso remove ' + talhaoIds.length + ' talhão(ões) do cadastro de Talhões.';
+    if (imp.total) msg += '\n\nEles são referenciados em ' + mapaImpactList(imp).join(', ') + ' — esses registros vão continuar existindo, mas apontando pra talhões que não existem mais.';
+    else msg += '\n\nNenhum apontamento referencia esses talhões no momento.';
+    if (!confirm(msg)) return;
+    DB.mapas = DB.mapas.filter(function (x) { return x.id !== mapaId; });
+    DB.talhoes = DB.talhoes.filter(function (t) { return t.mapa_id !== mapaId; });
+    persist();
+    if (STATE.mapaSelectedId === mapaId) STATE.mapaSelectedId = null;
+    if (STATE.mapaEditingId === mapaId) STATE.mapaEditingId = null;
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+
 
   App.mapaOpenImport = function () {
     STATE.mapaModalStep = 'upload';
