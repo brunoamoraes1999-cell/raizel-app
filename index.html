@@ -4905,6 +4905,7 @@ initSupabase();
     var idx = STATE.mapaEditSelected.indexOf(talhaoId);
     if (idx === -1) STATE.mapaEditSelected.push(talhaoId); else STATE.mapaEditSelected.splice(idx, 1);
     App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
   };
   App.mapaEditDeleteSelected = function () {
     var ids = STATE.mapaEditSelected;
@@ -5228,9 +5229,11 @@ initSupabase();
   var mapaActiveLayer = null;
   var mapaLabelLayer = null;
   var mapaSelectedLayer = null;
+  var mapaLastDrawnKey = null;
   var MAPA_STYLE_NORMAL = { color: '#B5874A', weight: 2, fillColor: '#B5874A', fillOpacity: 0.15 };
   var MAPA_STYLE_HOVER = { weight: 3, fillOpacity: 0.3 };
   var MAPA_STYLE_SELECTED = { color: '#FFD166', weight: 4, fillColor: '#FFD166', fillOpacity: 0.35 };
+  var MAPA_STYLE_MARKED = { color: '#E0635A', weight: 3, fillColor: '#E0635A', fillOpacity: 0.4 };
 
   function mapaFeaturePopupHTML(props, columns) {
     var html = '<div class="mapa-leaflet-popup">';
@@ -5264,15 +5267,29 @@ initSupabase();
   App.mapaDrawPreview = function () {
     var el = document.getElementById('mapa-leaflet');
     if (!el || typeof L === 'undefined') return;
-    if (mapaLeafletMap) { try { mapaLeafletMap.remove(); } catch (e) {} mapaLeafletMap = null; mapaActiveLayer = null; mapaLabelLayer = null; mapaSelectedLayer = null; }
     var geojson = null, columns = [];
     if (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) {
       geojson = STATE.mapaParse.geojson;
       columns = STATE.mapaParse.columns;
+    } else if (STATE.mapaEditingId && STATE.mapaEditAddStep === 'mapping' && STATE.mapaEditAddParse) {
+      geojson = STATE.mapaEditAddParse.geojson;
+      columns = STATE.mapaEditAddParse.columns;
     } else if (STATE.mapaSelectedId) {
       var m = find('mapas', STATE.mapaSelectedId);
       if (m) { geojson = m.geojson; columns = m.colunas || []; }
     }
+    var currentKey = (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) ? ('parse:' + STATE.mapaParse.fileName) :
+      (STATE.mapaEditingId && STATE.mapaEditAddStep === 'mapping' && STATE.mapaEditAddParse) ? ('editparse:' + STATE.mapaEditAddParse.fileName) :
+      STATE.mapaSelectedId ? ('map:' + STATE.mapaSelectedId) : null;
+    var prevView = null;
+    if (mapaLeafletMap) {
+      if (mapaLastDrawnKey === currentKey) {
+        try { prevView = { center: mapaLeafletMap.getCenter(), zoom: mapaLeafletMap.getZoom() }; } catch (e) {}
+      }
+      try { mapaLeafletMap.remove(); } catch (e) {}
+      mapaLeafletMap = null; mapaActiveLayer = null; mapaLabelLayer = null; mapaSelectedLayer = null;
+    }
+    mapaLastDrawnKey = currentKey;
     mapaLeafletMap = L.map(el, { attributionControl: false }).setView([-13, -55], 4);
     if (STATE.mapaBaseLayer === 'topo') {
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mapaLeafletMap);
@@ -5283,12 +5300,22 @@ initSupabase();
     if (geojson && geojson.features && geojson.features.length) {
       var labelCols = (STATE.mapaLabelCols || []).filter(function (c) { return columns.indexOf(c) !== -1; });
       var labelMarkers = [];
+      var markedGeomKeys = {};
+      if (STATE.mapaEditingId && STATE.mapaEditSelected && STATE.mapaEditSelected.length) {
+        DB.talhoes.filter(function (t) { return STATE.mapaEditSelected.indexOf(t.id) !== -1; }).forEach(function (t) {
+          if (t.geometry) markedGeomKeys[JSON.stringify(t.geometry)] = true;
+        });
+      }
       mapaActiveLayer = L.geoJSON(geojson, {
-        style: MAPA_STYLE_NORMAL,
+        style: function (feature) {
+          if (feature && feature.geometry && markedGeomKeys[JSON.stringify(feature.geometry)]) return MAPA_STYLE_MARKED;
+          return MAPA_STYLE_NORMAL;
+        },
         onEachFeature: function (feature, lyr) {
+          var isMarked = feature.geometry && markedGeomKeys[JSON.stringify(feature.geometry)];
           lyr.bindPopup(mapaFeaturePopupHTML(feature.properties, columns));
-          lyr.on('mouseover', function () { if (lyr !== mapaSelectedLayer) lyr.setStyle(MAPA_STYLE_HOVER); });
-          lyr.on('mouseout', function () { if (lyr !== mapaSelectedLayer) lyr.setStyle(MAPA_STYLE_NORMAL); });
+          lyr.on('mouseover', function () { if (lyr !== mapaSelectedLayer && !isMarked) lyr.setStyle(MAPA_STYLE_HOVER); });
+          lyr.on('mouseout', function () { if (lyr !== mapaSelectedLayer && !isMarked) lyr.setStyle(MAPA_STYLE_NORMAL); });
           lyr.on('click', function (e) {
             L.DomEvent.stopPropagation(e);
             mapaSelectFeatureLayer(lyr);
@@ -5315,7 +5342,11 @@ initSupabase();
       if (labelMarkers.length) {
         mapaLabelLayer = L.layerGroup(labelMarkers).addTo(mapaLeafletMap);
       }
-      try { mapaLeafletMap.fitBounds(mapaActiveLayer.getBounds(), { padding: [20, 20] }); } catch (e) {}
+      if (prevView) {
+        try { mapaLeafletMap.setView(prevView.center, prevView.zoom); } catch (e) { try { mapaLeafletMap.fitBounds(mapaActiveLayer.getBounds(), { padding: [20, 20] }); } catch (e2) {} }
+      } else {
+        try { mapaLeafletMap.fitBounds(mapaActiveLayer.getBounds(), { padding: [20, 20] }); } catch (e) {}
+      }
     }
   };
 
