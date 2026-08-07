@@ -569,6 +569,362 @@
     margin: 6px 0;
   }
 
+  /* ---------- Mapa de Limite ---------- */
+  #view-app .mapa-lead {
+    color: var(--text-muted);
+    font-size: 12.5px;
+    margin: -4px 0 14px;
+  }
+  #view-app .mapa-layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  #view-app .mapa-list-col {
+    width: 260px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  #view-app .mapa-list-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: var(--text-muted);
+  }
+  #view-app .mapa-list-empty {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    text-align: center;
+  }
+  #view-app .mapa-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 380px;
+    overflow-y: auto;
+  }
+  #view-app .mapa-list-item {
+    text-align: left;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 11px;
+    cursor: pointer;
+  }
+  #view-app .mapa-list-item:hover {
+    border-color: var(--gold);
+  }
+  #view-app .mapa-list-item.active {
+    border-color: var(--gold);
+    background: rgba(181,135,74,.08);
+  }
+  #view-app .mli-periodo {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    color: var(--gold);
+  }
+  #view-app .mli-file {
+    font-size: 12.5px;
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+  #view-app .mli-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+  #view-app .mapa-import-btn {
+    width: 100%;
+  }
+  #view-app .mapa-preview-col {
+    flex: 1;
+    min-width: 0;
+  }
+  #view-app .mapa-leaflet {
+    width: 100%;
+    height: 460px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #E9ECE6;
+  }
+  #view-app .mapa-info-bar {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+  }
+  #view-app .mapa-info-bar strong {
+    color: var(--text);
+  }
+  #view-app .mapa-info-empty {
+    text-align: center;
+  }
+  #view-app .mapa-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(14,18,16,.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    padding: 20px;
+  }
+  #view-app .mapa-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 22px 24px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 12px 32px rgba(0,0,0,.25);
+  }
+  #view-app .mapa-modal-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  #view-app .mapa-modal-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 4px 0 14px;
+  }
+  #view-app .mapa-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 28px 16px;
+    cursor: pointer;
+    color: var(--text-muted);
+  }
+  #view-app .mapa-dropzone svg {
+    width: 26px;
+    height: 26px;
+    color: var(--gold);
+  }
+  #view-app .mapa-dropzone.dragover {
+    border-color: var(--gold);
+    background: rgba(181,135,74,.06);
+  }
+  #view-app .mapa-dropzone-link {
+    color: var(--gold);
+    font-weight: 600;
+    text-decoration: underline;
+  }
+  #view-app .mapa-dropzone-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  #view-app .mapa-modal-loading {
+    text-align: center;
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-top: 10px;
+  }
+  #view-app .mapa-review-head {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+  #view-app .mapa-review-head strong {
+    color: var(--text);
+  }
+  #view-app .mapa-leaflet-review {
+    height: 380px;
+    margin-bottom: 14px;
+  }
+  #view-app .mapa-review-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 16px;
+    margin-bottom: 4px;
+  }
+  #view-app .mapa-review-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  #view-app .mapa-attr-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: var(--text-muted);
+    margin: 18px 0 8px;
+  }
+  #view-app .mapa-attr-wrap {
+    max-height: 320px;
+    overflow: auto;
+  }
+  #view-app .mapa-col-nome {
+    background: rgba(181,135,74,.14) !important;
+  }
+  #view-app .mapa-col-area {
+    background: rgba(76,154,106,.14) !important;
+  }
+  #view-app th.mapa-col-nome, #view-app th.mapa-col-area {
+    color: var(--text) !important;
+  }
+  #view-app .mapa-map-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  #view-app .tabela-filter-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+  }
+  #view-app .tabela-filter-field span {
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  #view-app .tabela-filter-field select {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    color: var(--text);
+  }
+  #view-app .tabela-filter-clear {
+    margin-left: auto;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--gold);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+  }
+  #view-app .mapa-baselayer-picker select {
+    font-size: 12px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    color: var(--text);
+  }
+  #view-app .mapa-label-picker-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+  #view-app .mapa-label-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  #view-app .mapa-label-chip {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: white;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  #view-app .mapa-label-chip:hover:not(.disabled) {
+    border-color: var(--gold);
+    color: var(--text);
+  }
+  #view-app .mapa-label-chip.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #171208;
+  }
+  #view-app .mapa-label-chip.disabled {
+    opacity: .4;
+    cursor: not-allowed;
+  }
+  #view-app .mapa-leaflet-wrap {
+    position: relative;
+  }
+  #view-app .mapa-recenter-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 400;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: none;
+    background: white;
+    color: #171208;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0,0,0,.3);
+  }
+  #view-app .mapa-recenter-btn:hover {
+    background: var(--gold);
+  }
+  #view-app .mapa-recenter-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  #view-app .mapa-leaflet-popup {
+    font-size: 12px;
+    max-width: 220px;
+    max-height: 220px;
+    overflow-y: auto;
+  }
+  #view-app .mapa-popup-row {
+    padding: 2px 0;
+    border-bottom: 1px solid #EEE;
+  }
+  #view-app .mapa-popup-row:last-child {
+    border-bottom: none;
+  }
+  #view-app .mapa-popup-key {
+    font-weight: 700;
+    color: #6C776E;
+  }
+  #view-app .mapa-popup-val {
+    color: #1C231D;
+  }
+  #view-app .mapa-label-marker {
+    background: rgba(14,18,16,.82);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,.4);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
   /* Shell compartilhado (topbar/sidebar reais da Raizel) recolorido pro
      mesmo estilo claro+dourado do módulo MIP — mesmos valores, mesma lógica. */
   #view-app .app-main, #view-app main{ background:var(--bg); }
@@ -991,6 +1347,18 @@
   #view-app .home-foot {
     color: var(--text-muted);
     font-size: 12px;
+  }
+  #view-app .home-reset-box {
+    margin-top: 24px;
+    padding: 14px 16px;
+    border: 1px dashed var(--border);
+    border-radius: 10px;
+    max-width: 480px;
+  }
+  #view-app .home-reset-box p {
+    margin: 0 0 10px;
+    font-size: 12px;
+    color: var(--text-muted);
   }
 
 
@@ -2114,6 +2482,9 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/shpjs@4.0.4/dist/shp.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tmcw/togeojson@5.8.1/dist/togeojson.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const CONFIG_KEY = 'locks_config_v1';
@@ -2374,6 +2745,7 @@ async function selectFarm(farmId, farmName){
   currentFarmName = farmName;
   document.querySelectorAll('.js-current-farm-name').forEach(el => el.textContent = farmName);
   document.querySelectorAll('.js-farm-switcher-wrap').forEach(el => el.classList.toggle('hidden', cache.farms.length <= 1));
+  if(window.App && window.App.mapaSyncFarmFilter) window.App.mapaSyncFarmFilter(farmId, farmName);
   const isAll = farmId === 'ALL';
   $('field-add-form-wrap').classList.toggle('hidden', isAll);
   $('fields-add-note').classList.toggle('hidden', !isAll);
@@ -3345,21 +3717,39 @@ initSupabase();
   function seedData() {
     return {
       fazendas: [
-        { id: "faz1", codigo: "07", descricao_abreviada: "COMPLEXO", descricao_completa: "COMPLEXO INDUSTRIAL", municipio: "Sapezal", area_ha: 3400 }
+        { id: "faz1", codigo: "07", descricao_abreviada: "RIO VERDE", descricao_completa: "FAZENDA RIO VERDE", municipio: "Sapezal", area_ha: 3400 },
+        { id: "faz2", codigo: "12", descricao_abreviada: "STA LUZIA", descricao_completa: "FAZENDA SANTA LUZIA", municipio: "Sorriso", area_ha: 5200 },
+        { id: "faz3", codigo: "18", descricao_abreviada: "BOA ESPERANCA", descricao_completa: "FAZENDA BOA ESPERANCA", municipio: "Rio Verde", area_ha: 2800 },
+        { id: "faz4", codigo: "25", descricao_abreviada: "AGUA LIMPA", descricao_completa: "FAZENDA AGUA LIMPA", municipio: "Luis Eduardo Magalhaes", area_ha: 4100 }
       ],
       setores: [
         { id: "set1", fazenda_id: "faz1", codigo: "01", descricao: "SETOR NORTE" },
-        { id: "set2", fazenda_id: "faz1", codigo: "02", descricao: "SETOR SUL" }
+        { id: "set2", fazenda_id: "faz1", codigo: "02", descricao: "SETOR SUL" },
+        { id: "set3", fazenda_id: "faz2", codigo: "01", descricao: "SETOR LESTE" },
+        { id: "set4", fazenda_id: "faz2", codigo: "02", descricao: "SETOR OESTE" },
+        { id: "set5", fazenda_id: "faz3", codigo: "01", descricao: "SETOR SEDE" },
+        { id: "set6", fazenda_id: "faz3", codigo: "02", descricao: "SETOR VARZEA" },
+        { id: "set7", fazenda_id: "faz4", codigo: "01", descricao: "SETOR CHAPADAO" },
+        { id: "set8", fazenda_id: "faz4", codigo: "02", descricao: "SETOR BAIXADA" }
       ],
       culturas: [
         { id: "cul1", codigo: "3", descricao: "ALGODAO", tipo: "Produtiva", unidade_estimativa: "@/Ha" },
         { id: "cul2", codigo: "7", descricao: "ARROZ", tipo: "Produtiva", unidade_estimativa: "Kg/Ha" },
-        { id: "cul3", codigo: "2", descricao: "BRACHIARIA", tipo: "Improdutiva", unidade_estimativa: "Kg/Ha" }
+        { id: "cul3", codigo: "2", descricao: "BRACHIARIA", tipo: "Improdutiva", unidade_estimativa: "Kg/Ha" },
+        { id: "cul4", codigo: "1", descricao: "SOJA", tipo: "Produtiva", unidade_estimativa: "Sc/Ha" },
+        { id: "cul5", codigo: "4", descricao: "MILHO", tipo: "Produtiva", unidade_estimativa: "Sc/Ha" },
+        { id: "cul6", codigo: "5", descricao: "SORGO", tipo: "Produtiva", unidade_estimativa: "Kg/Ha" },
+        { id: "cul7", codigo: "6", descricao: "PREPARO DE SOLO", tipo: "Improdutiva", unidade_estimativa: "Ha" }
       ],
       variedades: [
         { id: "var1", cultura_id: "cul1", codigo: "V-01", descricao: "FM 985" },
         { id: "var2", cultura_id: "cul1", codigo: "V-02", descricao: "FM 944" },
-        { id: "var3", cultura_id: "cul2", codigo: "V-03", descricao: "BRS ESMERALDA" }
+        { id: "var3", cultura_id: "cul2", codigo: "V-03", descricao: "BRS ESMERALDA" },
+        { id: "var4", cultura_id: "cul4", codigo: "V-04", descricao: "TMG 7062" },
+        { id: "var5", cultura_id: "cul4", codigo: "V-05", descricao: "NS 7667" },
+        { id: "var6", cultura_id: "cul5", codigo: "V-06", descricao: "DKB 390" },
+        { id: "var7", cultura_id: "cul5", codigo: "V-07", descricao: "AG 8088" },
+        { id: "var8", cultura_id: "cul6", codigo: "V-08", descricao: "BRS PONTA NEGRA" }
       ],
       talhoes: [
         { id: "tal1", setor_id: "set1", codigo: "T-01", descricao: "TALHAO 01", area_produtiva_ha: 120, cultura_id: "cul1" },
@@ -3368,78 +3758,150 @@ initSupabase();
         { id: "tal4", setor_id: "set2", codigo: "T-04", descricao: "TALHAO 04", area_produtiva_ha: 150, cultura_id: "cul1" },
         { id: "tal5", setor_id: "set2", codigo: "T-05", descricao: "TALHAO 05", area_produtiva_ha: 60, cultura_id: "cul3" }
       ],
+      mapas: [],
       safras: [
-        { id: "saf1", codigo: "2025/2026", descricao: "SAFRA 2025/2026", data_inicial: "2025-08-01", data_final: "2026-07-31" }
+        { id: "saf0", codigo: "2024/2025", descricao: "SAFRA 2024/2025", data_inicial: "2024-08-01", data_final: "2025-07-31" },
+        { id: "saf1", codigo: "2025/2026", descricao: "SAFRA 2025/2026", data_inicial: "2025-08-01", data_final: "2026-07-31" },
+        { id: "saf2", codigo: "2026/2027", descricao: "SAFRA 2026/2027", data_inicial: "2026-08-01", data_final: "2027-07-31" },
+        { id: "saf3", codigo: "2027/2028", descricao: "SAFRA 2027/2028", data_inicial: "2027-08-01", data_final: "2028-07-31" }
       ],
       periodos: [
-        { id: "per1", safra_id: "saf1", codigo: "1", descricao: "1a SAFRA", data_inicial: "2025-08-01", data_final: "2026-01-31" }
+        { id: "per2", safra_id: "saf0", codigo: "SOJ2425", descricao: "SOJA 24/25", cultura_id: "cul4", data_inicial: "2024-09-15", data_final: "2025-02-10" },
+        { id: "per3", safra_id: "saf0", codigo: "MILSF2425", descricao: "MILHO SAFRINHA 24/25", cultura_id: "cul5", data_inicial: "2025-02-15", data_final: "2025-07-20" },
+        { id: "per4", safra_id: "saf0", codigo: "SOR2425", descricao: "SORGO 24/25", cultura_id: "cul6", data_inicial: "2025-02-20", data_final: "2025-06-30" },
+        { id: "per5", safra_id: "saf1", codigo: "SOJ2526", descricao: "SOJA 25/26", cultura_id: "cul4", data_inicial: "2025-09-10", data_final: "2026-02-05" },
+        { id: "per6", safra_id: "saf1", codigo: "MIL2526", descricao: "MILHO 25/26", cultura_id: "cul5", data_inicial: "2025-09-20", data_final: "2026-03-15" },
+        { id: "per7", safra_id: "saf1", codigo: "ALG2526", descricao: "ALGODAO 25/26", cultura_id: "cul1", data_inicial: "2025-12-01", data_final: "2026-06-30" },
+        { id: "per8", safra_id: "saf1", codigo: "PRESOLO2526", descricao: "PREPARO DE SOLO 25/26", cultura_id: "cul7", data_inicial: "2025-08-05", data_final: "2025-09-05" },
+        { id: "per9", safra_id: "saf2", codigo: "SOJ2627", descricao: "SOJA 26/27", cultura_id: "cul4", data_inicial: "2026-09-12", data_final: "2027-02-08" },
+        { id: "per10", safra_id: "saf2", codigo: "MIL2627", descricao: "MILHO 26/27", cultura_id: "cul5", data_inicial: "2026-09-25", data_final: "2027-03-20" },
+        { id: "per11", safra_id: "saf2", codigo: "ALG2627", descricao: "ALGODAO 26/27", cultura_id: "cul1", data_inicial: "2026-12-05", data_final: "2027-07-01" },
+        { id: "per12", safra_id: "saf2", codigo: "SOR2627", descricao: "SORGO 26/27", cultura_id: "cul6", data_inicial: "2027-02-10", data_final: "2027-06-25" },
+        { id: "per13", safra_id: "saf3", codigo: "SOJ2728", descricao: "SOJA 27/28", cultura_id: "cul4", data_inicial: "2027-09-10", data_final: "2028-02-05" },
+        { id: "per14", safra_id: "saf3", codigo: "ALG2728", descricao: "ALGODAO 27/28", cultura_id: "cul1", data_inicial: "2027-12-01", data_final: "2028-06-30" }
       ],
       centrosCusto: [
         { id: "cc1", codigo: "1010", descricao: "PLANTIO", tipo: "Produção" },
-        { id: "cc2", codigo: "1020", descricao: "TRATOS CULTURAIS", tipo: "Produção" }
+        { id: "cc2", codigo: "1020", descricao: "TRATOS CULTURAIS", tipo: "Produção" },
+        { id: "cc3", codigo: "1030", descricao: "COLHEITA", tipo: "Produção" },
+        { id: "cc4", codigo: "1040", descricao: "PREPARO DE SOLO", tipo: "Produção" },
+        { id: "cc5", codigo: "2010", descricao: "MANUTENCAO DE FROTA", tipo: "Administrativo" },
+        { id: "cc6", codigo: "2020", descricao: "ADMINISTRATIVO GERAL", tipo: "Administrativo" }
       ],
       operacoes: [
         { id: "op1", codigo: "OP-01", descricao: "PULVERIZACAO", unidade_medida: "Ha", tipo: "Mecanizada" },
         { id: "op2", codigo: "OP-02", descricao: "COLHEITA", unidade_medida: "Ha", tipo: "Mecanizada" },
-        { id: "op3", codigo: "OP-03", descricao: "CAPINA MANUAL", unidade_medida: "Ha", tipo: "Manual" }
+        { id: "op3", codigo: "OP-03", descricao: "CAPINA MANUAL", unidade_medida: "Ha", tipo: "Manual" },
+        { id: "op4", codigo: "OP-04", descricao: "PLANTIO", unidade_medida: "Ha", tipo: "Mecanizada" },
+        { id: "op5", codigo: "OP-05", descricao: "ADUBACAO", unidade_medida: "Ha", tipo: "Mecanizada" },
+        { id: "op6", codigo: "OP-06", descricao: "DESSECACAO", unidade_medida: "Ha", tipo: "Mecanizada" },
+        { id: "op7", codigo: "OP-07", descricao: "GRADAGEM", unidade_medida: "Ha", tipo: "Mecanizada" },
+        { id: "op8", codigo: "OP-08", descricao: "TRANSPORTE INTERNO", unidade_medida: "Km", tipo: "Mecanizada" },
+        { id: "op9", codigo: "OP-09", descricao: "INSPECAO MANUAL", unidade_medida: "Ha", tipo: "Manual" }
       ],
       equipes: [
-        { id: "eq1", codigo: "EQ-01", descricao: "EQUIPE CAMPO 1" }
+        { id: "eq1", codigo: "EQ-01", descricao: "EQUIPE CAMPO 1" },
+        { id: "eq2", codigo: "EQ-02", descricao: "EQUIPE CAMPO 2" },
+        { id: "eq3", codigo: "EQ-03", descricao: "EQUIPE MECANIZADA" },
+        { id: "eq4", codigo: "EQ-04", descricao: "EQUIPE COLHEITA" }
       ],
       funcionarios: [
         { id: "fun1", codigo: "F001", nome: "JOAO SILVA", cargo: "Operador", equipe_id: "eq1", situacao: "Ativo" },
-        { id: "fun2", codigo: "F002", nome: "MARIA SOUZA", cargo: "Tratorista", equipe_id: "eq1", situacao: "Ativo" }
+        { id: "fun2", codigo: "F002", nome: "MARIA SOUZA", cargo: "Tratorista", equipe_id: "eq1", situacao: "Ativo" },
+        { id: "fun3", codigo: "F003", nome: "CARLOS PEREIRA", cargo: "Operador", equipe_id: "eq2", situacao: "Ativo" },
+        { id: "fun4", codigo: "F004", nome: "ANA OLIVEIRA", cargo: "Supervisora de Campo", equipe_id: "eq2", situacao: "Ativo" },
+        { id: "fun5", codigo: "F005", nome: "PEDRO ALMEIDA", cargo: "Tratorista", equipe_id: "eq3", situacao: "Ativo" },
+        { id: "fun6", codigo: "F006", nome: "LUCAS COSTA", cargo: "Operador de Colheitadeira", equipe_id: "eq4", situacao: "Ativo" },
+        { id: "fun7", codigo: "F007", nome: "FERNANDA LIMA", cargo: "Auxiliar de Campo", equipe_id: "eq1", situacao: "Ativo" },
+        { id: "fun8", codigo: "F008", nome: "RICARDO SANTOS", cargo: "Tratorista", equipe_id: "eq3", situacao: "Inativo" },
+        { id: "fun9", codigo: "F009", nome: "JULIANA MARTINS", cargo: "Auxiliar de Campo", equipe_id: "eq2", situacao: "Ativo" },
+        { id: "fun10", codigo: "F010", nome: "MARCOS FERREIRA", cargo: "Operador de Colheitadeira", equipe_id: "eq4", situacao: "Ativo" }
       ],
       equipamentos: [
         { id: "equ1", codigo: "EQP-001", tipo: "Trator", placa: "ABC1D23", modelo: "John Deere 8R", categoria_operacional: "Trator de Pneus" },
-        { id: "equ2", codigo: "EQP-002", tipo: "Pulverizador", placa: "", modelo: "Jacto Uniport 3030", categoria_operacional: "Autopropelido" }
+        { id: "equ2", codigo: "EQP-002", tipo: "Pulverizador", placa: "", modelo: "Jacto Uniport 3030", categoria_operacional: "Autopropelido" },
+        { id: "equ3", codigo: "EQP-003", tipo: "Colheitadeira", placa: "", modelo: "Case IH 8250", categoria_operacional: "Autopropelido" },
+        { id: "equ4", codigo: "EQP-004", tipo: "Plantadeira", placa: "", modelo: "Vance 32 linhas", categoria_operacional: "Implemento" },
+        { id: "equ5", codigo: "EQP-005", tipo: "Trator", placa: "DEF4G56", modelo: "New Holland T7", categoria_operacional: "Trator de Pneus" },
+        { id: "equ6", codigo: "EQP-006", tipo: "Caminhao", placa: "GHI7J89", modelo: "Volvo VM 260", categoria_operacional: "Transporte" },
+        { id: "equ7", codigo: "EQP-007", tipo: "Grade", placa: "", modelo: "Tatu PDA 32x28", categoria_operacional: "Implemento" }
       ],
       depositos: [
-        { id: "dep1", codigo: "DEP-01", descricao: "DEPOSITO CENTRAL" }
+        { id: "dep1", codigo: "DEP-01", descricao: "DEPOSITO CENTRAL" },
+        { id: "dep2", codigo: "DEP-02", descricao: "DEPOSITO SANTA FE" },
+        { id: "dep3", codigo: "DEP-03", descricao: "DEPOSITO BOA VISTA" }
       ],
       insumos: [
         { id: "ins1", codigo: "INS-001", descricao: "HERBICIDA XPTO", unidade_medida: "L", grupo: "Herbicida", tipo: "Defensivo", tipo_defensivo: "Herbicida" },
         { id: "ins2", codigo: "INS-002", descricao: "ADUBO NPK 20-05-20", unidade_medida: "Kg", grupo: "Fertilizante", tipo: "Adubo", tipo_defensivo: null },
-        { id: "ins3", codigo: "INS-003", descricao: "SEMENTE ALGODAO FM 985", unidade_medida: "Kg", grupo: "Semente", tipo: "Semente", tipo_defensivo: null }
+        { id: "ins3", codigo: "INS-003", descricao: "SEMENTE ALGODAO FM 985", unidade_medida: "Kg", grupo: "Semente", tipo: "Semente", tipo_defensivo: null },
+        { id: "ins4", codigo: "INS-004", descricao: "SEMENTE SOJA TMG 7062", unidade_medida: "Kg", grupo: "Semente", tipo: "Semente", tipo_defensivo: null },
+        { id: "ins5", codigo: "INS-005", descricao: "SEMENTE MILHO DKB 390", unidade_medida: "Kg", grupo: "Semente", tipo: "Semente", tipo_defensivo: null },
+        { id: "ins6", codigo: "INS-006", descricao: "FUNGICIDA PRIORI XTRA", unidade_medida: "L", grupo: "Fungicida", tipo: "Defensivo", tipo_defensivo: "Fungicida" },
+        { id: "ins7", codigo: "INS-007", descricao: "INSETICIDA ENGEO PLENO", unidade_medida: "L", grupo: "Inseticida", tipo: "Defensivo", tipo_defensivo: "Inseticida" },
+        { id: "ins8", codigo: "INS-008", descricao: "DESSECANTE GLIFOSATO", unidade_medida: "L", grupo: "Herbicida", tipo: "Defensivo", tipo_defensivo: "Herbicida" },
+        { id: "ins9", codigo: "INS-009", descricao: "ADUBO NPK 08-28-16", unidade_medida: "Kg", grupo: "Fertilizante", tipo: "Adubo", tipo_defensivo: null },
+        { id: "ins10", codigo: "INS-010", descricao: "UREIA 45%", unidade_medida: "Kg", grupo: "Fertilizante", tipo: "Adubo", tipo_defensivo: null },
+        { id: "ins11", codigo: "INS-011", descricao: "INOCULANTE SOJA", unidade_medida: "L", grupo: "Inoculante", tipo: "Adubo", tipo_defensivo: null },
+        { id: "ins12", codigo: "INS-012", descricao: "OLEO DIESEL S10", unidade_medida: "L", grupo: "Combustivel", tipo: "Outro", tipo_defensivo: null }
       ],
       ordensServico: [
-        {
-          id: "os1", numero: 1, data_abertura: "2025-09-10", data_encerramento: null, safra_id: "saf1", periodo_id: "per1",
-          equipe_id: "eq1", centro_custo_id: "cc2", operacao_id: "op1", status: "Aberta", observacao: "OS de demonstração",
-          locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }]
-        },
-        {
-          id: "os2", numero: 2, data_abertura: "2025-08-20", data_encerramento: "2025-08-25", safra_id: "saf1", periodo_id: "per1",
-          equipe_id: "eq1", centro_custo_id: "cc1", operacao_id: "op2", status: "Encerrada", observacao: "OS já encerrada (exemplo)",
-          locais: [{ talhao_id: "tal4", area: 150 }]
-        }
+        { id: "os1", numero: 1, data_abertura: "2025-09-10", data_encerramento: null, safra_id: "saf1", periodo_id: "per5", equipe_id: "eq1", centro_custo_id: "cc2", operacao_id: "op1", status: "Aberta", observacao: "OS de demonstração", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }] },
+        { id: "os2", numero: 2, data_abertura: "2025-08-20", data_encerramento: "2025-08-25", safra_id: "saf1", periodo_id: "per8", equipe_id: "eq1", centro_custo_id: "cc1", operacao_id: "op2", status: "Encerrada", observacao: "OS já encerrada (exemplo)", locais: [{ talhao_id: "tal4", area: 150 }] },
+        { id: "os3", numero: 3, data_abertura: "2024-09-20", data_encerramento: "2024-10-02", safra_id: "saf0", periodo_id: "per2", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Encerrada", observacao: "Plantio de soja 24/25", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }, { talhao_id: "tal3", area: 80 }] },
+        { id: "os4", numero: 4, data_abertura: "2025-01-15", data_encerramento: "2025-02-05", safra_id: "saf0", periodo_id: "per2", equipe_id: "eq4", centro_custo_id: "cc3", operacao_id: "op2", status: "Encerrada", observacao: "Colheita de soja 24/25", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }] },
+        { id: "os5", numero: 5, data_abertura: "2025-02-18", data_encerramento: "2025-02-20", safra_id: "saf0", periodo_id: "per3", equipe_id: "eq1", centro_custo_id: "cc4", operacao_id: "op4", status: "Encerrada", observacao: "Plantio milho safrinha", locais: [{ talhao_id: "tal4", area: 150 }] },
+        { id: "os6", numero: 6, data_abertura: "2025-06-10", data_encerramento: "2025-06-28", safra_id: "saf0", periodo_id: "per3", equipe_id: "eq4", centro_custo_id: "cc3", operacao_id: "op2", status: "Encerrada", observacao: "Colheita milho safrinha", locais: [{ talhao_id: "tal4", area: 150 }] },
+        { id: "os7", numero: 7, data_abertura: "2025-08-06", data_encerramento: "2025-08-18", safra_id: "saf1", periodo_id: "per8", equipe_id: "eq3", centro_custo_id: "cc4", operacao_id: "op7", status: "Encerrada", observacao: "Gradagem pré-safra", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }, { talhao_id: "tal3", area: 80 }, { talhao_id: "tal4", area: 150 }, { talhao_id: "tal5", area: 60 }] },
+        { id: "os8", numero: 8, data_abertura: "2025-09-14", data_encerramento: "2025-09-25", safra_id: "saf1", periodo_id: "per5", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Encerrada", observacao: "Plantio soja 25/26", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }, { talhao_id: "tal3", area: 80 }] },
+        { id: "os9", numero: 9, data_abertura: "2025-10-20", data_encerramento: null, safra_id: "saf1", periodo_id: "per5", equipe_id: "eq1", centro_custo_id: "cc2", operacao_id: "op1", status: "Aberta", observacao: "Pulverização pós-emergente soja", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }] },
+        { id: "os10", numero: 10, data_abertura: "2025-11-05", data_encerramento: null, safra_id: "saf1", periodo_id: "per5", equipe_id: "eq1", centro_custo_id: "cc2", operacao_id: "op5", status: "Aberta", observacao: "Adubação de cobertura", locais: [{ talhao_id: "tal3", area: 80 }] },
+        { id: "os11", numero: 11, data_abertura: "2025-09-22", data_encerramento: "2025-10-05", safra_id: "saf1", periodo_id: "per6", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Encerrada", observacao: "Plantio milho 25/26", locais: [{ talhao_id: "tal4", area: 150 }] },
+        { id: "os12", numero: 12, data_abertura: "2025-12-05", data_encerramento: null, safra_id: "saf1", periodo_id: "per7", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Aberta", observacao: "Plantio algodão 25/26", locais: [{ talhao_id: "tal5", area: 60 }] },
+        { id: "os13", numero: 13, data_abertura: "2026-01-20", data_encerramento: null, safra_id: "saf1", periodo_id: "per5", equipe_id: "eq4", centro_custo_id: "cc3", operacao_id: "op2", status: "Aberta", observacao: "Colheita soja 25/26 (em andamento)", locais: [{ talhao_id: "tal1", area: 120 }] },
+        { id: "os14", numero: 14, data_abertura: "2026-09-15", data_encerramento: "2026-09-28", safra_id: "saf2", periodo_id: "per9", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Encerrada", observacao: "Plantio soja 26/27", locais: [{ talhao_id: "tal1", area: 120 }, { talhao_id: "tal2", area: 95.5 }] },
+        { id: "os15", numero: 15, data_abertura: "2026-10-10", data_encerramento: null, safra_id: "saf2", periodo_id: "per9", equipe_id: "eq1", centro_custo_id: "cc2", operacao_id: "op1", status: "Aberta", observacao: "Pulverização soja 26/27", locais: [{ talhao_id: "tal1", area: 120 }] },
+        { id: "os16", numero: 16, data_abertura: "2026-12-08", data_encerramento: null, safra_id: "saf2", periodo_id: "per11", equipe_id: "eq2", centro_custo_id: "cc1", operacao_id: "op4", status: "Aberta", observacao: "Plantio algodão 26/27", locais: [{ talhao_id: "tal5", area: 60 }] }
       ],
       boletinsInsumo: [
-        {
-          id: "bi1", numero: 1, data: "2025-09-11", os_id: "os1", observacao: "Aplicação de herbicida",
-          itens: [{ insumo_id: "ins1", deposito_id: "dep1", lote: "L2025A", dose_ha: 2.5, total: 300, unidade_medida: "L", valor_unitario: 45.9 }]
-        }
+        { id: "bi1", numero: 1, data: "2025-09-11", os_id: "os1", observacao: "Aplicação de herbicida", itens: [{ insumo_id: "ins1", deposito_id: "dep1", lote: "L2025A", dose_ha: 2.5, total: 300, unidade_medida: "L", valor_unitario: 45.9 }] },
+        { id: "bi2", numero: 2, data: "2025-10-22", os_id: "os9", observacao: "Herbicida pós-emergente em soja", itens: [{ insumo_id: "ins1", deposito_id: "dep1", lote: "L2025B", dose_ha: 2.0, total: 190, unidade_medida: "L", valor_unitario: 45.9 }, { insumo_id: "ins7", deposito_id: "dep1", lote: "L2025C", dose_ha: 0.4, total: 38, unidade_medida: "L", valor_unitario: 89.5 }] },
+        { id: "bi3", numero: 3, data: "2025-11-06", os_id: "os10", observacao: "Adubação de cobertura", itens: [{ insumo_id: "ins2", deposito_id: "dep1", lote: "AD2025A", dose_ha: 250, total: 750, unidade_medida: "Kg", valor_unitario: 3.2 }] },
+        { id: "bi4", numero: 4, data: "2025-08-10", os_id: "os7", observacao: "Dessecação pré-plantio", itens: [{ insumo_id: "ins8", deposito_id: "dep1", lote: "DES2025A", dose_ha: 3.0, total: 1350, unidade_medida: "L", valor_unitario: 32.0 }] },
+        { id: "bi5", numero: 5, data: "2026-10-11", os_id: "os15", observacao: "Pulverização fungicida soja 26/27", itens: [{ insumo_id: "ins6", deposito_id: "dep2", lote: "FUN2026A", dose_ha: 0.6, total: 72, unidade_medida: "L", valor_unitario: 120.0 }] },
+        { id: "bi6", numero: 6, data: "2025-09-15", os_id: "os8", observacao: "Inoculação e adubação base soja", itens: [{ insumo_id: "ins11", deposito_id: "dep1", lote: "INO2025A", dose_ha: 1.5, total: 52.5, unidade_medida: "L", valor_unitario: 65.0 }, { insumo_id: "ins9", deposito_id: "dep1", lote: "AD2025B", dose_ha: 280, total: 980, unidade_medida: "Kg", valor_unitario: 3.6 }] }
       ],
       boletinsMecanizada: [
-        {
-          id: "bm1", numero: 1, data: "2025-09-11", os_id: "os1", operador_id: "fun2", equipamento_id: "equ2", equipe_id: "eq1",
-          detalhes: [{ centro_custo_id: "cc2", operacao_id: "op1", talhao_id: "tal1", hr_km_inicial: 1200.5, hr_km_final: 1206.2 }]
-        }
+        { id: "bm1", numero: 1, data: "2025-09-11", os_id: "os1", operador_id: "fun2", equipamento_id: "equ2", equipe_id: "eq1", detalhes: [{ centro_custo_id: "cc2", operacao_id: "op1", talhao_id: "tal1", hr_km_inicial: 1200.5, hr_km_final: 1206.2 }] },
+        { id: "bm2", numero: 2, data: "2025-08-21", os_id: "os2", operador_id: "fun6", equipamento_id: "equ3", equipe_id: "eq4", detalhes: [{ centro_custo_id: "cc1", operacao_id: "op2", talhao_id: "tal4", hr_km_inicial: 800.0, hr_km_final: 812.5 }] },
+        { id: "bm3", numero: 3, data: "2024-09-21", os_id: "os3", operador_id: "fun2", equipamento_id: "equ4", equipe_id: "eq2", detalhes: [{ centro_custo_id: "cc1", operacao_id: "op4", talhao_id: "tal1", hr_km_inicial: 300.0, hr_km_final: 306.4 }, { centro_custo_id: "cc1", operacao_id: "op4", talhao_id: "tal2", hr_km_inicial: 306.4, hr_km_final: 311.8 }] },
+        { id: "bm4", numero: 4, data: "2025-08-07", os_id: "os7", operador_id: "fun5", equipamento_id: "equ7", equipe_id: "eq3", detalhes: [{ centro_custo_id: "cc4", operacao_id: "op7", talhao_id: "tal1", hr_km_inicial: 50.0, hr_km_final: 58.2 }, { centro_custo_id: "cc4", operacao_id: "op7", talhao_id: "tal2", hr_km_inicial: 58.2, hr_km_final: 65.9 }] },
+        { id: "bm5", numero: 5, data: "2025-09-15", os_id: "os8", operador_id: "fun2", equipamento_id: "equ4", equipe_id: "eq2", detalhes: [{ centro_custo_id: "cc1", operacao_id: "op4", talhao_id: "tal3", hr_km_inicial: 400.0, hr_km_final: 406.7 }] },
+        { id: "bm6", numero: 6, data: "2025-10-21", os_id: "os9", operador_id: "fun2", equipamento_id: "equ2", equipe_id: "eq1", detalhes: [{ centro_custo_id: "cc2", operacao_id: "op1", talhao_id: "tal2", hr_km_inicial: 1206.2, hr_km_final: 1211.0 }] },
+        { id: "bm7", numero: 7, data: "2026-01-21", os_id: "os13", operador_id: "fun10", equipamento_id: "equ3", equipe_id: "eq4", detalhes: [{ centro_custo_id: "cc3", operacao_id: "op2", talhao_id: "tal1", hr_km_inicial: 900.0, hr_km_final: 915.4 }] },
+        { id: "bm8", numero: 8, data: "2026-09-16", os_id: "os14", operador_id: "fun3", equipamento_id: "equ4", equipe_id: "eq2", detalhes: [{ centro_custo_id: "cc1", operacao_id: "op4", talhao_id: "tal1", hr_km_inicial: 500.0, hr_km_final: 506.1 }] }
       ],
       boletinsManual: [
-        {
-          id: "bman1", numero: 1, data: "2025-09-12", safra_id: "saf1", periodo_id: "per1",
-          funcionarios: [{ funcionario_id: "fun1", centro_custo_id: "cc2", operacao_id: "op3", talhao_id: "tal5", hora_inicial: "07:00", hora_final: "11:00" }]
-        }
+        { id: "bman1", numero: 1, data: "2025-09-12", safra_id: "saf1", periodo_id: "per5", funcionarios: [{ funcionario_id: "fun1", centro_custo_id: "cc2", operacao_id: "op3", talhao_id: "tal5", hora_inicial: "07:00", hora_final: "11:00" }] },
+        { id: "bman2", numero: 2, data: "2024-10-05", safra_id: "saf0", periodo_id: "per2", funcionarios: [{ funcionario_id: "fun7", centro_custo_id: "cc1", operacao_id: "op9", talhao_id: "tal3", hora_inicial: "07:30", hora_final: "10:30" }] },
+        { id: "bman3", numero: 3, data: "2025-08-19", safra_id: "saf1", periodo_id: "per8", funcionarios: [{ funcionario_id: "fun9", centro_custo_id: "cc4", operacao_id: "op9", talhao_id: "tal5", hora_inicial: "08:00", hora_final: "12:00" }, { funcionario_id: "fun7", centro_custo_id: "cc4", operacao_id: "op9", talhao_id: "tal4", hora_inicial: "08:00", hora_final: "12:00" }] },
+        { id: "bman4", numero: 4, data: "2025-11-10", safra_id: "saf1", periodo_id: "per5", funcionarios: [{ funcionario_id: "fun1", centro_custo_id: "cc2", operacao_id: "op3", talhao_id: "tal3", hora_inicial: "06:30", hora_final: "10:00" }] },
+        { id: "bman5", numero: 5, data: "2026-09-30", safra_id: "saf2", periodo_id: "per9", funcionarios: [{ funcionario_id: "fun9", centro_custo_id: "cc2", operacao_id: "op9", talhao_id: "tal2", hora_inicial: "07:00", hora_final: "10:30" }] }
       ],
       boletinsProducao: [
-        { id: "bp1", numero: 1, data: "2025-08-24", os_id: "os2", talhao_id: "tal4", operacao_id: "op2", producao: 2350, unidade_medida: "@" }
+        { id: "bp1", numero: 1, data: "2025-08-24", os_id: "os2", talhao_id: "tal4", operacao_id: "op2", producao: 2350, unidade_medida: "@" },
+        { id: "bp2", numero: 2, data: "2025-02-03", os_id: "os4", talhao_id: "tal1", operacao_id: "op2", producao: 58.5, unidade_medida: "Sc" },
+        { id: "bp3", numero: 3, data: "2025-02-04", os_id: "os4", talhao_id: "tal2", operacao_id: "op2", producao: 52.2, unidade_medida: "Sc" },
+        { id: "bp4", numero: 4, data: "2025-06-27", os_id: "os6", talhao_id: "tal4", operacao_id: "op2", producao: 95.4, unidade_medida: "Sc" },
+        { id: "bp5", numero: 5, data: "2026-01-25", os_id: "os13", talhao_id: "tal1", operacao_id: "op2", producao: 61.0, unidade_medida: "Sc" }
       ],
       boletinsPlantio: [
-        {
-          id: "bpl1", numero: 1, data: "2025-08-15", safra_id: "saf1", periodo_id: "per1", talhao_id: "tal1", variedade_id: "var1",
-          itens: [{ insumo_id: "ins3", lote: "SEM2025A", kg_ha: 18, total: 2160 }]
-        }
+        { id: "bpl1", numero: 1, data: "2025-08-15", safra_id: "saf1", periodo_id: "per7", talhao_id: "tal1", variedade_id: "var1", itens: [{ insumo_id: "ins3", lote: "SEM2025A", kg_ha: 18, total: 2160 }] },
+        { id: "bpl2", numero: 2, data: "2024-09-21", safra_id: "saf0", periodo_id: "per2", talhao_id: "tal1", variedade_id: "var4", itens: [{ insumo_id: "ins4", lote: "SEMSOJ2024A", kg_ha: 60, total: 7200 }] },
+        { id: "bpl3", numero: 3, data: "2024-09-22", safra_id: "saf0", periodo_id: "per2", talhao_id: "tal2", variedade_id: "var5", itens: [{ insumo_id: "ins4", lote: "SEMSOJ2024B", kg_ha: 62, total: 5921 }] },
+        { id: "bpl4", numero: 4, data: "2025-09-16", safra_id: "saf1", periodo_id: "per5", talhao_id: "tal3", variedade_id: "var4", itens: [{ insumo_id: "ins4", lote: "SEMSOJ2025A", kg_ha: 60, total: 4800 }] },
+        { id: "bpl5", numero: 5, data: "2025-09-23", safra_id: "saf1", periodo_id: "per6", talhao_id: "tal4", variedade_id: "var6", itens: [{ insumo_id: "ins5", lote: "SEMMIL2025A", kg_ha: 22, total: 3300 }] },
+        { id: "bpl6", numero: 6, data: "2026-09-17", safra_id: "saf2", periodo_id: "per9", talhao_id: "tal1", variedade_id: "var5", itens: [{ insumo_id: "ins4", lote: "SEMSOJ2026A", kg_ha: 61, total: 7320 }] }
       ]
     };
   }
@@ -3533,14 +3995,19 @@ initSupabase();
         { label: "Descrição", get: function (r) { return r.descricao; } },
         { label: "Setor", get: function (r) { return label("setores", r.setor_id, "descricao"); } },
         { label: "Cultura", get: function (r) { return label("culturas", r.cultura_id, "descricao"); } },
-        { label: "Área Produtiva (ha)", get: function (r) { return r.area_produtiva_ha; } }
+        { label: "Área Produtiva (ha)", get: function (r) { return r.area_produtiva_ha; } },
+        { label: "Safra", get: function (r) { return label("safras", r.safra_id, "descricao"); } },
+        { label: "Período de Produção", get: function (r) { return label("periodos", r.periodo_id, "descricao"); } }
       ],
       fields: [
         { name: "codigo", label: "Código", type: "text", required: true },
         { name: "descricao", label: "Descrição", type: "text", required: true },
         { name: "setor_id", label: "Setor", type: "select", required: true, ref: "setores", refLabel: "descricao" },
         { name: "cultura_id", label: "Cultura", type: "select", ref: "culturas", refLabel: "descricao" },
-        { name: "area_produtiva_ha", label: "Área Produtiva (ha)", type: "number" }
+        { name: "area_produtiva_ha", label: "Área Produtiva (ha)", type: "number" },
+        { name: "safra_id", label: "Safra", type: "select", ref: "safras", refLabel: "descricao" },
+        { name: "periodo_id", label: "Período de Produção", type: "select", ref: "periodos", refLabel: "descricao",
+          filterRef: function (form) { return form.safra_id ? DB.periodos.filter(function (p) { return p.safra_id === form.safra_id; }).map(function (p) { return p.id; }) : null; } }
       ]
     },
     {
@@ -3564,6 +4031,7 @@ initSupabase();
         { label: "Código", get: function (r) { return r.codigo; } },
         { label: "Descrição", get: function (r) { return r.descricao; } },
         { label: "Safra", get: function (r) { return label("safras", r.safra_id, "descricao"); } },
+        { label: "Cultura / Ocupação", get: function (r) { return label("culturas", r.cultura_id, "descricao"); } },
         { label: "Data Inicial", get: function (r) { return r.data_inicial; } },
         { label: "Data Final", get: function (r) { return r.data_final; } }
       ],
@@ -3571,6 +4039,7 @@ initSupabase();
         { name: "codigo", label: "Código", type: "text", required: true },
         { name: "descricao", label: "Descrição", type: "text", required: true },
         { name: "safra_id", label: "Safra", type: "select", required: true, ref: "safras", refLabel: "descricao" },
+        { name: "cultura_id", label: "Cultura / Ocupação", type: "select", ref: "culturas", refLabel: "descricao" },
         { name: "data_inicial", label: "Data Inicial", type: "date" },
         { name: "data_final", label: "Data Final", type: "date" }
       ]
@@ -3705,6 +4174,9 @@ initSupabase();
         { name: "tipo_defensivo", label: "Tipo de Defensivo", type: "enum", options: TIPOS_DEFENSIVO, showIf: function (f) { return f.tipo === "Defensivo"; } },
         { name: "grupo", label: "Grupo", type: "text" }
       ]
+    },
+    {
+      key: "mapas", titulo: "Mapa de Limite", codigo: "LDPM0008", collection: "mapas"
     }
   ];
   function tabelaByKey(key) {
@@ -3713,7 +4185,7 @@ initSupabase();
   }
 
   var TABELAS_MENU = [
-    { titulo: "Locais de Produção", itens: ["fazendas", "setores", "talhoes"] },
+    { titulo: "Locais de Produção", itens: ["fazendas", "setores", "talhoes", "mapas"] },
     { titulo: "Calendário", itens: ["safras", "periodos"] },
     { titulo: "Culturas", itens: ["culturas", "variedades"] },
     { titulo: "Administrativo", itens: ["centrosCusto", "operacoes", "equipes", "funcionarios"] },
@@ -3740,14 +4212,22 @@ initSupabase();
     filters: {},
     consolidadoTipos: { Mecanizada: true, Manual: true, Insumo: true, "Produção": true, Plantio: true },
     sidebarCollapsed: false,
-    collapsedGroups: {}
+    collapsedGroups: {},
+    mapaSelectedId: null,
+    mapaModalStep: null,
+    mapaParse: null,
+    mapaMappingForm: { periodo_id: "", coluna_nome: "", coluna_area: "" },
+    mapaImportError: "",
+    mapaLabelCols: [],
+    mapaFarmFilterName: null,
+    mapaBaseLayer: "satelite"
   };
 
   // ============================= grid genérico (render + filtro) =============================
   function gridTableHTML(gridId, columns, rows, selectedId, onRowClick, emptyMsg) {
     var head = '<tr>' + columns.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') + '</tr>';
     var filterRow = '<tr class="filter-row">' + columns.map(function (c, i) {
-      return '<th><input data-col="' + i + '" oninput="App.filterGrid(\'' + gridId + '\', this)" /></th>';
+      return '<th><input data-col="' + i + '" placeholder="Filtrar..." oninput="App.filterGrid(\'' + gridId + '\', this)" /></th>';
     }).join('') + '</tr>';
     var body;
     if (!rows.length) {
@@ -3764,9 +4244,10 @@ initSupabase();
   }
 
   // ============================= form fields genérico =============================
-  function refOptionsHTML(collection, selectedId, labelKey) {
+  function refOptionsHTML(collection, selectedId, labelKey, allowedIds) {
     var opts = '<option value="">-</option>';
     (DB[collection] || []).forEach(function (r) {
+      if (allowedIds && allowedIds.indexOf(r.id) === -1) return;
       opts += '<option value="' + r.id + '"' + (r.id === selectedId ? ' selected' : '') + '>' + esc(r[labelKey]) + '</option>';
     });
     return opts;
@@ -3810,8 +4291,15 @@ initSupabase();
     STATE.selectedId = null;
     STATE.form = {};
     STATE.filters = {};
+    STATE.mapaSelectedId = null;
+    STATE.mapaModalStep = null;
+    STATE.mapaParse = null;
+    STATE.mapaMappingForm = { periodo_id: "", coluna_nome: "", coluna_area: "" };
+    STATE.mapaImportError = "";
+    STATE.mapaLabelCols = [];
     App.renderAll();
     document.getElementById("content").scrollTop = 0;
+    if (route === "tabela:mapas") setTimeout(App.mapaDrawPreview, 60);
   };
 
   // Sem botão visível (o app original não tem essa função — aqui os dados vivem só no
@@ -3907,10 +4395,78 @@ initSupabase();
     App.renderContent();
   };
 
+  function mapaNormalizeFarmName(s) {
+    return (s || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
+  function mapaFarmFilterFazendaIds() {
+    var name = STATE.mapaFarmFilterName;
+    if (!name) return null;
+    var norm = mapaNormalizeFarmName(name);
+    return DB.fazendas.filter(function (f) { return mapaNormalizeFarmName(f.descricao_completa) === norm; }).map(function (f) { return f.id; });
+  }
+  function mapaApplyFarmFilter(key, rows) {
+    var fazIds = mapaFarmFilterFazendaIds();
+    if (!fazIds) return rows;
+    if (key === "fazendas") {
+      return rows.filter(function (r) { return fazIds.indexOf(r.id) !== -1; });
+    }
+    if (key === "setores") {
+      return rows.filter(function (r) { return fazIds.indexOf(r.fazenda_id) !== -1; });
+    }
+    if (key === "talhoes") {
+      var setIds = DB.setores.filter(function (s) { return fazIds.indexOf(s.fazenda_id) !== -1; }).map(function (s) { return s.id; });
+      return rows.filter(function (r) { return setIds.indexOf(r.setor_id) !== -1; });
+    }
+    return rows;
+  }
+
+  function filterOptionsHTML(collection, selectedId, labelKey) {
+    var opts = '<option value="">Todos</option>';
+    (DB[collection] || []).forEach(function (r) {
+      opts += '<option value="' + r.id + '"' + (r.id === selectedId ? ' selected' : '') + '>' + esc(r[labelKey]) + '</option>';
+    });
+    return opts;
+  }
+  function tabelaFilterBarHTML(cfg) {
+    var selectFields = (cfg.fields || []).filter(function (f) { return f.type === "select" && f.ref; });
+    if (!selectFields.length) return "";
+    var hasActive = selectFields.some(function (f) { return !!STATE.filters[f.name]; });
+    var html = '<div class="mapa-map-toolbar tabela-filter-bar">';
+    html += '<span class="mapa-label-picker-title">Filtrar por</span>';
+    selectFields.forEach(function (f) {
+      html += '<label class="tabela-filter-field"><span>' + esc(f.label) + '</span>';
+      html += '<select onchange="App.tabelaSetFilter(\'' + f.name + '\', this.value)">' + filterOptionsHTML(f.ref, STATE.filters[f.name], f.refLabel) + '</select></label>';
+    });
+    if (hasActive) html += '<button type="button" class="tabela-filter-clear" onclick="App.tabelaClearFilters()">Limpar filtros</button>';
+    html += '</div>';
+    return html;
+  }
+  function tabelaApplyFilters(rows) {
+    var active = Object.keys(STATE.filters).filter(function (k) { return STATE.filters[k]; });
+    if (!active.length) return rows;
+    return rows.filter(function (r) {
+      return active.every(function (k) { return r[k] === STATE.filters[k]; });
+    });
+  }
+  App.tabelaSetFilter = function (name, value) {
+    STATE.filters[name] = value || null;
+    App.renderContent();
+  };
+  App.tabelaClearFilters = function () {
+    STATE.filters = {};
+    App.renderContent();
+  };
+
   function renderTabelaScreen(cfg) {
     var html = '<div class="screen"><div class="screen-header"><h1>' + esc(cfg.titulo) + '</h1><span class="screen-code">[' + esc(cfg.codigo) + ']</span>' + favToggleHTML("tabela:" + cfg.key, cfg.titulo) + '</div>';
+    var farmFiltered = ["fazendas", "setores", "talhoes"].indexOf(cfg.key) !== -1 && STATE.mapaFarmFilterName;
+    if (farmFiltered) {
+      html += '<div class="mapa-lead">Filtrado por <strong>' + esc(STATE.mapaFarmFilterName) + '</strong> (trocado lá em cima) &mdash; <a href="#" onclick="event.preventDefault();App.mapaClearFarmFilterUI()">ver todas</a></div>';
+    }
     if (STATE.mode === "list") {
-      var rows = DB[cfg.collection] || [];
+      html += tabelaFilterBarHTML(cfg);
+      var rows = mapaApplyFarmFilter(cfg.key, DB[cfg.collection] || []);
+      rows = tabelaApplyFilters(rows);
       html += gridTableHTML("grid-" + cfg.key, cfg.columns, rows, STATE.selectedId, function (id) { return "App.select('" + id + "')"; });
       html += '<div class="toolbar">';
       html += '<button class="btn" ' + (STATE.selectedId ? "" : "disabled") + ' onclick="App.tabelaEdit()">Editar</button>';
@@ -3924,7 +4480,8 @@ initSupabase();
         var labelCls = "field-label" + (f.required ? " required" : "");
         html += '<label><span class="' + labelCls + '">' + esc(f.label) + '</span>';
         if (f.type === "select") {
-          html += '<select onchange="App.tabelaSetFieldRerender(\'' + f.name + '\', this.value)">' + refOptionsHTML(f.ref, STATE.form[f.name], f.refLabel) + '</select>';
+          var allowedIds = f.filterRef ? f.filterRef(STATE.form) : null;
+          html += '<select onchange="App.tabelaSetFieldRerender(\'' + f.name + '\', this.value)">' + refOptionsHTML(f.ref, STATE.form[f.name], f.refLabel, allowedIds) + '</select>';
         } else if (f.type === "enum") {
           html += '<select onchange="App.tabelaSetFieldRerender(\'' + f.name + '\', this.value)">' + enumOptionsHTML(f.options, STATE.form[f.name]) + '</select>';
         } else {
@@ -3943,7 +4500,468 @@ initSupabase();
     return html;
   }
 
-  // ---------- Ordem de Serviço de Campo ----------
+  // ---------- Mapa de Limite (Locais de Produção) ----------
+  function mapaColumnOptionsHTML(selected) {
+    var opts = '<option value="">-</option>';
+    ((STATE.mapaParse && STATE.mapaParse.columns) || []).forEach(function (c) {
+      opts += '<option value="' + esc(c) + '"' + (c === selected ? ' selected' : '') + '>' + esc(c) + '</option>';
+    });
+    return opts;
+  }
+
+  function mapaUploadModalHTML() {
+    if (STATE.mapaModalStep !== 'upload') return '';
+    var html = '<div class="mapa-modal-overlay">';
+    html += '<div class="mapa-modal">';
+    html += '<div class="mapa-modal-title">Importar limite</div>';
+    html += '<div class="mapa-modal-sub">Envie um shapefile (.zip com todos os arquivos que compõem ele), .kml ou .kmz.</div>';
+    html += '<label class="mapa-dropzone" id="mapa-dropzone">';
+    html += '<input type="file" id="mapa-file-input" accept=".zip,.kml,.kmz" style="display:none" onchange="App.mapaFileSelected(this.files)">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>';
+    html += '<div>Arraste o arquivo aqui ou <span class="mapa-dropzone-link">clique para procurar</span></div>';
+    html += '<div class="mapa-dropzone-hint">.zip (shapefile) &middot; .kml &middot; .kmz</div>';
+    html += '</label>';
+    if (STATE.mapaParsing) html += '<div class="mapa-modal-loading">Lendo arquivo&hellip;</div>';
+    if (STATE.mapaImportError) html += '<div class="banner error">' + esc(STATE.mapaImportError) + '</div>';
+    html += '<div class="toolbar"><button class="btn" onclick="App.mapaCloseModal()">Cancelar</button></div>';
+    html += '</div></div>';
+    return html;
+  }
+
+  function renderMapaMappingReview() {
+    var parse = STATE.mapaParse;
+    var f = STATE.mapaMappingForm;
+    var cols = parse.columns;
+    var feats = parse.geojson.features;
+    var LIMIT = 200;
+
+    var html = '<div class="mapa-review">';
+    html += '<div class="mapa-review-head"><strong>' + esc(parse.fileName) + '</strong> &mdash; ' + esc(parse.tipoLabel) + ' &middot; ' + feats.length + ' geometria(s) encontrada(s)</div>';
+    html += mapaMapWithToolbarHTML(cols, 'mapa-leaflet-review');
+
+    html += '<div class="mapa-review-form">';
+    html += '<label><span class="field-label required">Período de produção</span>';
+    html += '<select onchange="App.mapaMappingSetField(\'periodo_id\', this.value)">' + refOptionsHTML('periodos', f.periodo_id, 'descricao') + '</select></label>';
+    html += '<label><span class="field-label required">Coluna do nome do talhão</span>';
+    html += '<select onchange="App.mapaMappingSetField(\'coluna_nome\', this.value)">' + mapaColumnOptionsHTML(f.coluna_nome) + '</select></label>';
+    html += '<label><span class="field-label">Coluna da área (ha) <span class="hint">(opcional)</span></span>';
+    html += '<select onchange="App.mapaMappingSetField(\'coluna_area\', this.value)">' + mapaColumnOptionsHTML(f.coluna_area) + '</select></label>';
+    html += '</div>';
+    if (STATE.mapaImportError) html += '<div class="banner error">' + esc(STATE.mapaImportError) + '</div>';
+    html += '<div class="toolbar"><button class="btn" onclick="App.mapaCloseModal()">Cancelar</button><button class="btn primary" onclick="App.mapaConfirmImport()">Confirmar import</button></div>';
+
+    html += '<div class="mapa-attr-title">Tabela de atributos (' + feats.length + ' registro' + (feats.length === 1 ? '' : 's') + ')</div>';
+    html += '<div class="grid-wrap mapa-attr-wrap"><table class="grid"><thead><tr>';
+    cols.forEach(function (c) {
+      var hl = c && c === f.coluna_nome ? ' mapa-col-nome' : (c && f.coluna_area && c === f.coluna_area) ? ' mapa-col-area' : '';
+      html += '<th class="' + hl + '">' + esc(c) + '</th>';
+    });
+    html += '</tr></thead><tbody>';
+    feats.slice(0, LIMIT).forEach(function (feat) {
+      html += '<tr>';
+      cols.forEach(function (c) {
+        var hl = c && c === f.coluna_nome ? ' mapa-col-nome' : (c && f.coluna_area && c === f.coluna_area) ? ' mapa-col-area' : '';
+        var v = feat.properties ? feat.properties[c] : '';
+        html += '<td class="' + hl + '">' + esc(v) + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    if (feats.length > LIMIT) html += '<div class="hint">Mostrando os primeiros ' + LIMIT + ' de ' + feats.length + ' registros.</div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderMapaScreen() {
+    if (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) {
+      return '<div class="screen"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>' + renderMapaMappingReview() + '</div>';
+    }
+    var html = '<div class="screen"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>';
+    html += '<p class="mapa-lead">Importe o limite da fazenda por período de produção. Esse limite alimenta o cadastro de Talhões automaticamente.</p>';
+
+    var mapas = (DB.mapas || []).slice().sort(function (a, b) {
+      if (a.criado_em !== b.criado_em) return (a.criado_em < b.criado_em) ? 1 : -1;
+      return (a.id < b.id) ? 1 : -1;
+    });
+    var selectedId = STATE.mapaSelectedId;
+    if (!selectedId || !mapas.some(function (m) { return m.id === selectedId; })) {
+      selectedId = mapas.length ? mapas[0].id : null;
+      STATE.mapaSelectedId = selectedId;
+    }
+    var selectedMapa = selectedId ? find('mapas', selectedId) : null;
+
+    html += '<div class="mapa-layout">';
+    html += '<div class="mapa-list-col">';
+    html += '<div class="mapa-list-title">Mapas cadastrados</div>';
+    if (!mapas.length) {
+      html += '<div class="mapa-list-empty">Nenhum limite importado ainda.</div>';
+    } else {
+      html += '<div class="mapa-list">';
+      mapas.forEach(function (m) {
+        var periodoLabel = label('periodos', m.periodo_id, 'descricao') || '(sem período)';
+        var active = m.id === selectedId ? ' active' : '';
+        html += '<button class="mapa-list-item' + active + '" onclick="App.mapaSelectMap(\'' + m.id + '\')">';
+        html += '<div class="mli-periodo">' + esc(periodoLabel) + '</div>';
+        html += '<div class="mli-file">' + esc(m.nome_arquivo) + '</div>';
+        html += '<div class="mli-meta">' + (m.talhoes_criados || 0) + ' talhão(ões) &middot; ' + esc(m.criado_em) + '</div>';
+        html += '</button>';
+      });
+      html += '</div>';
+    }
+    html += '<button class="btn primary mapa-import-btn" onclick="App.mapaOpenImport()">Importar novo limite</button>';
+    html += '</div>';
+
+    html += '<div class="mapa-preview-col">';
+    html += mapaMapWithToolbarHTML(selectedMapa ? (selectedMapa.colunas || []) : [], '');
+    if (selectedMapa) {
+      html += '<div class="mapa-info-bar"><strong>' + esc(selectedMapa.nome_arquivo) + '</strong> &mdash; ' + esc(label('periodos', selectedMapa.periodo_id, 'descricao')) + ' &middot; ' + (selectedMapa.talhoes_criados || 0) + ' talhão(ões) criado(s) &middot; colunas: ' + esc((selectedMapa.colunas || []).join(', ')) + '</div>';
+    } else {
+      html += '<div class="mapa-info-bar mapa-info-empty">Importe um limite para ver a pré-visualização aqui.</div>';
+    }
+    html += '</div>';
+    html += '</div>';
+
+    html += mapaUploadModalHTML();
+    html += '</div>';
+    return html;
+  }
+
+  App.mapaOpenImport = function () {
+    STATE.mapaModalStep = 'upload';
+    STATE.mapaImportError = '';
+    STATE.mapaParsing = false;
+    STATE.mapaLabelCols = [];
+    App.renderContent();
+    setTimeout(App.mapaWireDropzone, 30);
+  };
+
+  App.mapaCloseModal = function () {
+    STATE.mapaModalStep = null;
+    STATE.mapaParse = null;
+    STATE.mapaImportError = '';
+    STATE.mapaParsing = false;
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+
+  App.mapaWireDropzone = function () {
+    var zone = document.getElementById('mapa-dropzone');
+    if (!zone) return;
+    zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function () { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function (e) {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length) App.mapaFileSelected(e.dataTransfer.files);
+    });
+  };
+
+  function mapaGeojsonToResult(fc, tipoLabel) {
+    var features = ((fc && fc.features) || []).filter(function (f) { return f && f.geometry; });
+    var columns = features.length ? Object.keys(features[0].properties || {}) : [];
+    return { features: features, columns: columns, tipoLabel: tipoLabel };
+  }
+
+  function mapaParseFile(file) {
+    var name = file.name.toLowerCase();
+    if (name.endsWith('.zip') || name.endsWith('.shp')) {
+      return file.arrayBuffer().then(function (buf) {
+        return shp(buf);
+      }).then(function (geojson) {
+        var fc = Array.isArray(geojson) ? geojson[0] : geojson;
+        return mapaGeojsonToResult(fc, 'shapefile');
+      });
+    }
+    if (name.endsWith('.kmz')) {
+      return file.arrayBuffer().then(function (buf) {
+        return JSZip.loadAsync(buf);
+      }).then(function (zip) {
+        var kmlName = Object.keys(zip.files).find(function (n) { return n.toLowerCase().endsWith('.kml'); });
+        if (!kmlName) throw new Error('KMZ sem arquivo .kml dentro');
+        return zip.files[kmlName].async('string');
+      }).then(function (kmlText) {
+        var xml = new DOMParser().parseFromString(kmlText, 'text/xml');
+        var fc = toGeoJSON.kml(xml);
+        return mapaGeojsonToResult(fc, 'KMZ');
+      });
+    }
+    if (name.endsWith('.kml')) {
+      return file.text().then(function (kmlText) {
+        var xml = new DOMParser().parseFromString(kmlText, 'text/xml');
+        var fc = toGeoJSON.kml(xml);
+        return mapaGeojsonToResult(fc, 'KML');
+      });
+    }
+    return Promise.reject(new Error('Formato não suportado. Envie .zip (shapefile), .kml ou .kmz.'));
+  }
+
+  App.mapaFileSelected = function (fileList) {
+    if (!fileList || !fileList.length) return;
+    var file = fileList[0];
+    STATE.mapaImportError = '';
+    STATE.mapaParsing = true;
+    App.renderContent();
+    setTimeout(App.mapaWireDropzone, 30);
+    mapaParseFile(file).then(function (result) {
+      STATE.mapaParsing = false;
+      if (!result.features.length) {
+        STATE.mapaImportError = 'Não encontramos nenhuma geometria nesse arquivo.';
+        App.renderContent();
+        setTimeout(App.mapaWireDropzone, 30);
+        return;
+      }
+      STATE.mapaParse = {
+        fileName: file.name,
+        tipoLabel: result.tipoLabel,
+        geojson: { type: 'FeatureCollection', features: result.features },
+        columns: result.columns
+      };
+      STATE.mapaMappingForm = {
+        periodo_id: (DB.periodos[0] && DB.periodos[0].id) || '',
+        coluna_nome: result.columns[0] || '',
+        coluna_area: ''
+      };
+      STATE.mapaModalStep = 'mapping';
+      App.renderContent();
+      setTimeout(App.mapaDrawPreview, 30);
+    }).catch(function (err) {
+      STATE.mapaParsing = false;
+      STATE.mapaImportError = 'Não foi possível ler esse arquivo (' + ((err && err.message) || 'formato inválido') + ').';
+      App.renderContent();
+      setTimeout(App.mapaWireDropzone, 30);
+    });
+  };
+
+  App.mapaMappingSetField = function (name, value) {
+    STATE.mapaMappingForm[name] = value;
+    App.renderContent();
+  };
+
+  App.mapaConfirmImport = function () {
+    var f = STATE.mapaMappingForm;
+    if (!f.periodo_id) { STATE.mapaImportError = 'Selecione o período de produção.'; App.renderContent(); return; }
+    if (!f.coluna_nome) { STATE.mapaImportError = 'Selecione a coluna do nome do talhão.'; App.renderContent(); return; }
+    var parse = STATE.mapaParse;
+    var mapaId = uid();
+    var periodoRec = find('periodos', f.periodo_id);
+    var novosTalhoes = parse.geojson.features.map(function (feat, i) {
+      var props = feat.properties || {};
+      var nome = props[f.coluna_nome];
+      if (nome === undefined || nome === null || nome === '') nome = parse.fileName + ' #' + (i + 1);
+      var areaRaw = f.coluna_area ? props[f.coluna_area] : null;
+      var area = areaRaw === null || areaRaw === undefined || areaRaw === '' ? null : Number(areaRaw);
+      return {
+        id: uid(),
+        codigo: String(nome),
+        descricao: String(nome),
+        setor_id: null,
+        cultura_id: null,
+        area_produtiva_ha: (area !== null && !isNaN(area)) ? area : null,
+        periodo_id: f.periodo_id,
+        safra_id: periodoRec ? periodoRec.safra_id : null,
+        geometry: feat.geometry,
+        mapa_id: mapaId
+      };
+    });
+    DB.mapas.push({
+      id: mapaId,
+      periodo_id: f.periodo_id,
+      nome_arquivo: parse.fileName,
+      tipo_arquivo: parse.tipoLabel,
+      geojson: parse.geojson,
+      colunas: parse.columns,
+      coluna_nome: f.coluna_nome,
+      coluna_area: f.coluna_area || null,
+      criado_em: todayISO(),
+      talhoes_criados: novosTalhoes.length
+    });
+    DB.talhoes = DB.talhoes.concat(novosTalhoes);
+    persist();
+    STATE.mapaSelectedId = mapaId;
+    STATE.mapaModalStep = null;
+    STATE.mapaParse = null;
+    STATE.mapaImportError = '';
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+
+  App.mapaSyncFarmFilter = function (farmId, farmName) {
+    STATE.mapaFarmFilterName = (!farmId || farmId === 'ALL') ? null : farmName;
+    var vw = document.getElementById('view-app');
+    if (vw && !vw.classList.contains('hidden')) App.renderContent();
+  };
+  App.mapaClearFarmFilterUI = function () {
+    STATE.mapaFarmFilterName = null;
+    App.renderContent();
+  };
+
+  App.mapaSelectMap = function (id) {
+    STATE.mapaSelectedId = id;
+    STATE.mapaLabelCols = [];
+    App.renderContent();
+    setTimeout(App.mapaDrawPreview, 30);
+  };
+
+  var mapaLeafletMap = null;
+  var mapaActiveLayer = null;
+  var mapaLabelLayer = null;
+  var mapaSelectedLayer = null;
+  var MAPA_STYLE_NORMAL = { color: '#B5874A', weight: 2, fillColor: '#B5874A', fillOpacity: 0.15 };
+  var MAPA_STYLE_HOVER = { weight: 3, fillOpacity: 0.3 };
+  var MAPA_STYLE_SELECTED = { color: '#FFD166', weight: 4, fillColor: '#FFD166', fillOpacity: 0.35 };
+
+  function mapaFeaturePopupHTML(props, columns) {
+    var html = '<div class="mapa-leaflet-popup">';
+    columns.forEach(function (c) {
+      var v = props ? props[c] : undefined;
+      if (v === undefined || v === null || v === '') v = '-';
+      html += '<div class="mapa-popup-row"><span class="mapa-popup-key">' + esc(c) + ':</span> <span class="mapa-popup-val">' + esc(v) + '</span></div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function mapaSelectFeatureLayer(lyr) {
+    if (mapaSelectedLayer && mapaSelectedLayer !== lyr) {
+      mapaSelectedLayer.setStyle(MAPA_STYLE_NORMAL);
+    }
+    mapaSelectedLayer = lyr;
+    lyr.setStyle(MAPA_STYLE_SELECTED);
+    try { lyr.bringToFront(); } catch (e) {}
+    try { mapaLeafletMap.fitBounds(lyr.getBounds(), { padding: [40, 40], maxZoom: 17 }); } catch (e) {}
+  }
+
+  function mapaClearSelection() {
+    if (mapaSelectedLayer) {
+      mapaSelectedLayer.setStyle(MAPA_STYLE_NORMAL);
+      mapaSelectedLayer = null;
+    }
+    App.mapaRecenter();
+  }
+
+  App.mapaDrawPreview = function () {
+    var el = document.getElementById('mapa-leaflet');
+    if (!el || typeof L === 'undefined') return;
+    if (mapaLeafletMap) { try { mapaLeafletMap.remove(); } catch (e) {} mapaLeafletMap = null; mapaActiveLayer = null; mapaLabelLayer = null; mapaSelectedLayer = null; }
+    var geojson = null, columns = [];
+    if (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) {
+      geojson = STATE.mapaParse.geojson;
+      columns = STATE.mapaParse.columns;
+    } else if (STATE.mapaSelectedId) {
+      var m = find('mapas', STATE.mapaSelectedId);
+      if (m) { geojson = m.geojson; columns = m.colunas || []; }
+    }
+    mapaLeafletMap = L.map(el, { attributionControl: false }).setView([-13, -55], 4);
+    if (STATE.mapaBaseLayer === 'topo') {
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mapaLeafletMap);
+    } else if (STATE.mapaBaseLayer !== 'branco') {
+      L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(mapaLeafletMap);
+    }
+    mapaLeafletMap.on('click', mapaClearSelection);
+    if (geojson && geojson.features && geojson.features.length) {
+      var labelCols = (STATE.mapaLabelCols || []).filter(function (c) { return columns.indexOf(c) !== -1; });
+      var labelMarkers = [];
+      mapaActiveLayer = L.geoJSON(geojson, {
+        style: MAPA_STYLE_NORMAL,
+        onEachFeature: function (feature, lyr) {
+          lyr.bindPopup(mapaFeaturePopupHTML(feature.properties, columns));
+          lyr.on('mouseover', function () { if (lyr !== mapaSelectedLayer) lyr.setStyle(MAPA_STYLE_HOVER); });
+          lyr.on('mouseout', function () { if (lyr !== mapaSelectedLayer) lyr.setStyle(MAPA_STYLE_NORMAL); });
+          lyr.on('click', function (e) {
+            L.DomEvent.stopPropagation(e);
+            mapaSelectFeatureLayer(lyr);
+          });
+          if (labelCols.length) {
+            var props = feature.properties || {};
+            var text = labelCols.map(function (c) {
+              var v = props[c];
+              return (v === undefined || v === null || v === '') ? '' : v;
+            }).filter(function (v) { return v !== ''; }).join(' &middot; ');
+            if (text) {
+              var center;
+              try { center = lyr.getBounds().getCenter(); } catch (e) { center = null; }
+              if (center) {
+                labelMarkers.push(L.marker(center, {
+                  icon: L.divIcon({ className: 'mapa-label-marker', html: text, iconSize: null }),
+                  interactive: false
+                }));
+              }
+            }
+          }
+        }
+      }).addTo(mapaLeafletMap);
+      if (labelMarkers.length) {
+        mapaLabelLayer = L.layerGroup(labelMarkers).addTo(mapaLeafletMap);
+      }
+      try { mapaLeafletMap.fitBounds(mapaActiveLayer.getBounds(), { padding: [20, 20] }); } catch (e) {}
+    }
+  };
+
+  App.mapaRecenter = function () {
+    if (mapaLeafletMap && mapaActiveLayer) {
+      try { mapaLeafletMap.fitBounds(mapaActiveLayer.getBounds(), { padding: [20, 20] }); } catch (e) {}
+    }
+  };
+  App.mapaClearSelection = mapaClearSelection;
+  App.mapaSetBaseLayer = function (value) {
+    STATE.mapaBaseLayer = value;
+    App.mapaDrawPreview();
+  };
+
+  App.mapaToggleLabelCol = function (col) {
+    var arr = STATE.mapaLabelCols || (STATE.mapaLabelCols = []);
+    var idx = arr.indexOf(col);
+    if (idx !== -1) {
+      arr.splice(idx, 1);
+    } else {
+      if (arr.length >= 3) return;
+      arr.push(col);
+    }
+    App.renderContent();
+  };
+
+  function mapaLabelPickerHTML(columns) {
+    if (!columns || !columns.length) return '';
+    var selected = STATE.mapaLabelCols || [];
+    var atMax = selected.length >= 3;
+    var html = '<div class="mapa-map-toolbar"><span class="mapa-label-picker-title">Rótulo</span><div class="mapa-label-chips">';
+    columns.forEach(function (c) {
+      var active = selected.indexOf(c) !== -1;
+      var disabled = !active && atMax;
+      html += '<button type="button" class="mapa-label-chip' + (active ? ' active' : '') + (disabled ? ' disabled' : '') + '" ' +
+        (disabled ? 'disabled title="Máximo de 3 rótulos"' : 'onclick="App.mapaToggleLabelCol(\'' + esc(c).replace(/'/g, "&#39;") + '\')"') +
+        '>' + esc(c) + '</button>';
+    });
+    html += '</div></div>';
+    return html;
+  }
+
+  function mapaBaseLayerPickerHTML() {
+    var options = [
+      ["satelite", "Satélite"],
+      ["topo", "Esri Topo"],
+      ["branco", "Fundo branco"]
+    ];
+    var html = '<div class="mapa-map-toolbar mapa-baselayer-picker"><span class="mapa-label-picker-title">Mapa base</span><select onchange="App.mapaSetBaseLayer(this.value)">';
+    options.forEach(function (o) {
+      html += '<option value="' + o[0] + '"' + (STATE.mapaBaseLayer === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+    });
+    html += '</select></div>';
+    return html;
+  }
+
+  function mapaMapWithToolbarHTML(columns, extraClass) {
+    var html = mapaLabelPickerHTML(columns);
+    html += mapaBaseLayerPickerHTML();
+    html += '<div class="mapa-leaflet-wrap">';
+    html += '<div id="mapa-leaflet" class="mapa-leaflet' + (extraClass ? ' ' + extraClass : '') + '"></div>';
+    html += '<button type="button" class="mapa-recenter-btn" onclick="App.mapaClearSelection()" title="Centralizar no limite">';
+    html += '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>';
+    html += '</button>';
+    html += '</div>';
+    return html;
+  }
+
   function emptyOS() {
     return { data_abertura: todayISO(), safra_id: null, periodo_id: null, equipe_id: null, centro_custo_id: null, operacao_id: null, observacao: "", locais: [] };
   }
@@ -4398,6 +5416,7 @@ initSupabase();
       html += '</div>';
     }
     html += '<p class="home-foot">Use o menu à esquerda para navegar entre os cadastros e apontamentos.</p>';
+    html += '<div class="home-reset-box"><p>Os dados de exemplo deste módulo ficam salvos no seu navegador. Se você não está vendo os dados/campos mais recentes, restaure a demonstração:</p><button class="btn" onclick="App.resetDemo()">Restaurar dados de exemplo</button></div>';
     html += '</div>';
     return html;
   }
@@ -4408,6 +5427,7 @@ initSupabase();
     var route = STATE.route;
     var html;
     if (route === "home") html = renderHome();
+    else if (route === "tabela:mapas") html = renderMapaScreen();
     else if (route.indexOf("tabela:") === 0) html = renderTabelaScreen(tabelaByKey(route.split(":")[1]));
     else if (route === "apontamento:os") html = renderOS();
     else if (route === "apontamento:boletim-insumo") html = renderBoletimInsumo();
@@ -4418,6 +5438,7 @@ initSupabase();
     else if (route === "apontamento:consolidado") html = renderConsolidado();
     else html = renderHome();
     content.innerHTML = html;
+    if (route === "tabela:mapas") setTimeout(App.mapaDrawPreview, 30);
   };
 
   function shortTitulo(t) { return t.replace(/^Cadastro( de| do| da)?\s*/, ""); }
