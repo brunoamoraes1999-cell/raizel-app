@@ -1203,16 +1203,17 @@
         <p>Exportação básica dos seus dados e relatórios cruzados entre módulos.</p>
       </button>
 
-      <button class="module-card" onclick="enterModule('monitoramento')">
-        <span class="module-badge">Em construção</span>
-        <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
-        <h3>Monitoramento (MIP)</h3>
-        <p>Cadastros de pragas, doenças e daninhas. Metodologia e painel de severidade vêm nas próximas etapas.</p>
-      </button>
     </div>
 
     <p class="hub-section-label">Em breve</p>
     <div class="module-grid module-grid-soon">
+      <button class="module-card soon" onclick="enterModule('monitoramento')">
+        <span class="module-badge soon">Em breve</span>
+        <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Monitoramento (MIP)</h3>
+        <p>Cadastros de pragas, doenças e daninhas. Metodologia e painel de severidade vêm nas próximas etapas.</p>
+      </button>
+
       <button class="module-card soon" onclick="enterModule('clima')">
         <span class="module-badge soon">Em breve</span>
         <div class="m-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="16" r="0"/><path d="M7 18a4 4 0 1 1 1-7.9A5 5 0 0 1 18 12a3.5 3.5 0 0 1-.5 7H7Z"/></svg></div>
@@ -2461,7 +2462,6 @@ const MODULE_INFO = {
 function enterModule(key){
   if(key === 'gestao'){ showOnly('view-app'); if(window.App && window.App.navigate) window.App.navigate('home'); return; }
   if(key === 'relatorios'){ showOnly('view-reports'); return; }
-  if(key === 'monitoramento'){ showOnly('view-mip'); switchTab('mip-status'); setTimeout(() => drawMipMap(mipStatusRowsCache), 60); return; }
   const info = MODULE_INFO[key];
   if(!info) return;
   $('module-placeholder-title').textContent = info.title;
