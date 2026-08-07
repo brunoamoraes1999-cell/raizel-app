@@ -961,6 +961,49 @@
   #view-app .back-to-hub:hover{ background:rgba(255,255,255,.06); color:#fff; }
   #view-app .topbar .profile-name-block .pname{ color:#F2F0EA; }
   #view-app .search-box input{ border-color:#262E28; color:#F2F0EA; }
+  #view-app .global-search-results {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #171B18;
+    border: 1px solid #262E28;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.4);
+    padding: 6px;
+    z-index: 300;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+  #view-app .global-search-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    color: #F2F0EA;
+    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #view-app .global-search-item:hover {
+    background: rgba(181,135,74,.16);
+  }
+  #view-app .gs-group {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    color: #9AA6A0;
+    flex-shrink: 0;
+  }
+  #view-app .global-search-empty {
+    padding: 10px;
+    font-size: 12.5px;
+    color: #9AA6A0;
+  }
   #view-app .topbar .icon-btn{ border-color:#262E28; }
   #view-app .profile-dropdown, #view-app .farm-switcher-dropdown{ border-color:#262E28; }
   #view-app .farm-switcher-dropdown button{ color:#F2F0EA; }
@@ -2004,9 +2047,10 @@
         <div class="js-farm-switcher-list"></div>
       </div>
     </div>
-    <div class="search-box">
+    <div class="search-box" style="position:relative;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input id="global-search-sg" placeholder="Buscar cadastro, apontamento...">
+      <input id="global-search-sg" placeholder="Buscar cadastro, apontamento..." autocomplete="off" oninput="App.globalSearchInput(this.value)" onfocus="App.globalSearchInput(this.value)">
+      <div id="global-search-results" class="global-search-results hidden"></div>
     </div>
     <div class="topbar-spacer"></div>
     <button class="icon-btn" title="Notificações"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="dot"></span></button>
@@ -4209,6 +4253,7 @@ initSupabase();
     return null;
   }
 
+
   var TABELAS_MENU = [
     { titulo: "Locais de Produção", itens: ["fazendas", "setores", "talhoes", "mapas"] },
     { titulo: "Calendário", itens: ["safras", "periodos"] },
@@ -4288,6 +4333,59 @@ initSupabase();
   // ============================= App =============================
   var App = {};
   window.App = App;
+
+  var SEARCH_INDEX = TABELAS.map(function (t) {
+    return { route: "tabela:" + t.key, label: t.titulo.replace(/^Cadastro( de)?\s*/, ""), group: "Cadastro" };
+  }).concat([
+    { route: "apontamento:os", label: "Ordem de Serviço de Campo", group: "Apontamento" },
+    { route: "apontamento:boletim-insumo", label: "Aplicação de Insumos", group: "Apontamento" },
+    { route: "apontamento:boletim-mecanizada", label: "Atividades Mecanizadas", group: "Apontamento" },
+    { route: "apontamento:boletim-manual", label: "Atividades Manuais", group: "Apontamento" },
+    { route: "apontamento:boletim-producao", label: "Atividade de Produção", group: "Apontamento" },
+    { route: "apontamento:boletim-plantio", label: "Plantio", group: "Apontamento" },
+    { route: "apontamento:consolidado", label: "Apontamento Agrícola (consolidado)", group: "Apontamento" },
+    { route: "home", label: "Início", group: "" }
+  ]);
+  function mapaNormalizeSearch(s) {
+    return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  }
+  App.globalSearchInput = function (value) {
+    var box = document.getElementById("global-search-results");
+    if (!box) return;
+    var q = mapaNormalizeSearch(value);
+    if (!q) { box.classList.add("hidden"); box.innerHTML = ""; return; }
+    var results = SEARCH_INDEX.filter(function (item) {
+      return mapaNormalizeSearch(item.label).indexOf(q) !== -1;
+    }).slice(0, 8);
+    if (!results.length) {
+      box.innerHTML = '<div class="global-search-empty">Nenhuma aba encontrada.</div>';
+      box.classList.remove("hidden");
+      return;
+    }
+    box.innerHTML = results.map(function (r) {
+      return '<button type="button" class="global-search-item" onmousedown="event.preventDefault();App.globalSearchGo(\'' + r.route + '\')">' +
+        (r.group ? '<span class="gs-group">' + esc(r.group) + '</span>' : '') +
+        '<span class="gs-label">' + esc(r.label) + '</span></button>';
+    }).join("");
+    box.classList.remove("hidden");
+  };
+  App.globalSearchGo = function (route) {
+    var input = document.getElementById("global-search-sg");
+    var box = document.getElementById("global-search-results");
+    if (input) input.value = "";
+    if (box) { box.classList.add("hidden"); box.innerHTML = ""; }
+    if (!(window.App && window.App.navigate)) return;
+    var vw = document.getElementById("view-app");
+    if (vw && vw.classList.contains("hidden")) { if (typeof enterModule === "function") enterModule("gestao"); }
+    App.navigate(route);
+  };
+  document.addEventListener("click", function (e) {
+    var box = document.getElementById("global-search-results");
+    if (!box || box.classList.contains("hidden")) return;
+    if (!e.target.closest || (!e.target.closest("#global-search-results") && e.target.id !== "global-search-sg")) {
+      box.classList.add("hidden");
+    }
+  });
 
   // ---------- Favoritos (botão ✓ no canto de cada tela + cards na Início) ----------
   // routeKey aqui é o mesmo valor usado por App.navigate (ex.: "tabela:fazendas",
