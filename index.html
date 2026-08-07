@@ -575,10 +575,33 @@
     font-size: 12.5px;
     margin: -4px 0 14px;
   }
+  #view-app .screen-mapa {
+    display: flex;
+    flex-direction: column;
+  }
   #view-app .mapa-layout {
     display: flex;
     gap: 16px;
-    align-items: flex-start;
+    align-items: stretch;
+  }
+  #view-app .screen-mapa .mapa-layout {
+    flex: 1;
+    min-height: 0;
+  }
+  #view-app .screen-mapa .mapa-preview-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #view-app .screen-mapa .mapa-leaflet-wrap {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+  }
+  #view-app .screen-mapa .mapa-leaflet {
+    flex: 1;
+    height: auto;
+    min-height: 300px;
   }
   #view-app .mapa-list-col {
     width: 260px;
@@ -680,7 +703,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 500;
+    z-index: 2000;
     padding: 20px;
   }
   #view-app .mapa-modal {
@@ -4578,7 +4601,7 @@ initSupabase();
     if (STATE.mapaModalStep === 'mapping' && STATE.mapaParse) {
       return '<div class="screen"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>' + renderMapaMappingReview() + '</div>';
     }
-    var html = '<div class="screen"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>';
+    var html = '<div class="screen screen-mapa"><div class="screen-header"><h1>Mapa de Limite</h1><span class="screen-code">[LDPM0008]</span>' + favToggleHTML('tabela:mapas', 'Mapa de Limite') + '</div>';
     html += '<p class="mapa-lead">Importe o limite da fazenda por período de produção. Esse limite alimenta o cadastro de Talhões automaticamente.</p>';
 
     var mapas = (DB.mapas || []).slice().sort(function (a, b) {
