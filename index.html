@@ -2731,6 +2731,9 @@ function hide(id){ $(id).classList.add('hidden'); }
 function showOnly(id){
   $('app-loader').classList.add('hidden');
   ['view-setup','view-auth','view-onboarding','view-hub','view-app','view-mip','view-module','view-reports','view-profile','view-rai'].forEach(v => v===id ? show(v) : hide(v));
+  if(typeof raiSetLoginMode === 'function'){
+    raiSetLoginMode(['view-setup','view-auth','view-onboarding'].includes(id));
+  }
 }
 function showLoader(){ $('app-loader').classList.remove('hidden'); }
 function hideLoader(){ $('app-loader').classList.add('hidden'); }
@@ -5970,6 +5973,7 @@ initSupabase();
 
 <style>
 .rai-bubble{position:fixed;bottom:22px;right:22px;width:60px;height:60px;border-radius:50%;background:#0E1210;border:2px solid #B5874A;box-shadow:0 6px 18px rgba(0,0,0,.4);cursor:pointer;z-index:9000;display:flex;align-items:center;justify-content:center;overflow:hidden;transition:transform .15s ease;}
+.rai-bubble.rai-hidden{display:none;}
 .rai-bubble:hover{transform:scale(1.08);}
 .rai-bubble img{width:100%;height:100%;object-fit:cover;display:block;}
 .rai-bubble .rai-bubble-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#4C9A6A;border:2px solid #0E1210;}
@@ -6153,6 +6157,18 @@ initSupabase();
     document.getElementById("rai-chat-window").classList.add("hidden");
     document.getElementById("rai-bubble").classList.remove("hidden");
   };
+  window.raiSetLoginMode = function(isLoginScreen){
+    var bubble = document.getElementById("rai-bubble");
+    var win = document.getElementById("rai-chat-window");
+    if(isLoginScreen){
+      win.classList.add("hidden");
+      bubble.classList.add("rai-hidden");
+    } else {
+      bubble.classList.remove("rai-hidden");
+    }
+  };
+  // começa escondido, já que a primeira tela do site é sempre login/setup
+  document.getElementById("rai-bubble").classList.add("rai-hidden");
   window.raiMaximize = function(){
     document.getElementById("rai-chat-window").classList.add("hidden");
     document.getElementById("rai-bubble").classList.add("hidden");
