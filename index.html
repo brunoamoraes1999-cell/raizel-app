@@ -1576,6 +1576,14 @@
 #view-solos .solos-map-col{ flex:1.3; min-width:0; }
 #view-solos .solos-hist-col{ flex:1; min-width:0; }
 #view-solos .solos-leaflet{ width:100%; height:min(60vh,560px); border:1px solid var(--border); border-radius:12px; background:#E9ECE6; }
+#view-solos .solos-map-wrap{ position:relative; }
+#view-solos .solos-map-controls{ position:absolute; top:10px; right:10px; z-index:500; display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+#view-solos .solos-basemap-select{ font-size:11.5px; font-weight:600; padding:6px 10px; border:none; border-radius:8px; background:#fff; color:#171208; box-shadow:0 1px 4px rgba(0,0,0,.3); cursor:pointer; }
+#view-solos .solos-recenter-btn{ width:32px; height:32px; border-radius:8px; border:none; background:#fff; color:#171208; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,.3); }
+#view-solos .solos-recenter-btn:hover{ background:var(--gold); }
+#view-solos .solos-recenter-btn svg{ width:16px; height:16px; }
+#view-solos .solos-evo-maps-wrap{ padding-top:40px; }
+#view-solos .solos-evo-maps-wrap .solos-map-controls{ top:0; right:0; flex-direction:row; align-items:center; }
 #view-solos .solos-legend{ display:flex; flex-wrap:wrap; gap:12px; margin-top:10px; font-size:11.5px; color:var(--text-soft); }
 #view-solos .solos-legend-item{ display:flex; align-items:center; gap:6px; }
 #view-solos .solos-legend-item i{ width:12px; height:12px; border-radius:3px; display:inline-block; }
@@ -7147,7 +7155,7 @@ function renderSolosMapasFertilidade() {
   html += '</div>';
 
   html += '<div class="solos-mapas-layout">';
-  html += '<div class="solos-map-col"><div id="solos-leaflet-fert" class="solos-leaflet"></div>';
+  html += '<div class="solos-map-col"><div class="solos-map-wrap"><div id="solos-leaflet-fert" class="solos-leaflet"></div>' + solosMapControlsHTML("SolosApp.mapRecenter('fert')") + '</div>';
   html += '<div class="solos-legend" id="solos-legend"></div></div>';
   html += '<div class="solos-hist-col"><div class="solos-hist-title">Histórico por talhão &middot; 4 safras</div><div class="solos-hist-sub">Cor = classe' + (cfg.textura ? ' de textura' : '') + '. Comparação rápida entre safras.</div>';
   html += '<div class="solos-hist-table-wrap"><table class="solos-hist-table"><thead><tr><th>Talhão</th>';
@@ -7372,10 +7380,13 @@ function renderSolosEvolucao() {
   html += '</div>';
 
   var ultimas3 = SOLOS_SAFRAS.slice(-3);
+  html += '<div class="solos-map-wrap solos-evo-maps-wrap">';
   html += '<div class="solos-evo-maps">';
   ultimas3.forEach(function (s, i) {
     html += '<div class="solos-evo-map-card"><div class="solos-evo-map-label">SAFRA ' + safraCurta(s) + '</div><div id="solos-evo-map-' + i + '" class="solos-leaflet solos-leaflet-evo"></div></div>';
   });
+  html += '</div>';
+  html += solosMapControlsHTML(null);
   html += '</div>';
 
   html += '<div class="solos-evo-legend" id="solos-evo-legend"></div>';
@@ -7575,7 +7586,7 @@ function renderSolosColetasWizard() {
   html += '<div class="toolbar"><button class="btn primary" ' + (c.talhoesAlvo.length && c.nome ? '' : 'disabled') + ' onclick="SolosApp.coletaConfirmar()">Gerar pontos e enviar missão</button></div>';
   html += '</div>';
 
-  html += '<div class="solos-wizard-map"><div id="solos-leaflet-coleta" class="solos-leaflet solos-leaflet-wizard"></div></div>';
+  html += '<div class="solos-wizard-map"><div class="solos-map-wrap"><div id="solos-leaflet-coleta" class="solos-leaflet solos-leaflet-wizard"></div>' + solosMapControlsHTML("SolosApp.mapRecenter('coleta')") + '</div></div>';
   html += '</div></div>';
   return html;
 }
@@ -7627,7 +7638,7 @@ function renderSolosAcompanhamento() {
   html += '</div>';
 
   html += '<div class="solos-mapas-layout">';
-  html += '<div class="solos-map-col"><div id="solos-leaflet-acomp" class="solos-leaflet"></div></div>';
+  html += '<div class="solos-map-col"><div class="solos-map-wrap"><div id="solos-leaflet-acomp" class="solos-leaflet"></div>' + solosMapControlsHTML("SolosApp.mapRecenter('acomp')") + '</div></div>';
   html += '<div class="solos-hist-col"><div class="solos-hist-title">Talhões &middot; Progresso de Coleta</div>';
   html += '<div class="solos-hist-table-wrap"><table class="solos-hist-table solos-acomp-table"><thead><tr><th>Talhão</th><th>Área (ha)</th><th>Planejadas</th><th>Coletadas</th><th>% Coletado</th><th>Status</th></tr></thead><tbody>';
   talhoesM.slice().sort(function (a, b) { return b.area_ha - a.area_ha; }).forEach(function (t) {
@@ -7651,8 +7662,47 @@ var solosMapInstances = {};
 function solosDestroyMap(key) {
   if (solosMapInstances[key]) { try { solosMapInstances[key].remove(); } catch (e) {} delete solosMapInstances[key]; }
 }
+var SOLOS_BASEMAPS = {
+  satelite: { label: "Satélite", url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", maxZoom: 19 },
+  topo: { label: "Esri Topo", url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", maxZoom: 19 },
+  claro: { label: "Fundo Claro", url: "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", maxZoom: 19, subdomains: "abcd" },
+  escuro: { label: "Fundo Escuro", url: "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", maxZoom: 19, subdomains: "abcd" }
+};
+var solosMapLayers = {};  // key -> geoJSON layer (todos os talhões) daquele mapa, pra recentralizar na fazenda
+var solosMapFoco = {};    // key -> id do talhão em foco (ou null)
+
 function solosBaseLayer(map) {
-  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19 }).addTo(map);
+  var key = (STATE.solosBaseLayer && SOLOS_BASEMAPS[STATE.solosBaseLayer]) ? STATE.solosBaseLayer : "satelite";
+  var cfg = SOLOS_BASEMAPS[key];
+  var opts = { maxZoom: cfg.maxZoom };
+  if (cfg.subdomains) opts.subdomains = cfg.subdomains;
+  L.tileLayer(cfg.url, opts).addTo(map);
+}
+function solosBasemapSelectHTML() {
+  var cur = (STATE.solosBaseLayer && SOLOS_BASEMAPS[STATE.solosBaseLayer]) ? STATE.solosBaseLayer : "satelite";
+  var html = '<select class="solos-basemap-select" onchange="SolosApp.setBaseLayer(this.value)" title="Mapa base">';
+  ["satelite", "topo", "claro", "escuro"].forEach(function (k) {
+    html += '<option value="' + k + '"' + (k === cur ? " selected" : "") + '>' + SOLOS_BASEMAPS[k].label + '</option>';
+  });
+  html += '</select>';
+  return html;
+}
+function solosMapControlsHTML(recenterCall) {
+  var html = '<div class="solos-map-controls">' + solosBasemapSelectHTML();
+  if (recenterCall) {
+    html += '<button type="button" class="solos-recenter-btn" onclick="' + recenterCall + '" title="Centralizar na fazenda">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5" fill="currentColor" stroke="none"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>' +
+      '</button>';
+  }
+  html += '</div>';
+  return html;
+}
+function solosMapRecenter(key) {
+  solosMapFoco[key] = null;
+  if (key === "fert") { solosDrawMapaFertilidade(); return; }
+  if (key === "acomp") { solosDrawAcompanhamentoMap(); return; }
+  var map = solosMapInstances[key], layer = solosMapLayers[key];
+  if (map && layer) { try { map.fitBounds(layer.getBounds(), { padding: [16, 16] }); } catch (e) {} }
 }
 function solosTalhaoToFeature(t) {
   var ring = t.coords.slice();
@@ -7669,21 +7719,36 @@ function solosDrawMapaFertilidade() {
   var talhoes = talhoesDaFazenda(STATE.farmSel);
   var cfg = SOLOS_ELEMENTO_BY_KEY[STATE.elSel];
   var safraIdx = STATE.safraSel === "TODOS" ? SOLOS_SAFRAS.length - 1 : SOLOS_SAFRAS.indexOf(STATE.safraSel);
+  var foco = solosMapFoco["fert"] || null;
   var fc = { type: "FeatureCollection", features: talhoes.map(solosTalhaoToFeature) };
+  var focoLayer = null;
   var layer = L.geoJSON(fc, {
     style: function (feature) {
       var t = null; for (var i = 0; i < talhoes.length; i++) if (talhoes[i].id === feature.properties.id) t = talhoes[i];
       var v = solosValor(t.id, safraIdx, STATE.profSel, STATE.elSel);
       var cls = v === null ? null : (cfg.textura ? solosTexturaClasse(v) : solosClasseGenerica(cfg, v));
-      return { color: "#333", weight: 1, fillColor: cls ? cls.color : "#CCCCCC", fillOpacity: v === null ? 0.15 : 0.65 };
+      var isFoco = foco && feature.properties.id === foco;
+      var dimmed = foco && !isFoco;
+      return { color: isFoco ? "#B5874A" : "#333", weight: isFoco ? 3 : 1, fillColor: cls ? cls.color : "#CCCCCC", fillOpacity: v === null ? 0.15 : (isFoco ? 0.85 : (dimmed ? 0.15 : 0.65)) };
     },
     onEachFeature: function (feature, lyr) {
       var t = null; for (var i = 0; i < talhoes.length; i++) if (talhoes[i].id === feature.properties.id) t = talhoes[i];
       var v = solosValor(t.id, safraIdx, STATE.profSel, STATE.elSel);
       lyr.bindTooltip(t.codigo + (v !== null ? ": " + fmt(v, cfg.dec) : " (sem dado)"));
+      if (foco && feature.properties.id === foco) focoLayer = lyr;
+      lyr.on("click", function (e) {
+        L.DomEvent.stopPropagation(e);
+        solosMapFoco["fert"] = feature.properties.id;
+        solosDrawMapaFertilidade();
+      });
     }
   }).addTo(map);
-  try { map.fitBounds(layer.getBounds(), { padding: [16, 16] }); } catch (e) {}
+  map.on("click", function () { solosMapRecenter("fert"); });
+  solosMapLayers["fert"] = layer;
+  try {
+    if (focoLayer) map.fitBounds(focoLayer.getBounds(), { padding: [30, 30] });
+    else map.fitBounds(layer.getBounds(), { padding: [16, 16] });
+  } catch (e) {}
   solosMapInstances["fert"] = map;
 
   var legendEl = document.getElementById("solos-legend");
@@ -7732,8 +7797,14 @@ function solosDrawEvolucaoMapas() {
         var v = solosValor(t.id, idx, STATE.profSel, STATE.elSel);
         lyr.bindTooltip(t.codigo + (v !== null ? ": " + fmt(v, cfg.dec) : " (sem dado)"));
         if (focoTalhao && feature.properties.id === focoTalhao.id) focoLayer = lyr;
+        lyr.on("click", function (e) {
+          L.DomEvent.stopPropagation(e);
+          SolosApp.setTalhao(feature.properties.id);
+        });
       }
     }).addTo(map);
+    map.on("click", function () { SolosApp.setTalhao("TODOS"); });
+    solosMapLayers["evo" + i] = layer;
     try {
       if (focoLayer) map.fitBounds(focoLayer.getBounds(), { padding: [26, 26] });
       else map.fitBounds(layer.getBounds(), { padding: [6, 6] });
@@ -7764,8 +7835,16 @@ function solosDrawColetaWizardMap() {
       var sel = c.talhoesAlvo.indexOf(feature.properties.id) !== -1;
       return { color: sel ? "#B5874A" : "#888", weight: sel ? 2 : 1, fillColor: sel ? "#B5874A" : "#999", fillOpacity: sel ? 0.12 : 0.05 };
     },
-    onEachFeature: function (feature, lyr) { lyr.bindTooltip(feature.properties.codigo); }
+    onEachFeature: function (feature, lyr) {
+      lyr.bindTooltip(feature.properties.codigo);
+      lyr.on("click", function (e) {
+        L.DomEvent.stopPropagation(e);
+        try { map.fitBounds(lyr.getBounds(), { padding: [30, 30] }); } catch (err) {}
+      });
+    }
   }).addTo(map);
+  map.on("click", function () { solosMapRecenter("coleta"); });
+  solosMapLayers["coleta"] = baseLayer;
   var pointMarkers = [];
   selecionados.forEach(function (t) {
     var pts = solosGerarPontos(t, c.tipoId, c.densidade);
@@ -7797,15 +7876,32 @@ function solosDrawAcompanhamentoMap() {
   var iniciados = {};
   pontos.forEach(function (p) { if (p.subamostras_coletadas > 0) iniciados[p.talhao_id] = true; });
   var talhoesM = talhoes.filter(function (t) { return missao.talhao_ids.indexOf(t.id) !== -1; });
+  var foco = solosMapFoco["acomp"] || null;
   var fc = { type: "FeatureCollection", features: talhoesM.map(solosTalhaoToFeature) };
+  var focoLayer = null;
   var layer = L.geoJSON(fc, {
     style: function (feature) {
       var started = !!iniciados[feature.properties.id];
-      return { color: "#333", weight: 1, fillColor: started ? "#4C9A6A" : "#B9BDB6", fillOpacity: 0.55 };
+      var isFoco = foco && feature.properties.id === foco;
+      var dimmed = foco && !isFoco;
+      return { color: isFoco ? "#B5874A" : "#333", weight: isFoco ? 3 : 1, fillColor: started ? "#4C9A6A" : "#B9BDB6", fillOpacity: isFoco ? 0.85 : (dimmed ? 0.18 : 0.55) };
     },
-    onEachFeature: function (feature, lyr) { lyr.bindTooltip(feature.properties.codigo); }
+    onEachFeature: function (feature, lyr) {
+      lyr.bindTooltip(feature.properties.codigo);
+      if (foco && feature.properties.id === foco) focoLayer = lyr;
+      lyr.on("click", function (e) {
+        L.DomEvent.stopPropagation(e);
+        solosMapFoco["acomp"] = feature.properties.id;
+        solosDrawAcompanhamentoMap();
+      });
+    }
   }).addTo(map);
-  try { map.fitBounds(layer.getBounds(), { padding: [16, 16] }); } catch (e) {}
+  map.on("click", function () { solosMapRecenter("acomp"); });
+  solosMapLayers["acomp"] = layer;
+  try {
+    if (focoLayer) map.fitBounds(focoLayer.getBounds(), { padding: [30, 30] });
+    else map.fitBounds(layer.getBounds(), { padding: [16, 16] });
+  } catch (e) {}
   solosMapInstances["acomp"] = map;
 }
 
@@ -7914,12 +8010,14 @@ SolosApp.navigate = function (route) {
   var main = document.querySelector("#view-solos main");
   if (main) main.scrollTop = 0;
 };
-SolosApp.setFazenda = function (id) { STATE.farmSel = id; STATE.talhaoSel = "TODOS"; solosRenderRoute(); };
+SolosApp.setFazenda = function (id) { STATE.farmSel = id; STATE.talhaoSel = "TODOS"; solosMapFoco["fert"] = null; solosMapFoco["acomp"] = null; solosRenderRoute(); };
 SolosApp.setTalhao = function (id) { STATE.talhaoSel = id; solosRenderRoute(); };
 SolosApp.setSafra = function (s) { STATE.safraSel = s; solosRenderRoute(); };
 SolosApp.setElemento = function (k) { STATE.elSel = k; solosRenderRoute(); };
 SolosApp.setProfundidade = function (p) { STATE.profSel = p; solosRenderRoute(); };
-SolosApp.setMissaoAtual = function (id) { STATE.missaoAtualId = id; solosRenderRoute(); };
+SolosApp.setMissaoAtual = function (id) { STATE.missaoAtualId = id; solosMapFoco["acomp"] = null; solosRenderRoute(); };
+SolosApp.setBaseLayer = function (v) { STATE.solosBaseLayer = v; solosRenderRoute(); };
+SolosApp.mapRecenter = function (key) { solosMapRecenter(key); };
 SolosApp.calcCalcario = function () {
   var ton = Number(document.getElementById("solos-calc-ton").value) || 0;
   var sub = ton <= 100 ? 10 : 10 + Math.ceil((ton - 100) / 100);
